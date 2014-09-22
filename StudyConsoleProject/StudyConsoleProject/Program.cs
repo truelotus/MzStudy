@@ -20,7 +20,9 @@ namespace StudyConsoleProject
             ConsoleWriteAll(listOrigin);
 
             ConsoleWriteAllWithForeach(listOrigin);
-            
+
+            Console.WriteLine("-------------------------------------------------------");
+
             YounList<String> list = new YounList<string>();
             list.Add("첫번째 아이템");
             Console.WriteLine(list[0]);

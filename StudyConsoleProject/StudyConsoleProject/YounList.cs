@@ -12,17 +12,23 @@ namespace StudyConsoleProject
 
         public YounList()
         {
-            mArray = new T[1];
+            mArray = new T[0];
         }
         
         public void Add(T item) {
            //현재 배열의 사이즈 고려하여 아이템 추가
-           mArray[mArray.Length-1] = item;
-           updateArray(mArray, mArray.Length);
+           T[] arrayB = new T[mArray.Length+1];
+           arrayB[mArray.Length] = item;
+           for (int i = 0; i < mArray.Length; i++)
+           {
+               arrayB[i] = mArray[i];
+           }
+           mArray = arrayB;
+           //updateArray(mArray, mArray.Length);
         }
 
 
-        private void updateArray(T[] array, int length)
+       /* private void updateArray(T[] array, int length)
         {
             T[] tempArray = new T[length];
 
@@ -44,7 +50,7 @@ namespace StudyConsoleProject
                 mArray[i] = tempArray[i];
             }
         }
-
+        */
 
         public IEnumerator GetEnumerator()
         {
