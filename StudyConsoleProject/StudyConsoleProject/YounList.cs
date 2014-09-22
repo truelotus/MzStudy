@@ -16,29 +16,39 @@ namespace StudyConsoleProject
         }
         
         public void Add(T item) {
-            //현재 배열의 사이즈 고려하여 아이템 추가
-            mArray[mArray.Length - 1] = item;
-           //updateArray(mArray, mArray.Length);
+           //현재 배열의 사이즈 고려하여 아이템 추가
+           mArray[mArray.Length-1] = item;
+           updateArray(mArray, mArray.Length);
         }
 
-        
-        /*private void updateArray(T[] arr,int length)
+
+        private void updateArray(T[] array, int length)
         {
-            arr = new T[length];
+            T[] tempArray = new T[length];
+
             for (int i = 0; i < length; i++)
             {
-                //사이즈보다 작으면
-                if (i<length)
+                if (i < array.Length)
                 {
-                    
+                    tempArray[i] = array[i];
+                }
+                else
+                {
+                    tempArray[i] = default(T);
                 }
             }
-        }*/
+
+            mArray = new T[length + 1];
+            for (int i = 0; i < length; i++)
+            {
+                mArray[i] = tempArray[i];
+            }
+        }
 
 
         public IEnumerator GetEnumerator()
         {
-            throw new NotImplementedException();
+            return mArray.GetEnumerator();
         }
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
@@ -53,7 +63,7 @@ namespace StudyConsoleProject
 
         public int Count
         {
-            get { throw new NotImplementedException(); }
+            get {return mArray.Length; }
         }
 
         public bool IsSynchronized
@@ -89,7 +99,22 @@ namespace StudyConsoleProject
 
         public bool Remove(T item)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < mArray.Length; i++)
+            {
+                if (this.GetItem(i).Equals(item))
+                {
+                    mArray[i] = default(T);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+        private T GetItem(int index){
+            return mArray[index];
         }
 
         public int IndexOf(T item)
@@ -99,19 +124,31 @@ namespace StudyConsoleProject
 
         public void Insert(int index, T item)
         {
-            throw new NotImplementedException();
+            if (this.GetItem(index)!=null)
+            {
+                mArray[index] = item;
+            }
         }
 
         public void RemoveAt(int index)
         {
-            throw new NotImplementedException();
+           mArray[index] = default(T);
+        }
+
+        public T this[int index, T item] 
+        {
+            set 
+            {
+                mArray[index] = item;
+            }
         }
 
         public T this[int index]
         {
             get
             {
-                throw new NotImplementedException();
+                //YounList[0] 반환시.
+                return mArray[index];
             }
             set
             {
