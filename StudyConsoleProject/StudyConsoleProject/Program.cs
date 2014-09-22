@@ -31,7 +31,7 @@ namespace StudyConsoleProject
             list.Remove("첫번째 아이템");
             ConsoleWriteAll(list);
 
-            ConsoleWriteAllWithForeach(list);
+            //ConsoleWriteAllWithForeach(list);
 
             Console.ReadLine();
             
