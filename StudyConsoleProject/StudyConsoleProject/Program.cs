@@ -19,7 +19,7 @@ namespace StudyConsoleProject
             listOrigin.Remove("첫번째 아이템");
             ConsoleWriteAll(listOrigin);
 
-            ConsoleWriteAllWithForeach(listOrigin);
+            //ConsoleWriteAllWithForeach(listOrigin);
 
             Console.WriteLine("-------------------------------------------------------");
 

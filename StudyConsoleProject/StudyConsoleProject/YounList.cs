@@ -105,19 +105,27 @@ namespace StudyConsoleProject
 
         public bool Remove(T item)
         {
+            int n = 0;
             for (int i = 0; i < mArray.Length; i++)
             {
                 if (this.GetItem(i).Equals(item))
                 {
                     mArray[i] = default(T);
-                    return true;
-                }
-                else
-                {
-                    return false;
+                    n = n + 1;
                 }
             }
-            return false;
+            T[] cArray = new T[n];
+            n = 0;
+            for (int i = 0; i < mArray.Length; i++)
+            {
+                if (mArray[i]!=null)
+                {
+                    cArray[n] = mArray[i];
+                    n = 1 + 1;
+                }
+            }
+            mArray = cArray;
+            return true;
         }
         private T GetItem(int index){
             return mArray[index];
