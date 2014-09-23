@@ -34,7 +34,6 @@ namespace StudyConsoleProject
             ConsoleWriteAll(list);
 
             //ConsoleWriteAllWithForeach(list);
-
             Console.ReadLine();
             
         }

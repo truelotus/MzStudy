@@ -106,24 +106,19 @@ namespace StudyConsoleProject
         public bool Remove(T item)
         {
             int n = 0;
+            T[] bArray = new T[mArray.Length];
+
             for (int i = 0; i < mArray.Length; i++)
-            {
-                if (this.GetItem(i).Equals(item))
+			{
+                if (!mArray[i].Equals(item))
                 {
-                    mArray[i] = default(T);
+                    //지울 아이템이 아닌 것들로만 배열을 구성한다.
+                    bArray[n] = mArray[i];
                     n = n + 1;
                 }
-            }
+			}
             T[] cArray = new T[n];
-            n = 0;
-            for (int i = 0; i < mArray.Length; i++)
-            {
-                if (mArray[i]!=null)
-                {
-                    cArray[n] = mArray[i];
-                    n = 1 + 1;
-                }
-            }
+            cArray = bArray;
             mArray = cArray;
             return true;
         }
