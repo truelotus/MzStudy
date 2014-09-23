@@ -17,13 +17,17 @@ namespace StudyConsoleProject
 
             listOrigin.Add("첫번째 아이템");
 
-
             listOrigin.Add("두번째 아이템");
             ConsoleWriteAll(listOrigin);
             
             listOrigin.Remove("첫번째 아이템");
             ConsoleWriteAll(listOrigin);
 
+            listOrigin.Insert(1, "이상한 아이템");
+            ConsoleWriteAll(listOrigin);
+
+            Console.WriteLine(listOrigin.IndexOf("이상한 아이템"));
+            
             //ConsoleWriteAllWithForeach(listOrigin);
 
             Console.WriteLine("-------------------------------------------------------");
@@ -41,6 +45,11 @@ namespace StudyConsoleProject
 
             list.Remove("첫번째 아이템");
             ConsoleWriteAll(list);
+
+            list.Insert(1, "이상한 아이템");
+            ConsoleWriteAll(list);
+
+            Console.WriteLine(list.IndexOf("이상한 아이템"));
 
             //ConsoleWriteAllWithForeach(list);
             Console.ReadLine();

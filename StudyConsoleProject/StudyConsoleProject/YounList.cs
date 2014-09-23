@@ -85,7 +85,8 @@ namespace StudyConsoleProject
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            mArray = new T[mArray.Length];
+            return;
         }
 
         public bool Contains(T item)
@@ -103,15 +104,25 @@ namespace StudyConsoleProject
             get { throw new NotImplementedException(); }
         }
 
-        //발견된 첫 객체만 remove
         public bool Remove(T item)
         {
-            int n = 0;
-            bool isFind = false;
-            T[] bArray = new T[mArray.Length];
+           
+            for (int i = 0; i < mArray.Length; i++)
+            {
+                if (mArray[i].Equals(item))
+                {
+                    this.RemoveAt(i);
+                    break;
+                }
+            }
+            return true;
+            /*
+             int n = 0;
+             bool isFind = false;
+             T[] bArray = new T[mArray.Length];
 
             for (int i = 0; i < mArray.Length; i++)
-			{
+            {
                 if (!mArray[i].Equals(item))
                 {
                     //지울 아이템이 아닌 것들로만 배열을 구성한다.
@@ -131,16 +142,16 @@ namespace StudyConsoleProject
                         n = n + 1;
                     }
                 }
-			}
+            }
             //n은 유효한 아이템 갯수
             T[] cArray = new T[n]; 
             for (int i = 0; i < n; i++)
             {
                 cArray[i] = bArray[i];
             }
-            mArray = cArray;
+            mArray = cArray;*/
 
-            return true;
+
         }
         private T GetItem(int index){
             return mArray[index];
@@ -148,12 +159,39 @@ namespace StudyConsoleProject
 
         public int IndexOf(T item)
         {
-            throw new NotImplementedException();
+            int index = 0;
+            //IList<T>에서 특정 항목의 인덱스를 확인합니다.
+            for (int i = 0; i < mArray.Length; i++)
+            {
+                if (mArray[i].Equals(item))
+                {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
         }
 
         public void Insert(int index, T item)
         {
-             mArray[index] = item;
+            //인덱스에 들어가고 들어간 자리만큼 한자리 늘어나야한다.
+            T[] bArray = new T[mArray.Length+1];
+            int n = 0;
+            for (int i = 0; i < bArray.Length; i++)
+            {
+                if (i==index)
+                {
+                    bArray[i] = item;
+                }
+                else
+                {
+                   
+                    bArray[i] = mArray[n];
+                    n = n + 1;
+                }
+            }
+            mArray = bArray;
+            return;
         }
 
         public void RemoveAt(int index)
