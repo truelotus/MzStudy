@@ -158,7 +158,28 @@ namespace StudyConsoleProject
 
         public void RemoveAt(int index)
         {
-           mArray[index] = default(T);
+            int n = 0;
+            T[] bArray = new T[mArray.Length];
+
+            for (int i = 0; i < mArray.Length; i++)
+            {
+                if (i==index)
+                {
+                    //remove item.
+                }
+                else
+                {
+                    bArray[n] = mArray[i];
+                    n = n + 1;
+                }
+            }
+            T[] cArray = new T[n];
+            for (int i = 0; i < n; i++)
+            {
+                cArray[i] = bArray[i];
+            }
+            mArray = cArray;
+
         }
 
         public T this[int index, T item] 
