@@ -28,7 +28,7 @@ namespace StudyConsoleProject
 
             Console.WriteLine(listOrigin.IndexOf("이상한 아이템"));
             
-            //ConsoleWriteAllWithForeach(listOrigin);
+            ConsoleWriteAllWithForeach(listOrigin);
 
             Console.WriteLine("-------------------------------------------------------");
 
@@ -51,7 +51,7 @@ namespace StudyConsoleProject
 
             Console.WriteLine(list.IndexOf("이상한 아이템"));
 
-            //ConsoleWriteAllWithForeach(list);
+            ConsoleWriteAllWithForeach(list);
             Console.ReadLine();
             
         }

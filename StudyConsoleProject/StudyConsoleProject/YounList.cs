@@ -6,6 +6,60 @@ using System.Collections;
 
 namespace StudyConsoleProject
 {
+
+    public class YounListEnumerator<T> : IEnumerator<T>
+    {
+        private YounList<T> mArray;
+        private T mItem;
+
+        private int mIndex;
+
+        public YounListEnumerator(YounList<T> list) 
+        {
+            mArray = list;
+            mItem = default(T);
+            mIndex = 0;
+
+        }
+        public T Current
+        {
+            get { return mItem; }
+        }
+
+        public void Dispose()
+        {
+            //throw new NotImplementedException();
+        }
+
+        object IEnumerator.Current
+        {
+            get { return this.Current; }
+        }
+
+        //열거자를 컬렉션의 다음 요소로 이동합니다
+        public bool MoveNext()
+        {
+            mIndex = ++mIndex;
+            if (mIndex<=mArray.Count)
+            {
+                //이동 할 요소가 있으면 next item이 current가 되어야한다.
+                mItem = mArray[mIndex - 1];
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            throw new NotImplementedException();
+        }
+
+        public void Reset()
+        {
+            mIndex = -1;
+        }
+    }
+
+
     public class YounList<T>: IList<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         T[] mArray = null;
@@ -59,7 +113,7 @@ namespace StudyConsoleProject
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new YounListEnumerator<T>(this);
         }
 
         public void CopyTo(Array array, int index)
@@ -237,7 +291,7 @@ namespace StudyConsoleProject
             }
             set
             {
-                throw new NotImplementedException();
+               mArray[index] = value;
             }
         }
     }
