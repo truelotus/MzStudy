@@ -103,9 +103,11 @@ namespace StudyConsoleProject
             get { throw new NotImplementedException(); }
         }
 
+        //발견된 첫 객체만 remove
         public bool Remove(T item)
         {
             int n = 0;
+            bool isFind = false;
             T[] bArray = new T[mArray.Length];
 
             for (int i = 0; i < mArray.Length; i++)
@@ -116,10 +118,28 @@ namespace StudyConsoleProject
                     bArray[n] = mArray[i];
                     n = n + 1;
                 }
+                else
+                {
+                    if (!isFind)
+                    {
+                        bArray[n] = default(T);
+                        isFind = true;
+                    }
+                    else
+                    {
+                        bArray[n] = mArray[i];
+                        n = n + 1;
+                    }
+                }
 			}
-            T[] cArray = new T[n];
-            cArray = bArray;
+            //n은 유효한 아이템 갯수
+            T[] cArray = new T[n]; 
+            for (int i = 0; i < n; i++)
+            {
+                cArray[i] = bArray[i];
+            }
             mArray = cArray;
+
             return true;
         }
         private T GetItem(int index){
@@ -133,10 +153,7 @@ namespace StudyConsoleProject
 
         public void Insert(int index, T item)
         {
-            if (this.GetItem(index)!=null)
-            {
-                mArray[index] = item;
-            }
+             mArray[index] = item;
         }
 
         public void RemoveAt(int index)
