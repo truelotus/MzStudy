@@ -18,7 +18,7 @@ namespace StudyConsoleProject
         {
             mArray = list;
             mItem = default(T);
-            mIndex = 0;
+            mIndex = -1;
 
         }
         public T Current
@@ -40,10 +40,10 @@ namespace StudyConsoleProject
         public bool MoveNext()
         {
             mIndex = ++mIndex;
-            if (mIndex<=mArray.Count)
+            if (mIndex<mArray.Count)
             {
                 //이동 할 요소가 있으면 next item이 current가 되어야한다.
-                mItem = mArray[mIndex - 1];
+                mItem = mArray[mIndex];
                 return true;
             }
             else
@@ -115,9 +115,31 @@ namespace StudyConsoleProject
             return new YounListEnumerator<T>(this);
         }
 
+        //특정 Array 인덱스에서 시작하여 ICollection<T>의 요소를 Array에 복사합니다.
         public void CopyTo(Array array, int index)
         {
-            throw new NotImplementedException();
+            T[] bArray = null;
+            if (array.Length>mArray.Length)
+            {
+                bArray = new T[array.Length];
+            }
+            else
+            {
+                bArray = new T[mArray.Length];
+            }
+            
+            for (int i = 0; i < bArray.Length; i++)
+            {
+                if (i>=index)
+                {
+                    bArray[i] = (T)array.GetValue(i);
+                }
+                else
+                {
+                    bArray[i] = mArray[i];
+                }
+            }
+            mArray = bArray;
         }
 
         public int Count
@@ -127,12 +149,12 @@ namespace StudyConsoleProject
 
         public bool IsSynchronized
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
 
         public object SyncRoot
         {
-            get { throw new NotImplementedException(); }
+            get { return mArray; }
         }
 
 
@@ -144,17 +166,32 @@ namespace StudyConsoleProject
 
         public bool Contains(T item)
         {
-            throw new NotImplementedException();
+            bool isContains = false;
+            for (int i = 0; i < mArray.Length; i++)
+            {
+                if (mArray[i].Equals(item))
+                {
+                    isContains = true;
+                    return isContains;
+                }
+            }
+            return isContains;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            /*for (int i = 0; i < array.Length; i++)
+            {
+                if (i>=arrayIndex)
+                {
+                    array[i] = mArray[i];
+                }
+            }*/
         }
 
         public bool IsReadOnly
         {
-            get { throw new NotImplementedException(); }
+            get { return false; }
         }
 
         public bool Remove(T item)

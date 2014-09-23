@@ -30,6 +30,13 @@ namespace StudyConsoleProject
             
             ConsoleWriteAllWithForeach(listOrigin);
 
+            /*String[] Array = new String[10];
+            Array[1] = "복사한 아이템";
+
+            listOrigin.CopyTo(Array, 5);*/
+
+            ConsoleWriteAll(listOrigin);
+
             Console.WriteLine("-------------------------------------------------------");
 
             YounList<String> list = new YounList<string>();
@@ -52,6 +59,12 @@ namespace StudyConsoleProject
             Console.WriteLine(list.IndexOf("이상한 아이템"));
 
             ConsoleWriteAllWithForeach(list);
+
+            /*Array = new String[10];
+            Array[1] = "복사한 아이템";
+
+            list.CopyTo(Array, 5);*/
+            ConsoleWriteAll(list);
             Console.ReadLine();
             
         }
