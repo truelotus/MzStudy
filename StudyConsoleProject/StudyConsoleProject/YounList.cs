@@ -50,7 +50,6 @@ namespace StudyConsoleProject
             {
                 return false;
             }
-            throw new NotImplementedException();
         }
 
         public void Reset()
