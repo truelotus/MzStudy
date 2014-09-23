@@ -11,6 +11,7 @@ namespace StudyConsoleProject
         {
             List<String> listOrigin = new List<string>();
             listOrigin.Add("첫번째 아이템");
+            Console.WriteLine("----------------------기존의 리스트 출력------------------------------------");
             Console.WriteLine(listOrigin[0]);
 
             listOrigin.Add("두번째 아이템");
@@ -30,17 +31,24 @@ namespace StudyConsoleProject
             
             ConsoleWriteAllWithForeach(listOrigin);
 
-            /*String[] Array = new String[10];
+           // ConsoleWriteAll(listOrigin);
+
+            String[] Array = new String[10];
             Array[1] = "복사한 아이템";
 
-            listOrigin.CopyTo(Array, 5);*/
+           
 
-            ConsoleWriteAll(listOrigin);
-
-            Console.WriteLine("-------------------------------------------------------");
+            listOrigin.CopyTo(Array, 5);
+            Console.WriteLine("----------------------▽Copy To array------------------------------------");
+            ConsoleWriteAll(Array);
+            
+            
 
             YounList<String> list = new YounList<string>();
             list.Add("첫번째 아이템");
+
+            Console.WriteLine("----------------------YounList 리스트 출력------------------------------------");
+
             Console.WriteLine(list[0]);
 
             list.Add("두번째 아이템");
@@ -60,11 +68,16 @@ namespace StudyConsoleProject
 
             ConsoleWriteAllWithForeach(list);
 
-            /*Array = new String[10];
+          //  ConsoleWriteAll(list);
+
+            Array = new String[10];
             Array[1] = "복사한 아이템";
 
-            list.CopyTo(Array, 5);*/
-            ConsoleWriteAll(list);
+            list.CopyTo(Array, 5);
+            Console.WriteLine("----------------------▽Copy To array------------------------------------");
+            ConsoleWriteAll(Array);
+            
+            
             Console.ReadLine();
             
         }

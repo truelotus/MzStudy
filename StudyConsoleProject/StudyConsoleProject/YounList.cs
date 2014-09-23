@@ -69,14 +69,18 @@ namespace StudyConsoleProject
         }
         
         public void Add(T item) {
+
+            Array.Resize(ref mArray, mArray.Length + 1);
+            mArray[mArray.Length - 1] = item;
+
            //현재 배열의 사이즈 고려하여 아이템 추가
-           T[] arrayB = new T[mArray.Length+1];
+           /*T[] arrayB = new T[mArray.Length+1];
            arrayB[mArray.Length] = item;
            for (int i = 0; i < mArray.Length; i++)
            {
                arrayB[i] = mArray[i];
            }
-           mArray = arrayB;
+           mArray = arrayB;*/
            //updateArray(mArray, mArray.Length);
         }
 
@@ -115,31 +119,11 @@ namespace StudyConsoleProject
             return new YounListEnumerator<T>(this);
         }
 
-        //특정 Array 인덱스에서 시작하여 ICollection<T>의 요소를 Array에 복사합니다.
+       
         public void CopyTo(Array array, int index)
         {
-            T[] bArray = null;
-            if (array.Length>mArray.Length)
-            {
-                bArray = new T[array.Length];
-            }
-            else
-            {
-                bArray = new T[mArray.Length];
-            }
-            
-            for (int i = 0; i < bArray.Length; i++)
-            {
-                if (i>=index)
-                {
-                    bArray[i] = (T)array.GetValue(i);
-                }
-                else
-                {
-                    bArray[i] = mArray[i];
-                }
-            }
-            mArray = bArray;
+            Array.Copy(mArray, array, index);
+            return;
         }
 
         public int Count
@@ -160,33 +144,27 @@ namespace StudyConsoleProject
 
         public void Clear()
         {
-            mArray = new T[mArray.Length];
+            Array.Clear(mArray, 0, mArray.Length);
             return;
         }
 
         public bool Contains(T item)
         {
-            bool isContains = false;
             for (int i = 0; i < mArray.Length; i++)
             {
-                if (mArray[i].Equals(item))
+                if (Array.Equals(mArray[i],item))
                 {
-                    isContains = true;
-                    return isContains;
+                    return true;
                 }
             }
-            return isContains;
+            return false;
         }
 
+        //특정 Array 인덱스에서 시작하여 ICollection<T>의 요소를 Array에 복사합니다.
         public void CopyTo(T[] array, int arrayIndex)
         {
-            /*for (int i = 0; i < array.Length; i++)
-            {
-                if (i>=arrayIndex)
-                {
-                    array[i] = mArray[i];
-                }
-            }*/
+            Array.ConstrainedCopy(mArray,0,array,arrayIndex,mArray.Length);
+            return;
         }
 
         public bool IsReadOnly
@@ -196,10 +174,9 @@ namespace StudyConsoleProject
 
         public bool Remove(T item)
         {
-           
             for (int i = 0; i < mArray.Length; i++)
             {
-                if (mArray[i].Equals(item))
+                if (Array.Equals(mArray[i], item))
                 {
                     this.RemoveAt(i);
                     break;
@@ -249,24 +226,22 @@ namespace StudyConsoleProject
 
         public int IndexOf(T item)
         {
-            int index = 0;
             //IList<T>에서 특정 항목의 인덱스를 확인합니다.
             for (int i = 0; i < mArray.Length; i++)
             {
-                if (mArray[i].Equals(item))
+                if (Array.Equals(mArray[i],item))
                 {
-                    index = i;
-                    break;
+                    return i;
                 }
             }
-            return index;
+            return 0;
         }
 
         public void Insert(int index, T item)
         {
             //인덱스에 들어가고 들어간 자리만큼 한자리 늘어나야한다.
-            T[] bArray = new T[mArray.Length+1];
             int n = 0;
+            T[] bArray = new T[mArray.Length+1];
             for (int i = 0; i < bArray.Length; i++)
             {
                 if (i==index)
@@ -275,7 +250,6 @@ namespace StudyConsoleProject
                 }
                 else
                 {
-                   
                     bArray[i] = mArray[n];
                     n = n + 1;
                 }
@@ -286,27 +260,24 @@ namespace StudyConsoleProject
 
         public void RemoveAt(int index)
         {
+
             int n = 0;
             T[] bArray = new T[mArray.Length];
-
+            
             for (int i = 0; i < mArray.Length; i++)
             {
-                if (i==index)
-                {
-                    //remove item.
-                }
-                else
+                if (i!=index)
                 {
                     bArray[n] = mArray[i];
                     n = n + 1;
                 }
             }
+
             T[] cArray = new T[n];
-            for (int i = 0; i < n; i++)
-            {
-                cArray[i] = bArray[i];
-            }
+            Array.Copy(bArray, cArray, n);
             mArray = cArray;
+             
+
 
         }
 
