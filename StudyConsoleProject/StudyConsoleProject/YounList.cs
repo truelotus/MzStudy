@@ -40,10 +40,10 @@ namespace StudyConsoleProject
         public bool MoveNext()
         {
             mIndex = ++mIndex;
-            if (mIndex<mArray.Count*2)
+            if (mIndex<mArray.Count)
             {
                 //이동 할 요소가 있으면 next item이 current가 되어야한다.
-                mItem = mArray[mIndex/2];
+                mItem = mArray[mIndex];
                 return true;
             }
             else

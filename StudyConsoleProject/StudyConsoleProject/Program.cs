@@ -64,36 +64,51 @@ namespace StudyConsoleProject
 
             Console.WriteLine(list.IndexOf("이상한 아이템"));
 
-            
-
             Array = new String[10];
             Array[1] = "복사한 아이템";
+            list.CopyTo(Array, 5);
+            Console.WriteLine("----------------------▽Copy To array------------------------------------");
+            ConsoleWriteAll(Array);
 
-           
-            /*if (Array.IsNullList())
-            {
-                Console.WriteLine("array is null");
-            }
-            else
-            {
-                Console.WriteLine("array is not null");
-            }*/
+            Console.WriteLine("----------------------------▽foreach(double)----------------------------");
+            ConsoleWriteAllWithForeach(list);
+
+            //where 절은 쿼리 식에서 반환할 데이터 소스의 요소를 쿼리 식에 지정하는 데 사용됩니다. 
 
             var m = list.YounWhere(item => item.Equals("이상한 아이템"));
             ConsoleWriteAllWithForeach(m);
-
+            Console.WriteLine("");
             list.YounForeach(Console.WriteLine);
+
+            Console.WriteLine("");
 
             var newList = new List<string>();
             list.YounForeach(newList.Add);
-            
-            list.CopyTo(Array, 5);
-            Console.WriteLine("----------------------------▽Copy To array----------------------------");
-            Console.WriteLine("----------------------▽Copy To array------------------------------------");
-            ConsoleWriteAll(Array);
-            Console.WriteLine("----------------------------▽foreach----------------------------");
-            
+
+
+            //select 절은 쿼리가 실행될 때 생성할 값의 형식을 지정합니다.
+
+            //string list내에서 조건에 부합한다면 그 조건결과값으로 구성된. boolean list로 변환하기.
+            var j = list.Select(item => item.Equals("첫번째 아이템"));
+            foreach (var item in j)
+            {
+               Console.WriteLine(item);
+            }
+            Console.WriteLine("");
+
+            var m2 = list.YounSelect(item => IsEquals(item, "첫번째 아이템"));
+            foreach (var item in m2)
+            {
+               Console.WriteLine(item);
+            }
+
             Console.ReadLine();
+        }
+
+
+        private static bool IsEquals(string item,string item2) 
+        {
+            return item.Equals(item2);
         }
 
         private static void Print(string item)
