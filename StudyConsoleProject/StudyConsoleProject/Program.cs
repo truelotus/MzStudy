@@ -89,8 +89,8 @@ namespace StudyConsoleProject
             //select 절은 쿼리가 실행될 때 생성할 값의 형식을 지정합니다.
 
             //string list내에서 조건에 부합한다면 그 조건결과값으로 구성된. boolean list로 변환하기.
-            var j = list.Select(item => item.Equals("첫번째 아이템"));
-            foreach (var item in j)
+            var m1 = list.Select(item => item.Equals("첫번째 아이템"));
+            foreach (var item in m1)
             {
                Console.WriteLine(item);
             }
@@ -101,10 +101,22 @@ namespace StudyConsoleProject
             {
                Console.WriteLine(item);
             }
+            Console.WriteLine("");
+            
+            //앞에 3글자만 잘린 리스트를 출력해보자
+            var m3 = list.Select(item => GetFrontThreeWord(item));
+            foreach (var item in m3)
+            {
+                Console.WriteLine(item);
+            }
 
             Console.ReadLine();
         }
 
+        private static string GetFrontThreeWord(string item) {
+
+            return item.Substring(0, 3);
+        }
 
         private static bool IsEquals(string item) 
         {
