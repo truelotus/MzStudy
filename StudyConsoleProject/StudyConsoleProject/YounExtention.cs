@@ -54,19 +54,6 @@ namespace StudyConsoleProject
             }
         }
 
-        public static IEnumerable<String> YounSelect<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate) 
-        {
-            var list = new YounList<String>();
-            foreach (var item in source)
-            {
-                if (predicate(item))
-                    list.Add("True");
-                else
-                    list.Add("False");
-
-            }
-            return list;
-        }
         public static IEnumerable<TResult> YounSelect<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) 
         {
             var list = new YounList<TResult>();
@@ -76,7 +63,5 @@ namespace StudyConsoleProject
             }
             return list;
         }
-
-
     }
 }
