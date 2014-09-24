@@ -67,6 +67,16 @@ namespace StudyConsoleProject
             }
             return list;
         }
+        public static IEnumerable<TResult> YounSelect<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) 
+        {
+            var list = new YounList<TResult>();
+            foreach (var item in source)
+            {
+                list.Add(selector(item));
+            }
+            return list;
+        }
+
 
     }
 }

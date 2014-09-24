@@ -96,7 +96,7 @@ namespace StudyConsoleProject
             }
             Console.WriteLine("");
 
-            var m2 = list.YounSelect(item => IsEquals(item, "첫번째 아이템"));
+            var m2 = list.YounSelect(item => IsEquals(item));
             foreach (var item in m2)
             {
                Console.WriteLine(item);
@@ -106,9 +106,9 @@ namespace StudyConsoleProject
         }
 
 
-        private static bool IsEquals(string item,string item2) 
+        private static bool IsEquals(string item) 
         {
-            return item.Equals(item2);
+            return item.Equals("첫번째 아이템");
         }
 
         private static void Print(string item)
