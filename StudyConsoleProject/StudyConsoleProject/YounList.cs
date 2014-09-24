@@ -276,9 +276,6 @@ namespace StudyConsoleProject
             T[] cArray = new T[n];
             Array.Copy(bArray, cArray, n);
             mArray = cArray;
-             
-
-
         }
 
         public T this[int index, T item] 
@@ -302,4 +299,6 @@ namespace StudyConsoleProject
             }
         }
     }
+ 
+ 
 }

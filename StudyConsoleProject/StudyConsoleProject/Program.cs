@@ -46,9 +46,8 @@ namespace StudyConsoleProject
 
             YounList<String> list = new YounList<string>();
             list.Add("첫번째 아이템");
-
             Console.WriteLine("----------------------YounList 리스트 출력------------------------------------");
-
+            
             Console.WriteLine(list[0]);
 
             list.Add("두번째 아이템");
@@ -68,10 +67,20 @@ namespace StudyConsoleProject
 
             ConsoleWriteAllWithForeach(list);
 
-          //  ConsoleWriteAll(list);
-
             Array = new String[10];
-            Array[1] = "복사한 아이템";
+            Array[1] = "이상한 아이템";
+
+           
+            if (Array.IsNullList())
+            {
+                Console.WriteLine("array is null");
+            }
+            else
+            {
+                Console.WriteLine("array is not null");
+            }
+            var m = list.Where(item => item.Equals("이상한 아이템"));
+
 
             list.CopyTo(Array, 5);
             Console.WriteLine("----------------------▽Copy To array------------------------------------");
