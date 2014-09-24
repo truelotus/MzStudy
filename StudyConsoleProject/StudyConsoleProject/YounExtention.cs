@@ -46,6 +46,23 @@ namespace StudyConsoleProject
             return list;
         }
 
+        public static IEnumerable<TSource> YounWhereTwo<TSource>(this IEnumerable<TSource> source, Func<TSource, string> predicate)
+        {
+            var list = new YounList<TSource>();
+
+            foreach (var item in source)
+            {
+                if (predicate(item)!=null)
+                {
+                    list.Add(item);
+                    Console.WriteLine(item);
+                }
+            }
+
+            return list;
+        }
+
+
         public static void YounForeach<T>(this IEnumerable<T> source, Action<T> younFunc)
         {
             foreach (var item in source)
@@ -63,5 +80,6 @@ namespace StudyConsoleProject
             }
             return list;
         }
+
     }
 }
