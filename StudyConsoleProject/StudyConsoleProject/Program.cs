@@ -72,7 +72,7 @@ namespace StudyConsoleProject
 
             Console.WriteLine("----------------------------▽foreach(double)----------------------------");
             ConsoleWriteAllWithForeach(list);
-
+            
             //where 절은 쿼리 식에서 반환할 데이터 소스의 요소를 쿼리 식에 지정하는 데 사용됩니다. 
             var m = list.YounWhere(item => item.Equals("이상한 아이템"));
             ConsoleWriteAllWithForeach(m);
@@ -104,33 +104,30 @@ namespace StudyConsoleProject
             
             //Q.앞에 3글자만 잘린 리스트를 출력해보자
             var m3 = list.YounSelect(item => GetFrontThreeWord(item));
-            //더 간결하게는 
+            //더 간결하게는 아래와 같다.
             //var m3 = list.Select(item => item.Substring(0, 3));
             //var m3 = list.Select(GetFrontThreeWord);
-            foreach (var item in m3)
-            {
-                Console.WriteLine(item);
-            }
+            m3.YounForeach(Console.WriteLine);
             Console.WriteLine("");
 
             //Q.이번엔 3글자로 자른 다음에 첫 글짜가 "이"인 결과를 만들어 보세요
-            var m4 = list.YounSelect(GetFrontThreeWord);
-            var m5 = m4.YounWhereTwo(GetWord);
+            //var m4 = list.YounSelect(GetFrontThreeWord);
+            //m4.YounWhereTwo(GetWord);
 
+            list.YounSelect(GetFrontThreeWord)
+                .YounWhere(item => item.Contains("이"))
+                .YounForeach(Console.WriteLine);
+            Console.WriteLine("");
 
             Console.ReadLine();
         }
 
-        private static string GetWord(string item)
+        private static bool GetWord(string item)
         {
             if (item.Contains("이"))
-            {
-                return item;
-            }
+                return true;
             else
-            {
-                return null;
-            }
+                return false;
         }
 
         private static string GetFrontThreeWord(string item) {
