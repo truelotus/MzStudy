@@ -6,7 +6,7 @@ using System.Text;
 namespace StudyConsoleProject
 {
     class Program
-    {
+    {        
         static void Main(string[] args)
         {
             List<String> listOrigin = new List<string>();
@@ -79,16 +79,30 @@ namespace StudyConsoleProject
             {
                 Console.WriteLine("array is not null");
             }
-            var m = list.Where(item => item.Equals("이상한 아이템"));
 
+            var m = list.YounWhere(item => item.Equals("이상한 아이템"));
+            ConsoleWriteAllWithForeach(m);
 
+            list.YounForeach(Console.WriteLine);
+
+            var newList = new List<string>();
+            list.YounForeach(newList.Add);
+            
             list.CopyTo(Array, 5);
             Console.WriteLine("----------------------▽Copy To array------------------------------------");
             ConsoleWriteAll(Array);
             
-            
             Console.ReadLine();
-            
+        }
+
+        private static void Print(string item)
+        {
+            Console.WriteLine(item);
+        }
+
+        private static bool Test(string item, string item2)
+        {
+            return item.Equals("이상한 아이템");
         }
 
         private static void ConsoleWriteAll(IList<string> targetList)
