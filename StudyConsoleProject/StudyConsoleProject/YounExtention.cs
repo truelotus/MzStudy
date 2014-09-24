@@ -19,7 +19,7 @@ namespace StudyConsoleProject
             }
         }
 
-        public static bool IsNullList(this IEnumerable<string> list)
+        public static bool IsNullList<T>(this IEnumerable<T> list)
         {
             if (list == null)
             {
