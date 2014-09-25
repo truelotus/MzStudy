@@ -9,6 +9,7 @@ namespace StudyConsoleProject
     {        
         static void Main(string[] args)
         {
+            // younhome(https://github.com/truelotus/MzStudy.git)에서 수정함.222
             List<String> listOrigin = new List<string>();
             listOrigin.Add("첫번째 아이템");
             Console.WriteLine("==============================List start==============================");
