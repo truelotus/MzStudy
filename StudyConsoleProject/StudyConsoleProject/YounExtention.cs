@@ -30,6 +30,20 @@ namespace StudyConsoleProject
                 return false;
             }
         }
+        public static IEnumerable<TSource> YounWhere<TSource>(this IEnumerable<TSource> source, Func<TSource, string> predicate)
+        {
+            var list = new YounList<TSource>();
+
+            foreach (var item in source)
+            {
+                if (item.Equals(predicate(item)))
+                {
+                    list.Add(item);
+                }
+            }
+
+            return list;
+        }
 
         public static IEnumerable<TSource> YounWhere<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
         {

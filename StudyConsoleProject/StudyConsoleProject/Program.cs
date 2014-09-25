@@ -9,9 +9,10 @@ namespace StudyConsoleProject
     {        
         static void Main(string[] args)
         {
+            //List class 만들기.  
             List<String> listOrigin = new List<string>();
             listOrigin.Add("첫번째 아이템");
-            Console.WriteLine("==============================List start==============================");
+            Console.WriteLine("==============================.Net List start==============================");
             Console.WriteLine(listOrigin[0]);
 
             listOrigin.Add("두번째 아이템");
@@ -74,7 +75,10 @@ namespace StudyConsoleProject
             ConsoleWriteAllWithForeach(list);
             
             //where 절은 쿼리 식에서 반환할 데이터 소스의 요소를 쿼리 식에 지정하는 데 사용됩니다. 
+            //var m = list.YounWhere(GetEqualsItem);
+
             var m = list.YounWhere(item => item.Equals("이상한 아이템"));
+
             ConsoleWriteAllWithForeach(m);
             Console.WriteLine("");
             list.YounForeach(Console.WriteLine);
@@ -88,7 +92,7 @@ namespace StudyConsoleProject
             //select 절은 쿼리가 실행될 때 생성할 값의 형식을 지정합니다.
 
             //Q.string list내에서 조건에 부합한다면 그 조건결과값으로 구성된. boolean list로 변환하기.
-            var m1 = list.Select(item => item.Equals("첫번째 아이템"));
+            var m1 = list.YounSelect(item => item.Equals("첫번째 아이템"));
             foreach (var item in m1)
             {
                Console.WriteLine(item);
@@ -119,6 +123,7 @@ namespace StudyConsoleProject
                 .YounForeach(Console.WriteLine);
             Console.WriteLine("");
 
+
             Console.ReadLine();
         }
 
@@ -138,6 +143,14 @@ namespace StudyConsoleProject
         private static bool IsEquals(string item) 
         {
             return item.Equals("첫번째 아이템");
+        }
+
+        private static string GetEqualsItem(string item)
+        {
+            if (item.Equals("첫번째 아이템")) {
+                return item;
+            }
+            return null;
         }
 
         private static void Print(string item)
