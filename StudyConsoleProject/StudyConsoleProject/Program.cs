@@ -9,7 +9,9 @@ namespace StudyConsoleProject
     {        
         static void Main(string[] args)
         {
-            // younhome(https://github.com/truelotus/MzStudy.git)에서 수정함.222
+            // younhome(https://github.com/truelotus/MzStudy.git)에서 수정함.
+
+            //일반 List<string>과 동일하게 동작하는 List 클래스를 만들어 비교해보자.
             List<String> listOrigin = new List<string>();
             listOrigin.Add("첫번째 아이템");
             Console.WriteLine("==============================List start==============================");
@@ -34,11 +36,11 @@ namespace StudyConsoleProject
 
            // ConsoleWriteAll(listOrigin);
 
-            String[] Array = new String[10];
-            Array[1] = "복사한 아이템";
-            listOrigin.CopyTo(Array, 5);
+            String[] arr = new String[10];
+            arr[1] = "복사한 아이템";
+            listOrigin.CopyTo(arr, 5);
             Console.WriteLine("----------------------------▽Copy To array----------------------------");
-            ConsoleWriteAll(Array);
+            ConsoleWriteAll(arr);
 
             Console.WriteLine("----------------------------▽foreach----------------------------");
             ConsoleWriteAllWithForeach(listOrigin);
@@ -65,18 +67,18 @@ namespace StudyConsoleProject
 
             Console.WriteLine(list.IndexOf("이상한 아이템"));
 
-            Array = new String[10];
-            Array[1] = "복사한 아이템";
-            list.CopyTo(Array, 5);
+            arr = new String[10];
+            arr[1] = "복사한 아이템";
+            list.CopyTo(arr, 5);
             Console.WriteLine("----------------------▽Copy To array------------------------------------");
-            ConsoleWriteAll(Array);
+            ConsoleWriteAll(arr);
 
             Console.WriteLine("----------------------------▽foreach(double)----------------------------");
             ConsoleWriteAllWithForeach(list);
             
-            //where 절은 쿼리 식에서 반환할 데이터 소스의 요소를 쿼리 식에 지정하는 데 사용됩니다. 
-            var m = list.YounWhere(item => item.Equals("이상한 아이템"));
-            ConsoleWriteAllWithForeach(m);
+            //Where를 사용하여 람다식으로 아이템 추출하기.
+            var strange = list.YounWhere(item => item.Equals("이상한 아이템"));
+            ConsoleWriteAllWithForeach(strange);
             Console.WriteLine("");
             list.YounForeach(Console.WriteLine);
 
@@ -88,36 +90,37 @@ namespace StudyConsoleProject
 
             //select 절은 쿼리가 실행될 때 생성할 값의 형식을 지정합니다.
 
-            //Q.string list내에서 조건에 부합한다면 그 조건결과값으로 구성된. boolean list로 변환하기.
-            var m1 = list.Select(item => item.Equals("첫번째 아이템"));
-            foreach (var item in m1)
+            //Q.string list내에서 조건에 부합한다면 그 조건 결과 값으로 구성된. boolean list로 변환하기.
+            var firstList = list.Select(item => item.Equals("첫번째 아이템"));
+            foreach (var item in firstList)
             {
                Console.WriteLine(item);
             }
             Console.WriteLine("");
 
-            var m2 = list.YounSelect(item => IsEquals(item));
-            foreach (var item in m2)
+            var boolTypeList = list.YounSelect(item => IsFirst(item));
+            foreach (var item in boolTypeList)
             {
                Console.WriteLine(item);
             }
             Console.WriteLine("");
             
             //Q.앞에 3글자만 잘린 리스트를 출력해보자
-            var m3 = list.YounSelect(item => GetFrontThreeWord(item));
-            //더 간결하게는 아래와 같다.
-            //var m3 = list.Select(item => item.Substring(0, 3));
-            //var m3 = list.Select(GetFrontThreeWord);
-            m3.YounForeach(Console.WriteLine);
+            var threeWordList = list.YounSelect(item => GetFrontThreeWord(item));
+            //더 간결하게는 아래와 같이 표현 할 수 있다.
+            //var threeWordList = list.Select(item => item.Substring(0, 3));
+            //var threeWordList = list.Select(GetFrontThreeWord);
+            threeWordList.YounForeach(Console.WriteLine);
             Console.WriteLine("");
 
-            //Q.이번엔 3글자로 자른 다음에 첫 글짜가 "이"인 결과를 만들어 보세요
-            //var m4 = list.YounSelect(GetFrontThreeWord);
-            //m4.YounWhereTwo(GetWord);
+            //Q.이번엔 3글자로 자른 다음에 첫 글짜가 "이"인 결과를 만들어 보자
+
+            //var threeWordList = list.YounSelect(GetFrontThreeWord);
 
             list.YounSelect(GetFrontThreeWord)
                 .YounWhere(item => item.Contains("이"))
                 .YounForeach(Console.WriteLine);
+
             Console.WriteLine("");
 
             Console.ReadLine();
@@ -136,7 +139,7 @@ namespace StudyConsoleProject
             return item.Substring(0, 3);
         }
 
-        private static bool IsEquals(string item) 
+        private static bool IsFirst(string item) 
         {
             return item.Equals("첫번째 아이템");
         }
@@ -146,7 +149,7 @@ namespace StudyConsoleProject
             Console.WriteLine(item);
         }
 
-        private static bool Test(string item, string item2)
+        private static bool IsStrange(string item, string item2)
         {
             return item.Equals("이상한 아이템");
         }
