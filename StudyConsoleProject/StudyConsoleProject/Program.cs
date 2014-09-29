@@ -13,7 +13,14 @@ namespace StudyConsoleProject
     {
         static void Main(string[] args)
         {
-            String strURL = "http://www.naver.com";
+
+            SearchImageSaved("고양이");
+        }
+
+        private static void SearchImageSaved(string word)
+        {
+            //String strURL = "https://www.google.co.kr/search?q=tigertiger&imgdii=_";
+            string strURL = String.Format("https://www.google.co.kr/search?q=" + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" + "{0}" + "&imgdii=_", word);
             WebRequest webRequest = WebRequest.Create(strURL);
             WebResponse response = webRequest.GetResponse();
             System.IO.Stream stream = response.GetResponseStream();
@@ -34,24 +41,24 @@ namespace StudyConsoleProject
             {
                 di.Create();
             }
-            
+
             WebClient client = new WebClient();
             int n = 0;
             foreach (var item in list)
             {
                 n++;
-                String name = n+".jpg";
+                String fileName = n + ".jpg";
                 if (!YounExtention.IsNullOrEmpty(item))
                 {
                     try
                     {
-                        client.DownloadFile(item, path +"/"+ name);
+                        client.DownloadFile(item, path + "/" + fileName);
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.ToString());
                     }
-                    
+
                 }
             }
         }
