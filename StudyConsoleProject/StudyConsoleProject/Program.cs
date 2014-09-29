@@ -19,13 +19,11 @@ namespace StudyConsoleProject
         static void Main(string[] args)
         {
 
-            isThread = true;
+            isThread = false;
 
-            if (!isThread)
-            {
-                mWatch = new Stopwatch();
-                mWatch.Start();
-            }
+            mWatch = new Stopwatch();
+            mWatch.Start();
+
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "여우", "원숭이", "기린", "얼룩말", "사자"};
             for (int i = 0; i < searchWordList.Length; i++)
             {
@@ -52,12 +50,6 @@ namespace StudyConsoleProject
 
         private static void SearchImageSaved(Object word)
         {
-            if (isThread)
-            {
-                mWatch = new Stopwatch();
-                mWatch.Start();
-            }
-            
 
             string strURL = String.Format("https://www.google.co.kr/search?q=" 
                 + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" 
