@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace StudyConsoleProject
 {
     class Program
-    {        
+    {
         static void Main(string[] args)
         {
             String strURL = "http://www.naver.com";
@@ -21,10 +21,36 @@ namespace StudyConsoleProject
             String str = reader.ReadToEnd();
             stream.Close();
             reader.Close();
-            IEnumerable<String> list = GetImageLinks(str);
+
+            IEnumerable<String> originList = GetImageLinks(str);
+
+            IEnumerable<String> list = originList.Distinct();
+
+
+            String path = Environment.CurrentDirectory + "/images";
+            DirectoryInfo di = new DirectoryInfo(path);
+            if (di.Exists == false)
+            {
+                di.Create();
+            }
+            
+            WebClient client = new WebClient();
+
             foreach (var item in list)
             {
-                Console.WriteLine(item);
+                String name = Path.GetTempFileName()+".jpg";
+                if (!YounExtention.IsNullOrEmpty(item))
+                {
+                    try
+                    {
+                        client.DownloadFile(item, di + name);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                    
+                }
             }
         }
         static IEnumerable<string> GetImageLinks(string inputHTML)
