@@ -13,8 +13,12 @@ namespace StudyConsoleProject
     {
         static void Main(string[] args)
         {
-
-            SearchImageSaved("고양이");
+            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "뱀", "원숭이", "기린", "얼룩말", "사자"};
+            for (int i = 0; i < searchWordList.Length; i++)
+            {
+                SearchImageSaved(searchWordList[i]);
+            }
+            
         }
 
         private static void SearchImageSaved(string word)
@@ -25,14 +29,13 @@ namespace StudyConsoleProject
             WebResponse response = webRequest.GetResponse();
             System.IO.Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
-            String str = reader.ReadToEnd();
+            string str = reader.ReadToEnd();
             stream.Close();
             reader.Close();
 
             IEnumerable<String> originList = GetImageLinks(str);
 
             IEnumerable<String> list = originList.Distinct();
-
 
             String path = Environment.CurrentDirectory + "/images";
             DirectoryInfo di = new DirectoryInfo(path);
@@ -46,12 +49,13 @@ namespace StudyConsoleProject
             int n = 0;
             foreach (var item in list)
             {
-                n++;
-                String fileName = n + ".jpg";
+
+                string fileName = String.Format("{0}"+"_"+"{1}"+ ".jpg",word,n);
                 if (!YounExtention.IsNullOrEmpty(item))
                 {
                     try
                     {
+                        n++;
                         client.DownloadFile(item, path + "/" + fileName);
                     }
                     catch (Exception ex)
