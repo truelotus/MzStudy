@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Threading;
 
 
 namespace StudyConsoleProject
@@ -19,22 +20,24 @@ namespace StudyConsoleProject
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "뱀", "원숭이", "기린", "얼룩말", "사자"};
             for (int i = 0; i < searchWordList.Length; i++)
             {
-                SearchImageSaved(searchWordList[i]);
+                ThreadPool.QueueUserWorkItem(SearchImageSaved, searchWordList[i]);
+                Thread.Sleep(3000);
+                //SearchImageSaved(searchWordList[i]);
             }
             watch.Stop();
             TimeSpan time = watch.Elapsed;
-            String m = String.Format(("검색이 완료 되었습니다. 시간은 "+"{0}"+"초 입니다."), time.Seconds);
+            string m = String.Format(("검색이 완료 되었습니다. 시간은 "+"{0}"+"초 입니다."), time.Seconds);
 
             Console.WriteLine(m);
 
         }
 
-        private static void SearchImageSaved(string word)
+        private static void SearchImageSaved(Object word)
         {
-            
+            string strURL = String.Format("https://www.google.co.kr/search?q=" 
+                + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" 
+                + "{0}" + "&imgdii=_", word.ToString());
 
-            //String strURL = "https://www.google.co.kr/search?q=tigertiger&imgdii=_";
-            string strURL = String.Format("https://www.google.co.kr/search?q=" + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" + "{0}" + "&imgdii=_", word);
             WebRequest webRequest = WebRequest.Create(strURL);
             WebResponse response = webRequest.GetResponse();
             System.IO.Stream stream = response.GetResponseStream();
@@ -47,7 +50,7 @@ namespace StudyConsoleProject
 
             IEnumerable<String> list = originList.Distinct();
 
-            String path = Environment.CurrentDirectory + "/images";
+            string path = Environment.CurrentDirectory + "/images";
             DirectoryInfo di = new DirectoryInfo(path);
 
             if (di.Exists == false)
@@ -75,8 +78,9 @@ namespace StudyConsoleProject
 
                 }
             }
-            String m = String.Format(("검색단어:" + "{0}" + "/ 다운로드 받은 갯수:" + "{1}"), word, n);
+            string m = String.Format(("검색단어:" + "{0}" + "/ 다운로드 받은 갯수:" + "{1}"), word, n);
             Console.WriteLine(m);
+            Thread.Sleep(3000);
         }
         static IEnumerable<string> GetImageLinks(string inputHTML)
         {
