@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 
 namespace StudyConsoleProject
@@ -13,16 +14,25 @@ namespace StudyConsoleProject
     {
         static void Main(string[] args)
         {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "뱀", "원숭이", "기린", "얼룩말", "사자"};
             for (int i = 0; i < searchWordList.Length; i++)
             {
                 SearchImageSaved(searchWordList[i]);
             }
-            
+            watch.Stop();
+            TimeSpan time = watch.Elapsed;
+            String m = String.Format(("검색이 완료 되었습니다. 시간은 "+"{0}"+"초 입니다."), time.Seconds);
+
+            Console.WriteLine(m);
+
         }
 
         private static void SearchImageSaved(string word)
         {
+            
+
             //String strURL = "https://www.google.co.kr/search?q=tigertiger&imgdii=_";
             string strURL = String.Format("https://www.google.co.kr/search?q=" + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" + "{0}" + "&imgdii=_", word);
             WebRequest webRequest = WebRequest.Create(strURL);
@@ -60,11 +70,13 @@ namespace StudyConsoleProject
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(ex.ToString());
+                       //Console.WriteLine(ex.ToString());
                     }
 
                 }
             }
+            String m = String.Format(("검색단어:" + "{0}" + "/ 다운로드 받은 갯수:" + "{1}"), word, n);
+            Console.WriteLine(m);
         }
         static IEnumerable<string> GetImageLinks(string inputHTML)
         {
