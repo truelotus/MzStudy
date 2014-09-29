@@ -19,30 +19,106 @@ namespace StudyConsoleProject
         static void Main(string[] args)
         {
 
+            int value = 2;
+            String m = String.Format(("Start >" + "{0}" + " 개의 스레드로 작업을 나누어 동작합니다.."), value);
+            Console.WriteLine(m);
+            Console.WriteLine("");
+
             isThread = true;
 
             mWatch = new Stopwatch();
             mWatch.Start();
 
-            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "여우", "원숭이", "기린", "얼룩말", "사자"};
-            //TODO: 생성되어야할 스레드를 갯수에 따라 간단하게 나누어야한다.
+            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새" };
 
-
-            ThreadPool.QueueUserWorkItem(q => 
+            if (value == 1)
             {
-                for (int i = 0; i < searchWordList.Length/2; i++)
+                ThreadPool.QueueUserWorkItem(q =>
                 {
-                    SearchImageSaved(searchWordList[i]);
-                }
-            });
-
-            ThreadPool.QueueUserWorkItem(q =>
+                    for (int i = 0; i < searchWordList.Length; i++)
+                    {
+                        SearchImageSaved(searchWordList[i]);
+                    }
+                });
+            }
+            else
             {
-                for (int i = searchWordList.Length / 2; i < searchWordList.Length; i++)
+                //TODO: 입력한 쓰레드 갯수만큼의 쓰레드로 작업을 나눠서 처리 하도록.
+
+                List<String[]> list = new List<String[]>();
+
+                int s = 0; //시작요소
+
+                int number = searchWordList.Length / value;
+
+                if (number <= 1)
                 {
-                    SearchImageSaved(searchWordList[i]);
+                    Console.WriteLine("나눌 수 없습니다.");
                 }
-            });
+                else
+                {
+                    for (int i = 0; i < searchWordList.Length; i++)
+                    {
+                        int oddnumber = number % 2;
+                        if (oddnumber == 1)
+                        {
+                            if (i >= number - 1)
+                                ++number;
+                        }
+
+                        String[] arr = new String[number];
+                        if (s >= searchWordList.Length)
+                        {
+                            break;
+                        }
+
+                        Array.Copy(searchWordList, s, arr, 0, number);
+                        list.Add(arr);
+                        s = s + number;
+                    }
+
+                    //thread 큐에 쌓는다.
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        String[] arr = list[i];
+                        ThreadPool.QueueUserWorkItem(q =>
+                        {
+                            for (int j = 0; j < arr.Length; j++)
+                            {
+                                SearchImageSaved(arr[j]);
+                            }
+                        });
+                    }
+
+                    if (!isThread)
+                    {
+                        mWatch.Stop();
+                        m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
+                        Console.WriteLine(m);
+                    }
+                }
+                Console.ReadLine();
+            }
+
+
+
+
+            /* ThreadPool.QueueUserWorkItem(q => 
+             {
+                 for (int i = 0; i < searchWordList.Length/2; i++)
+                 {
+                     SearchImageSaved(searchWordList[i]);
+                 }
+             });
+
+             ThreadPool.QueueUserWorkItem(q =>
+             {
+                 for (int i = searchWordList.Length / 2; i < searchWordList.Length; i++)
+                 {
+                     SearchImageSaved(searchWordList[i]);
+                 }
+             });*/
+
 
 
             /*for (int i = 0; i < searchWordList.Length; i++)
@@ -57,21 +133,20 @@ namespace StudyConsoleProject
                 }
             }*/
 
-            if (!isThread)
-            {
-                mWatch.Stop();
-                String m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
-                Console.WriteLine(m);
-            }
-            //Console.WriteLine(m);
-            Console.ReadLine();
+            
 
         }
 
+
         private static void SearchImageSaved(Object word)
         {
-            Console.WriteLine(Thread.CurrentThread.ManagedThreadId+":"+word);
+            if (word == null)
+            {
+                return;
+            }
 
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId+":"+word);
+            
             string strURL = String.Format("https://www.google.co.kr/search?q=" 
                 + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" 
                 + "{0}" + "&imgdii=_", word.ToString());
