@@ -19,13 +19,33 @@ namespace StudyConsoleProject
         static void Main(string[] args)
         {
 
-            isThread = false;
+            isThread = true;
 
             mWatch = new Stopwatch();
             mWatch.Start();
 
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "여우", "원숭이", "기린", "얼룩말", "사자"};
-            for (int i = 0; i < searchWordList.Length; i++)
+            //TODO: 생성되어야할 스레드를 갯수에 따라 간단하게 나누어야한다.
+
+
+            ThreadPool.QueueUserWorkItem(q => 
+            {
+                for (int i = 0; i < searchWordList.Length/2; i++)
+                {
+                    SearchImageSaved(searchWordList[i]);
+                }
+            });
+
+            ThreadPool.QueueUserWorkItem(q =>
+            {
+                for (int i = searchWordList.Length / 2; i < searchWordList.Length; i++)
+                {
+                    SearchImageSaved(searchWordList[i]);
+                }
+            });
+
+
+            /*for (int i = 0; i < searchWordList.Length; i++)
             {
                 if (isThread)
                 {
@@ -35,7 +55,7 @@ namespace StudyConsoleProject
                 {
                     SearchImageSaved(searchWordList[i]);
                 }
-            }
+            }*/
 
             if (!isThread)
             {
@@ -50,6 +70,7 @@ namespace StudyConsoleProject
 
         private static void SearchImageSaved(Object word)
         {
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId+":"+word);
 
             string strURL = String.Format("https://www.google.co.kr/search?q=" 
                 + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" 
