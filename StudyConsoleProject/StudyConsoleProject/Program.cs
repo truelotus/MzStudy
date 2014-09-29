@@ -29,21 +29,23 @@ namespace StudyConsoleProject
 
             String path = Environment.CurrentDirectory + "/images";
             DirectoryInfo di = new DirectoryInfo(path);
+
             if (di.Exists == false)
             {
                 di.Create();
             }
             
             WebClient client = new WebClient();
-
+            int n = 0;
             foreach (var item in list)
             {
-                String name = Path.GetTempFileName()+".jpg";
+                n++;
+                String name = n+".jpg";
                 if (!YounExtention.IsNullOrEmpty(item))
                 {
                     try
                     {
-                        client.DownloadFile(item, di + name);
+                        client.DownloadFile(item, path +"/"+ name);
                     }
                     catch (Exception ex)
                     {
