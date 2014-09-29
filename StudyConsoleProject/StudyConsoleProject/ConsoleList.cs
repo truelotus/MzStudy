@@ -9,7 +9,11 @@ namespace StudyConsoleProject
     {
         public ConsoleList() 
         {
+            OutPutTest();
+        }
 
+        private void OutPutTest() 
+        {
             //List class 만들기. younhome(https://github.com/truelotus/MzStudy.git)에서 수정함.
             List<String> listOrigin = new List<string>();
             listOrigin.Add("첫번째 아이템");
