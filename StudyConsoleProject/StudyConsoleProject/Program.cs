@@ -13,27 +13,52 @@ namespace StudyConsoleProject
 {
     class Program
     {
+        static Stopwatch mWatch = null;
+        static bool isThread = false;
+        static int num = 0;
         static void Main(string[] args)
         {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "뱀", "원숭이", "기린", "얼룩말", "사자"};
+
+            isThread = true;
+
+            if (!isThread)
+            {
+                mWatch = new Stopwatch();
+                mWatch.Start();
+            }
+            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "토끼", "여우", "원숭이", "기린", "얼룩말", "사자"};
             for (int i = 0; i < searchWordList.Length; i++)
             {
-                ThreadPool.QueueUserWorkItem(SearchImageSaved, searchWordList[i]);
-                Thread.Sleep(3000);
-                //SearchImageSaved(searchWordList[i]);
+                if (isThread)
+                {
+                    ThreadPool.QueueUserWorkItem(SearchImageSaved, searchWordList[i]);
+                }
+                else
+                {
+                    SearchImageSaved(searchWordList[i]);
+                }
             }
-            watch.Stop();
-            TimeSpan time = watch.Elapsed;
-            string m = String.Format(("검색이 완료 되었습니다. 시간은 "+"{0}"+"초 입니다."), time.Seconds);
 
-            Console.WriteLine(m);
+            if (!isThread)
+            {
+                mWatch.Stop();
+                String m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
+                Console.WriteLine(m);
+            }
+            //Console.WriteLine(m);
+            Console.ReadLine();
 
         }
 
         private static void SearchImageSaved(Object word)
         {
+            if (isThread)
+            {
+                mWatch = new Stopwatch();
+                mWatch.Start();
+            }
+            
+
             string strURL = String.Format("https://www.google.co.kr/search?q=" 
                 + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" 
                 + "{0}" + "&imgdii=_", word.ToString());
@@ -46,9 +71,7 @@ namespace StudyConsoleProject
             stream.Close();
             reader.Close();
 
-            IEnumerable<String> originList = GetImageLinks(str);
-
-            IEnumerable<String> list = originList.Distinct();
+            IEnumerable<String> list = GetImageLinks(str).Distinct();
 
             string path = Environment.CurrentDirectory + "/images";
             DirectoryInfo di = new DirectoryInfo(path);
@@ -80,7 +103,20 @@ namespace StudyConsoleProject
             }
             string m = String.Format(("검색단어:" + "{0}" + "/ 다운로드 받은 갯수:" + "{1}"), word, n);
             Console.WriteLine(m);
-            Thread.Sleep(3000);
+
+            num++;
+            if (isThread)
+            {
+                if (num == 10)
+                {
+                    mWatch.Stop();
+                    m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
+                    Console.WriteLine(m);
+                }
+            }
+            
+            
+            //Thread.Sleep(1000);
         }
         static IEnumerable<string> GetImageLinks(string inputHTML)
         {
