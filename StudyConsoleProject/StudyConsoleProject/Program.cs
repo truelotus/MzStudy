@@ -7,6 +7,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Threading;
+using System.ComponentModel;
 
 
 namespace StudyConsoleProject
@@ -47,6 +48,7 @@ namespace StudyConsoleProject
         {
             public WebRequest webRequest { get; set; }
             public string word { get; set; }
+            public string downloadedfFileName { get; set; }
         }
 
 
@@ -77,7 +79,6 @@ namespace StudyConsoleProject
 
         }
 
-        
         private static void ResponseCallBack(IAsyncResult result)
         {
             var info = result.AsyncState as ImageContext;
@@ -97,20 +98,23 @@ namespace StudyConsoleProject
                 di.Create();
             }
 
+            //WebClient는 WebResponse의 발전된 형태이다.(이벤트 베이스 비동기 패턴을 사용 할 수 있다.)
             WebClient client = new WebClient();
-            
+            client.DownloadFileCompleted += DownloadFileCompleted; 
             int n = 0;
             foreach (var item in list)
             {
-
                 string fileName = String.Format("{0}" + "_" + "{1}" + ".jpg", word, n);
                 if (!YounExtention.IsNullOrEmpty(item))
                 {
                     try
                     {
                         n++;
+                        string downloadFilePath = path + "/" + fileName;
+                        info.downloadedfFileName = fileName;
                         
-                        client.DownloadFile(item, path + "/" + fileName);
+                        //client.DownloadFile(item, downloadFilePath);
+                        client.DownloadFileAsync(new Uri(item), downloadFilePath, info);
                         
                     }
                     catch (Exception)
@@ -118,10 +122,18 @@ namespace StudyConsoleProject
 
                     }
                 }
+                else
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine("아이템을 찾지 못했습니다.,");
+                }
             }
+
+            client.DownloadFileCompleted -= DownloadFileCompleted; 
             string m = String.Format(("검색단어:" + "{0}" + "/ 다운로드 받은 갯수:" + "{1}"), word, n);
             Console.WriteLine(m);
 
+           
             num++;
 
             //
@@ -131,6 +143,20 @@ namespace StudyConsoleProject
                 m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
                 Console.WriteLine(m);
             }
+        }
+
+        /// <summary>
+        ///  file 다운로드 완료 시 로그 찍는다.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public static void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e) 
+        {
+            var info = e.UserState as ImageContext;
+            //파일 다운로드.
+            string m = String.Format(("{0}"+" 다운로드 완료."),info.downloadedfFileName);
+            Console.WriteLine(m);
+
         }
 
         private static string GetStreamToString(Stream stream)
