@@ -125,12 +125,13 @@ namespace StudyConsoleProject
                 else
                 {
                     Console.WriteLine("");
-                    Console.WriteLine("아이템을 찾지 못했습니다.,");
+                    Console.WriteLine("Not found item...!");
                 }
             }
 
-            client.DownloadFileCompleted -= DownloadFileCompleted; 
-            string m = String.Format(("검색단어:" + "{0}" + "/ 다운로드 받은 갯수:" + "{1}"), word, n);
+            client.DownloadFileCompleted -= DownloadFileCompleted;
+            Console.WriteLine("");
+            string m = String.Format(("Word:" + "{0}" + "/ Download Count:" + "{1}"), word, n);
             Console.WriteLine(m);
 
            
@@ -140,7 +141,8 @@ namespace StudyConsoleProject
             if (num == mTotalListCount)
             {
                 mWatch.Stop();
-                m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
+                Console.WriteLine("");
+                m = String.Format(("completed. Time: " + "{0}"), mWatch.Elapsed);
                 Console.WriteLine(m);
             }
         }
@@ -154,7 +156,8 @@ namespace StudyConsoleProject
         {
             var info = e.UserState as ImageContext;
             //파일 다운로드.
-            string m = String.Format(("{0}"+" 다운로드 완료."),info.downloadedfFileName);
+            Console.WriteLine("");
+            string m = String.Format(("{0}"+" download completed."),info.downloadedfFileName);
             Console.WriteLine(m);
 
         }
