@@ -6,7 +6,7 @@ using System.Collections;
 
 namespace StudyConsoleProject
 {
-    //Enumerator<T> 클래스
+
     public class YounListEnumerator<T> : IEnumerator<T>
     {
         private YounList<T> mArray;
@@ -58,7 +58,7 @@ namespace StudyConsoleProject
         }
     }
 
-    //배열을 이용하여 List<T>클래스 만들기
+
     public class YounList<T>: IList<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         T[] mArray = null;
@@ -73,8 +73,7 @@ namespace StudyConsoleProject
             Array.Resize(ref mArray, mArray.Length + 1);
             mArray[mArray.Length - 1] = item;
 
-           // 현재 배열의 사이즈 고려하여 아이템 추가
-           // 수정 전 코드
+           //현재 배열의 사이즈 고려하여 아이템 추가
            /*T[] arrayB = new T[mArray.Length+1];
            arrayB[mArray.Length] = item;
            for (int i = 0; i < mArray.Length; i++)
@@ -184,8 +183,7 @@ namespace StudyConsoleProject
                 }
             }
             return true;
-
-            /*수정전
+            /*
              int n = 0;
              bool isFind = false;
              T[] bArray = new T[mArray.Length];
