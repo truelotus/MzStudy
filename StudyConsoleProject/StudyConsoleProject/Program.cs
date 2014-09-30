@@ -19,7 +19,28 @@ namespace StudyConsoleProject
         static void Main(string[] args)
         {
 
-            int value = 2;
+            Console.WriteLine("");
+
+           // isThread = true;
+
+            mWatch = new Stopwatch();
+            mWatch.Start();
+
+            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새"};
+
+            for (int i = 0; i < searchWordList.Length; i++)
+            {
+               SearchImageSaved(searchWordList[i]);
+            }
+
+            mWatch.Stop();
+            string m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
+            Console.WriteLine(m);
+            Console.ReadLine();
+        }
+
+        private void DividedArrray(int value)
+        {
             String m = String.Format(("Start >" + "{0}" + " 개의 스레드로 작업을 나누어 동작합니다.."), value);
             Console.WriteLine(m);
             Console.WriteLine("");
@@ -31,7 +52,49 @@ namespace StudyConsoleProject
 
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새" };
 
-            if (value == 1)
+            int share = searchWordList.Length / value;
+            int remain = searchWordList.Length % value;
+
+            List<string[]> arrList = new List<string[]>();
+
+            for (int i = 0; i < share + remain; i++)
+            {
+                arrList.Add(new string[value]);
+            }
+
+            for (int i = 0; i < searchWordList.Length; i++)
+            {
+                //array[몫][나머지]
+                arrList[i / value][i % value] = searchWordList[i];
+
+            }
+
+
+            //thread 큐에 쌓는다.
+            for (int i = 0; i < arrList.Count; i++)
+            {
+                String[] arr = arrList[i];
+                ThreadPool.QueueUserWorkItem(q =>
+                {
+                    for (int j = 0; j < arr.Length; j++)
+                    {
+                        SearchImageSaved(arr[j]);
+                    }
+                });
+            }
+
+            if (!isThread)
+            {
+                mWatch.Stop();
+                m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
+                Console.WriteLine(m);
+            }
+
+            Console.ReadLine();
+
+
+            //
+            /* if (value == 1)
             {
                 ThreadPool.QueueUserWorkItem(q =>
                 {
@@ -98,7 +161,7 @@ namespace StudyConsoleProject
                     }
                 }
                 Console.ReadLine();
-            }
+            }*/
 
 
 
@@ -132,8 +195,6 @@ namespace StudyConsoleProject
                     SearchImageSaved(searchWordList[i]);
                 }
             }*/
-
-            
 
         }
 
