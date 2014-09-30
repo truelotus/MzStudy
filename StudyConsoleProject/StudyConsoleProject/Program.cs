@@ -16,30 +16,134 @@ namespace StudyConsoleProject
         static Stopwatch mWatch = null;
         static bool isThread = false;
         static int num = 0;
+        static int mTotalListCount = 0;
         static void Main(string[] args)
         {
 
             Console.WriteLine("");
 
-           // isThread = true;
+            // isThread = true;
 
             mWatch = new Stopwatch();
             mWatch.Start();
 
-            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새"};
-
+            String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새" };
+            mTotalListCount = searchWordList.Length;
             for (int i = 0; i < searchWordList.Length; i++)
             {
-               SearchImageSaved(searchWordList[i]);
+                SearchImageSavedAsync(searchWordList[i],i);
             }
 
-            mWatch.Stop();
+            /*mWatch.Stop();
             string m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
-            Console.WriteLine(m);
+            Console.WriteLine(m);*/
             Console.ReadLine();
         }
 
-        private void DividedArrray(int value)
+
+   
+
+        public class ImageContext
+        {
+            public WebRequest webRequest { get; set; }
+            public string word { get; set; }
+        }
+
+
+
+        //1.일반 적인 APM 패턴
+        private static void SearchImageSavedAsync(Object word,int num)
+        {
+            if (word == null)
+            {
+                return;
+            }
+
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + word);
+
+            string strURL = String.Format("https://www.google.co.kr/search?q="
+                + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q="
+                + "{0}" + "&imgdii=_", word.ToString());
+
+            WebRequest webRequest = WebRequest.Create(strURL);
+
+            ImageContext info = new ImageContext();
+            info.webRequest = webRequest;
+            info.word = word as string;
+
+            webRequest.BeginGetResponse(ResponseCallBack, info);
+
+            //System.IO.Stream stream = response.GetResponseStream();
+
+        }
+
+        
+        private static void ResponseCallBack(IAsyncResult result)
+        {
+            var info = result.AsyncState as ImageContext;
+            var request = info.webRequest;
+            var word = info.word;
+  
+            var response = request.EndGetResponse(result);
+
+            System.IO.Stream stream = response.GetResponseStream();
+            IEnumerable<String> list = GetImageLinks(GetStreamToString(stream)).Distinct();
+
+            string path = Environment.CurrentDirectory + "/images";
+            DirectoryInfo di = new DirectoryInfo(path);
+
+            if (di.Exists == false)
+            {
+                di.Create();
+            }
+
+            WebClient client = new WebClient();
+            
+            int n = 0;
+            foreach (var item in list)
+            {
+
+                string fileName = String.Format("{0}" + "_" + "{1}" + ".jpg", word, n);
+                if (!YounExtention.IsNullOrEmpty(item))
+                {
+                    try
+                    {
+                        n++;
+                        
+                        client.DownloadFile(item, path + "/" + fileName);
+                        
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+            }
+            string m = String.Format(("검색단어:" + "{0}" + "/ 다운로드 받은 갯수:" + "{1}"), word, n);
+            Console.WriteLine(m);
+
+            num++;
+
+            //
+            if (num == mTotalListCount)
+            {
+                mWatch.Stop();
+                m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
+                Console.WriteLine(m);
+            }
+        }
+
+        private static string GetStreamToString(Stream stream)
+        {
+            StreamReader reader = new StreamReader(stream);
+            string str = reader.ReadToEnd();
+            stream.Close();
+            reader.Close();
+
+            return str;
+        }
+
+        private void DividedArray(int value)
         {
             String m = String.Format(("Start >" + "{0}" + " 개의 스레드로 작업을 나누어 동작합니다.."), value);
             Console.WriteLine(m);
@@ -198,7 +302,6 @@ namespace StudyConsoleProject
 
         }
 
-
         private static void SearchImageSaved(Object word)
         {
             if (word == null)
@@ -206,10 +309,10 @@ namespace StudyConsoleProject
                 return;
             }
 
-            Console.WriteLine(Thread.CurrentThread.ManagedThreadId+":"+word);
-            
-            string strURL = String.Format("https://www.google.co.kr/search?q=" 
-                + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q=" 
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + word);
+
+            string strURL = String.Format("https://www.google.co.kr/search?q="
+                + "{0}" + "&newwindow=1&es_sm=93&biw=987&bih=991&source=lnms&tbm=isch&sa=X&ei=keQoVKy7IIaJ8QWZm4KwAg&ved=0CAYQ_AUoAQ#newwindow=1&tbm=isch&q="
                 + "{0}" + "&imgdii=_", word.ToString());
 
             WebRequest webRequest = WebRequest.Create(strURL);
@@ -235,7 +338,7 @@ namespace StudyConsoleProject
             foreach (var item in list)
             {
 
-                string fileName = String.Format("{0}"+"_"+"{1}"+ ".jpg",word,n);
+                string fileName = String.Format("{0}" + "_" + "{1}" + ".jpg", word, n);
                 if (!YounExtention.IsNullOrEmpty(item))
                 {
                     try
@@ -245,7 +348,7 @@ namespace StudyConsoleProject
                     }
                     catch (Exception ex)
                     {
-                       //Console.WriteLine(ex.ToString());
+                        //Console.WriteLine(ex.ToString());
                     }
 
                 }
@@ -263,10 +366,8 @@ namespace StudyConsoleProject
                     Console.WriteLine(m);
                 }
             }
-            
-            
-            //Thread.Sleep(1000);
         }
+
         static IEnumerable<string> GetImageLinks(string inputHTML)
         {
             const string pattern = @"<img\b[^\<\>]+?\bsrc\s*=\s*[""'](?<L>.+?)[""'][^\<\>]*?\>";
