@@ -125,6 +125,7 @@ namespace StudyConsoleProject
                 else
                 {
                     Console.WriteLine("");
+
                     Console.WriteLine("Not found item...!");
                 }
             }
@@ -159,7 +160,6 @@ namespace StudyConsoleProject
             Console.WriteLine("");
             string m = String.Format(("{0}"+" download completed."),info.downloadedfFileName);
             Console.WriteLine(m);
-
         }
 
         private static string GetStreamToString(Stream stream)
@@ -223,7 +223,6 @@ namespace StudyConsoleProject
                 Console.WriteLine(m);
             }
 
-            Console.ReadLine();
 
 
             //
