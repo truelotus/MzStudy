@@ -18,6 +18,10 @@ namespace StudyConsoleProject
         static bool isThread = false;
         static int num = 0;
         static int mTotalListCount = 0;
+
+        static Dictionary<string, IEnumerable<string>> mDic = new Dictionary<string, IEnumerable<string>>();
+
+
         static void Main(string[] args)
         {
 
@@ -28,11 +32,13 @@ namespace StudyConsoleProject
             mWatch = new Stopwatch();
             mWatch.Start();
 
+            
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새" };
             mTotalListCount = searchWordList.Length;
+            Complete com = new Complete(searchWordList.Length, DownloadImageDic);
             for (int i = 0; i < searchWordList.Length; i++)
             {
-                SearchImageSavedAsync(searchWordList[i],i);
+                SearchImageSavedAsync(searchWordList[i],com);
             }
 
             /*mWatch.Stop();
@@ -41,20 +47,181 @@ namespace StudyConsoleProject
             Console.ReadLine();
         }
 
+        public static void DownloadImageDic() 
+        {
+            //completed!
+            string path = Environment.CurrentDirectory + "/images";
+            DirectoryInfo di = new DirectoryInfo(path);
+
+            if (di.Exists == false)
+            {
+                di.Create();
+            }
+
+            
+            // 동시에 주어진 값(4) 갯수의 스레드로 다운로드 작업 할 수 있도록..
+            int value = 2;
+
+            // List<IEnumerable<string>> total = new List<IEnumerable<string>>();
+
+            int share = mDic.Count() / value;
+            int remain = mDic.Count() % value;
+
+            List<string[]> arrList = new List<string[]>();
+
+            int rt = 0;
+
+            rt = value +remain; 
+
+
+            //주어진 값 갯수만큼 배열 생성한다.
+            //한 배열 당 주어진 값만큼의 배열이 들어가므로
+            //배열의 크기는 dic에 있는(단어의 배열 갯수*몫) * 나눌 값 
+            for (int i = 0; i < rt; i++)
+            {
+                string[] array = null;
+                array = new string[(mDic.Count * share) * value];
+                arrList.Add(array);
+            }
+
+            int n = 0;
+            int r = 0;
+
+            string[] urlList = mDic.Keys.SelectMany(key => mDic[key]).ToArray();
+
+            List<string>[] arr = new List<string>[value];
+            for (var i = 0; i < value; ++i)
+            {
+                arr[i] = new List<string>();
+            }
+
+            for (var i = 0; i < urlList.Length; ++i)
+            {
+                arr[i%value].Add(urlList[i]);
+            }
+
+
+            ////실제 url주소를 각각 넣어준다.
+            //foreach (var list in mDic.Values)
+            //{
+            //   //dic list count
+            //   string[] arr = list.ToArray<string>();
+
+            //   Array.Copy(arr, 0, arrList[], r, arr.Length);
+            //   r = r + arr.Length;
+            //   n++;
+            //    // arrList[n / value] = arr; 
+            //    // arrList[n / value][n % value] = item;
+            //}
+
+            int m = 0;
+            int e = 0;
+            //분리된 리스트를 가지고 thread 큐에 넣는다.
+            foreach (var list in arr)
+            {
+                var refList = list;
+
+                bool isSuccess = ThreadPool.QueueUserWorkItem(q =>
+                {
+                    WebClient client = new WebClient();
+                    for (int i = 0; i < refList.Count; i++)
+                    {
+                        try
+                        {
+                            if (refList[i] == null)
+                            {
+                                Console.WriteLine("refList[i] is null..");
+                            }
+                            else
+                            {
+                                string downloadFilePath = String.Format("{0}" + "/" + "{1}" + "{2}" + ".jpg", path, "image_", i);
+                                
+                                client.DownloadFile(refList[i], downloadFilePath);
+
+                                Console.WriteLine(m);
+
+                                m++;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            e++;
+                            Console.WriteLine("DownloadFile Exception/ count:" + e);
+                        }
+                    }
+                });
+
+                Console.WriteLine("ThreadPool 큐 저장 성공 여부 : " + isSuccess);
+
+            }
+
+
+
+
+            /* foreach (var key in mDic.Keys)
+             {
+                 var list = mDic[key];
+                 int n = 1;
+                 foreach (var item in list)
+                 {
+                     try
+                     {
+                         //string downloadFilePath = path + "/" + key + n + ".jpg";
+                         string downloadFilePath = String.Format("{0}" + "/" + "{1}" + "{2}" + ".jpg",path,key,n);
+                         Console.WriteLine(item);
+                         client.DownloadFile(item, downloadFilePath);
+                         n++;
+                         m++;
+                     }
+                     catch (Exception)
+                     {
+
+                     }
+                 }
+                
+             }
+              
+             Console.WriteLine(" ");
+             Console.WriteLine("Total download count :" +m);
+             */
+
+        }
+
+
 
    
 
         public class ImageContext
         {
             public WebRequest webRequest { get; set; }
+            public Complete complete { get; set; }
             public string word { get; set; }
             public string downloadedfFileName { get; set; }
         }
 
+        public class Complete 
+        {
+            Action completedAction;
+            int count;
+            int totalCount;
+            public Complete(int total, Action action) 
+            {
+                totalCount = total;
+                completedAction = action;
+            }
 
+            public void Done() 
+            {
+                count++;
+                if (totalCount == count)
+                {
+                    completedAction();
+                }
+            }
+        }
 
         //1.일반 적인 APM 패턴
-        private static void SearchImageSavedAsync(Object word,int num)
+        private static void SearchImageSavedAsync(Object word,Complete com)
         {
             if (word == null)
             {
@@ -72,8 +239,12 @@ namespace StudyConsoleProject
             ImageContext info = new ImageContext();
             info.webRequest = webRequest;
             info.word = word as string;
+            info.complete = com;
 
             webRequest.BeginGetResponse(ResponseCallBack, info);
+            
+
+            //webRequest.BeginGetResponse(ResponseCallBack, info);
 
             //System.IO.Stream stream = response.GetResponseStream();
 
@@ -84,11 +255,9 @@ namespace StudyConsoleProject
             var info = result.AsyncState as ImageContext;
             var request = info.webRequest;
             var word = info.word;
+            var complete = info.complete;
   
             var response = request.EndGetResponse(result);
-
-            System.IO.Stream stream = response.GetResponseStream();
-            IEnumerable<String> list = GetImageLinks(GetStreamToString(stream)).Distinct();
 
             string path = Environment.CurrentDirectory + "/images";
             DirectoryInfo di = new DirectoryInfo(path);
@@ -98,54 +267,67 @@ namespace StudyConsoleProject
                 di.Create();
             }
 
+            System.IO.Stream stream = response.GetResponseStream();
+            IEnumerable<String> list = GetImageLinks(GetStreamToString(stream)).Distinct();
+
+            mDic.Add(word.ToString(), list);
+
+            //mDic내의 아이템들을 다운로드 한다.
+            complete.Done();
+
             //WebClient는 WebResponse의 발전된 형태이다.(이벤트 베이스 비동기 패턴을 사용 할 수 있다.)
-            WebClient client = new WebClient();
-            client.DownloadFileCompleted += DownloadFileCompleted; 
-            int n = 0;
-            foreach (var item in list)
-            {
-                string fileName = String.Format("{0}" + "_" + "{1}" + ".jpg", word, n);
-                if (!YounExtention.IsNullOrEmpty(item))
-                {
-                    try
-                    {
-                        n++;
-                        string downloadFilePath = path + "/" + fileName;
-                        info.downloadedfFileName = fileName;
+
+            /*
+             WebClient client = new WebClient();
+             client.DownloadFileCompleted += DownloadFileCompleted; 
+             int n = 0;
+              
+              
+              foreach (var item in list)
+             {
+                 string fileName = String.Format("{0}" + "_" + "{1}" + ".jpg", word, n);
+                 if (!String.IsNullOrEmpty(item))
+                 {
+                     try
+                     {
+                         n++;
+                         string downloadFilePath = path + "/" + fileName;
+                         info.downloadedfFileName = fileName;
+                         Console.WriteLine(item);
+                         //client.DownloadFile(item, downloadFilePath);
+                         client.DownloadFileAsync(new Uri(item), downloadFilePath, fileName);
                         
-                        //client.DownloadFile(item, downloadFilePath);
-                        client.DownloadFileAsync(new Uri(item), downloadFilePath, info);
-                        
-                    }
-                    catch (Exception)
-                    {
+                     }
+                     catch (Exception)
+                     {
 
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("");
+                     }
+                 }
+                 else
+                 {
+                     Console.WriteLine("");
 
-                    Console.WriteLine("Not found item...!");
-                }
-            }
+                     Console.WriteLine("Not found item...!");
+                 }
+             }/*
 
-            client.DownloadFileCompleted -= DownloadFileCompleted;
-            Console.WriteLine("");
-            string m = String.Format(("Word:" + "{0}" + "/ Download Count:" + "{1}"), word, n);
-            Console.WriteLine(m);
+            
+             /*Console.WriteLine("");
+             string m = String.Format(("Word:" + "{0}" + "/ Download Count:" + "{1}"), word, n);
+             Console.WriteLine(m);
 
            
-            num++;
+             num++;
 
-            //
-            if (num == mTotalListCount)
-            {
-                mWatch.Stop();
-                Console.WriteLine("");
-                m = String.Format(("completed. Time: " + "{0}"), mWatch.Elapsed);
-                Console.WriteLine(m);
-            }
+             //
+             if (num == mTotalListCount)
+             {
+                 client.DownloadFileCompleted -= DownloadFileCompleted;
+                 mWatch.Stop();
+                 Console.WriteLine("");
+                 m = String.Format(("completed. Time: " + "{0}"), mWatch.Elapsed);
+                 Console.WriteLine(m);
+             }*/
         }
 
         /// <summary>
@@ -155,10 +337,10 @@ namespace StudyConsoleProject
         /// <param name="e"></param>
         public static void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e) 
         {
-            var info = e.UserState as ImageContext;
+            var info = e.UserState as string;
             //파일 다운로드.
             Console.WriteLine("");
-            string m = String.Format(("{0}"+" download completed."),info.downloadedfFileName);
+            string m = String.Format(("{0}"+" download completed."),info);
             Console.WriteLine(m);
         }
 
