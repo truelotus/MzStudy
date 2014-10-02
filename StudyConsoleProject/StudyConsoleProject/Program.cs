@@ -12,6 +12,43 @@ using System.ComponentModel;
 
 namespace StudyConsoleProject
 {
+
+    public class ImageItem
+    {
+        public string name { get; set; }
+        public int index { get; set; }
+        public string url { get; set; }
+    }
+
+    public class ImageContext
+    {
+        public WebRequest webRequest { get; set; }
+        public Complete complete { get; set; }
+        public string word { get; set; }
+        public string downloadedfFileName { get; set; }
+    }
+
+    public class Complete
+    {
+        Action completedAction;
+        int count;
+        int totalCount;
+        public Complete(int total, Action action)
+        {
+            totalCount = total;
+            completedAction = action;
+        }
+
+        public void Done()
+        {
+            count++;
+            if (totalCount == count)
+            {
+                completedAction();
+            }
+        }
+    }
+
     class Program
     {
         static Stopwatch mWatch = null;
@@ -22,23 +59,25 @@ namespace StudyConsoleProject
         static Dictionary<string, IEnumerable<string>> mDic = new Dictionary<string, IEnumerable<string>>();
 
 
+
+
         static void Main(string[] args)
         {
 
-            Console.WriteLine("");
+            Console.Title = "Study";
 
             // isThread = true;
 
             mWatch = new Stopwatch();
             mWatch.Start();
 
-            
+
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새" };
             mTotalListCount = searchWordList.Length;
-            Complete com = new Complete(searchWordList.Length, DownloadImageDic);
+            Complete com = new Complete(searchWordList.Length, DownloadImageFromDic);
             for (int i = 0; i < searchWordList.Length; i++)
             {
-                SearchImageSavedAsync(searchWordList[i],com);
+                SearchImageSavedAsync(searchWordList[i], com);
             }
 
             /*mWatch.Stop();
@@ -47,9 +86,11 @@ namespace StudyConsoleProject
             Console.ReadLine();
         }
 
-        public static void DownloadImageDic() 
+        /// <summary>
+        /// Dictionary내 이미지 배열을 로컬에 다운로드 한다.
+        /// </summary>
+        public static void DownloadImageFromDic()
         {
-            //completed!
             string path = Environment.CurrentDirectory + "/images";
             DirectoryInfo di = new DirectoryInfo(path);
 
@@ -58,46 +99,45 @@ namespace StudyConsoleProject
                 di.Create();
             }
 
-            
-            // 동시에 주어진 값(4) 갯수의 스레드로 다운로드 작업 할 수 있도록..
-            int value = 2;
+            //원하는 스레드 갯수 설정 할 수 있다.
+            int threadCount = 4;
 
-            // List<IEnumerable<string>> total = new List<IEnumerable<string>>();
+            int share = mDic.Count() / threadCount;
+            int remain = mDic.Count() % threadCount;
 
-            int share = mDic.Count() / value;
-            int remain = mDic.Count() % value;
+            //string[] urlList = mDic.Keys.SelectMany(key => mDic[key]).ToArray();
 
-            List<string[]> arrList = new List<string[]>();
+            List<string[]> tempArrayList = new List<string[]>();
 
-            int rt = 0;
+            List<ImageItem>[] threadArray = new List<ImageItem>[threadCount];
 
-            rt = value +remain; 
-
-
-            //주어진 값 갯수만큼 배열 생성한다.
-            //한 배열 당 주어진 값만큼의 배열이 들어가므로
-            //배열의 크기는 dic에 있는(단어의 배열 갯수*몫) * 나눌 값 
-            for (int i = 0; i < rt; i++)
+            for (var i = 0; i < threadCount; ++i)
             {
-                string[] array = null;
-                array = new string[(mDic.Count * share) * value];
-                arrList.Add(array);
+                threadArray[i] = new List<ImageItem>();
             }
 
-            int n = 0;
-            int r = 0;
-
-            string[] urlList = mDic.Keys.SelectMany(key => mDic[key]).ToArray();
-
-            List<string>[] arr = new List<string>[value];
-            for (var i = 0; i < value; ++i)
+            for (int i = 0; i < threadCount; i++)
             {
-                arr[i] = new List<string>();
+                string[] arr = new string[(mDic.Count * share) * threadCount];
+                tempArrayList.Add(arr);
             }
 
-            for (var i = 0; i < urlList.Length; ++i)
+            List<ImageItem> list = new List<ImageItem>();
+
+            foreach (var key in mDic.Keys)
             {
-                arr[i%value].Add(urlList[i]);
+                var i = 1;
+                foreach (var url in mDic[key])
+                {
+                    list.Add(new ImageItem() { name = key, url = url, index = i - 1 });
+                    ++i;
+                }
+            }
+
+
+            for (var i = 0; i < list.Count; ++i)
+            {
+                threadArray[i % threadCount].Add(list[i]);
             }
 
 
@@ -114,16 +154,20 @@ namespace StudyConsoleProject
             //    // arrList[n / value][n % value] = item;
             //}
 
+            //counting.
             int m = 0;
             int e = 0;
+
             //분리된 리스트를 가지고 thread 큐에 넣는다.
-            foreach (var list in arr)
+            //dic의 키값과 해당 키값의 각 다운로드 받은 이미지 갯수...
+            foreach (var set in threadArray)
             {
-                var refList = list;
+                var refList = set;
 
                 bool isSuccess = ThreadPool.QueueUserWorkItem(q =>
                 {
                     WebClient client = new WebClient();
+
                     for (int i = 0; i < refList.Count; i++)
                     {
                         try
@@ -134,11 +178,18 @@ namespace StudyConsoleProject
                             }
                             else
                             {
-                                string downloadFilePath = String.Format("{0}" + "/" + "{1}" + "{2}" + ".jpg", path, "image_", i);
-                                
-                                client.DownloadFile(refList[i], downloadFilePath);
+                                string name = refList[i].name;
+                                int index = refList[i].index;
+                                string url = refList[i].url;
+                                string downloadFilePath = String.Format("{0}" + "/" + "{1}" + "{2}" + ".jpg", path, name + "_", index);
 
-                                Console.WriteLine(m);
+                                client.DownloadFile(url, downloadFilePath);
+
+                                Console.Write("Save completed --- count:");
+                                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                                Console.Write(m);
+                                Console.WriteLine(" ");
+                                Console.ResetColor();
 
                                 m++;
                             }
@@ -146,13 +197,19 @@ namespace StudyConsoleProject
                         catch (Exception)
                         {
                             e++;
-                            Console.WriteLine("DownloadFile Exception/ count:" + e);
+                            Console.Write("DownloadFile Exception...count:");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(e);
+                            Console.WriteLine(" ");
+                            Console.ResetColor();
                         }
                     }
                 });
-
-                Console.WriteLine("ThreadPool 큐 저장 성공 여부 : " + isSuccess);
-
+                Console.Write("ThreadPool 큐 저장 성공 여부 : ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(isSuccess);
+                Console.WriteLine(" ");
+                Console.ResetColor();
             }
 
 
@@ -187,41 +244,8 @@ namespace StudyConsoleProject
 
         }
 
-
-
-   
-
-        public class ImageContext
-        {
-            public WebRequest webRequest { get; set; }
-            public Complete complete { get; set; }
-            public string word { get; set; }
-            public string downloadedfFileName { get; set; }
-        }
-
-        public class Complete 
-        {
-            Action completedAction;
-            int count;
-            int totalCount;
-            public Complete(int total, Action action) 
-            {
-                totalCount = total;
-                completedAction = action;
-            }
-
-            public void Done() 
-            {
-                count++;
-                if (totalCount == count)
-                {
-                    completedAction();
-                }
-            }
-        }
-
         //1.일반 적인 APM 패턴
-        private static void SearchImageSavedAsync(Object word,Complete com)
+        private static void SearchImageSavedAsync(Object word, Complete com)
         {
             if (word == null)
             {
@@ -236,27 +260,22 @@ namespace StudyConsoleProject
 
             WebRequest webRequest = WebRequest.Create(strURL);
 
-            ImageContext info = new ImageContext();
-            info.webRequest = webRequest;
-            info.word = word as string;
-            info.complete = com;
+            ImageContext info = new ImageContext() { webRequest = webRequest, word = word as string, complete = com };
 
             webRequest.BeginGetResponse(ResponseCallBack, info);
-            
-
-            //webRequest.BeginGetResponse(ResponseCallBack, info);
-
-            //System.IO.Stream stream = response.GetResponseStream();
-
         }
 
+        /// <summary>
+        /// 비동기 콜백 메서드
+        /// </summary>
+        /// <param name="result"></param>
         private static void ResponseCallBack(IAsyncResult result)
         {
             var info = result.AsyncState as ImageContext;
             var request = info.webRequest;
             var word = info.word;
             var complete = info.complete;
-  
+
             var response = request.EndGetResponse(result);
 
             string path = Environment.CurrentDirectory + "/images";
@@ -272,11 +291,11 @@ namespace StudyConsoleProject
 
             mDic.Add(word.ToString(), list);
 
-            //mDic내의 아이템들을 다운로드 한다.
+            //mDic내의 아이템들을 다운로드를 시작 한다.
             complete.Done();
+            
 
-            //WebClient는 WebResponse의 발전된 형태이다.(이벤트 베이스 비동기 패턴을 사용 할 수 있다.)
-
+            //WebClient는 WebResponse의 발전된 형태이다.(이벤트 베이스 비동기 패턴을 사용 할 수 있다.
             /*
              WebClient client = new WebClient();
              client.DownloadFileCompleted += DownloadFileCompleted; 
@@ -331,16 +350,16 @@ namespace StudyConsoleProject
         }
 
         /// <summary>
-        ///  file 다운로드 완료 시 로그 찍는다.
+        ///  file 다운로드 완료 시 로그 출력 동작을 한다.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public static void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e) 
+        public static void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             var info = e.UserState as string;
             //파일 다운로드.
             Console.WriteLine("");
-            string m = String.Format(("{0}"+" download completed."),info);
+            string m = String.Format(("{0}" + " download completed."), info);
             Console.WriteLine(m);
         }
 
@@ -381,7 +400,6 @@ namespace StudyConsoleProject
             {
                 //array[몫][나머지]
                 arrList[i / value][i % value] = searchWordList[i];
-
             }
 
 
@@ -404,112 +422,6 @@ namespace StudyConsoleProject
                 m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
                 Console.WriteLine(m);
             }
-
-
-
-            //
-            /* if (value == 1)
-            {
-                ThreadPool.QueueUserWorkItem(q =>
-                {
-                    for (int i = 0; i < searchWordList.Length; i++)
-                    {
-                        SearchImageSaved(searchWordList[i]);
-                    }
-                });
-            }
-            else
-            {
-                //TODO: 입력한 쓰레드 갯수만큼의 쓰레드로 작업을 나눠서 처리 하도록.
-
-                List<String[]> list = new List<String[]>();
-
-                int s = 0; //시작요소
-
-                int number = searchWordList.Length / value;
-
-                if (number <= 1)
-                {
-                    Console.WriteLine("나눌 수 없습니다.");
-                }
-                else
-                {
-                    for (int i = 0; i < searchWordList.Length; i++)
-                    {
-                        int oddnumber = number % 2;
-                        if (oddnumber == 1)
-                        {
-                            if (i >= number - 1)
-                                ++number;
-                        }
-
-                        String[] arr = new String[number];
-                        if (s >= searchWordList.Length)
-                        {
-                            break;
-                        }
-
-                        Array.Copy(searchWordList, s, arr, 0, number);
-                        list.Add(arr);
-                        s = s + number;
-                    }
-
-                    //thread 큐에 쌓는다.
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        String[] arr = list[i];
-                        ThreadPool.QueueUserWorkItem(q =>
-                        {
-                            for (int j = 0; j < arr.Length; j++)
-                            {
-                                SearchImageSaved(arr[j]);
-                            }
-                        });
-                    }
-
-                    if (!isThread)
-                    {
-                        mWatch.Stop();
-                        m = String.Format(("검색이 완료 되었습니다. 시간은 " + "{0}" + "초 입니다."), mWatch.Elapsed);
-                        Console.WriteLine(m);
-                    }
-                }
-                Console.ReadLine();
-            }*/
-
-
-
-
-            /* ThreadPool.QueueUserWorkItem(q => 
-             {
-                 for (int i = 0; i < searchWordList.Length/2; i++)
-                 {
-                     SearchImageSaved(searchWordList[i]);
-                 }
-             });
-
-             ThreadPool.QueueUserWorkItem(q =>
-             {
-                 for (int i = searchWordList.Length / 2; i < searchWordList.Length; i++)
-                 {
-                     SearchImageSaved(searchWordList[i]);
-                 }
-             });*/
-
-
-
-            /*for (int i = 0; i < searchWordList.Length; i++)
-            {
-                if (isThread)
-                {
-                    ThreadPool.QueueUserWorkItem(SearchImageSaved, searchWordList[i]);
-                }
-                else
-                {
-                    SearchImageSaved(searchWordList[i]);
-                }
-            }*/
-
         }
 
         private static void SearchImageSaved(Object word)
@@ -556,7 +468,7 @@ namespace StudyConsoleProject
                         n++;
                         client.DownloadFile(item, path + "/" + fileName);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         //Console.WriteLine(ex.ToString());
                     }
