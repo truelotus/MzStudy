@@ -39,6 +39,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,6 +52,8 @@
     <Compile Include="ImageDownloadManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\IKoKo.cs" />
+    <Compile Include="Server\KoKo.cs" />
     <Compile Include="Server\Server.cs" />
     <Compile Include="YounExtention.cs" />
     <Compile Include="EnumerableList\YounList.cs" />

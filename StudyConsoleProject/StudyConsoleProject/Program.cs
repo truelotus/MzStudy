@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Threading;
 using System.ComponentModel;
+using StudyConsoleProject.Server.CameraControllerCore.Server;
 
 
 namespace StudyConsoleProject
@@ -18,8 +19,14 @@ namespace StudyConsoleProject
         static void Main(string[] args)
         {
 
-            WebImageDownloadManagerExecute();
-            Console.ReadLine();
+            using (var server = new KoServer())
+            {
+                server.Run();
+
+                Console.ReadLine();
+            }
+            //WebImageDownloadManagerExecute();
+            //Console.ReadLine();
         }
 
         /// <summary>
