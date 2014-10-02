@@ -19,14 +19,15 @@ namespace StudyConsoleProject
         static void Main(string[] args)
         {
 
-            using (var server = new KoServer())
-            {
-                server.Run();
+            //using (var server = new KoServer())
+            //{
+            //    server.Run();
 
-                Console.ReadLine();
-            }
-            //WebImageDownloadManagerExecute();
-            //Console.ReadLine();
+            //    Console.ReadLine();
+            //}
+
+            WebImageDownloadManagerExecute();
+            Console.ReadLine();
         }
 
         /// <summary>
