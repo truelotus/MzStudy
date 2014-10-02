@@ -11,6 +11,9 @@ using System.Threading;
 
 namespace StudyConsoleProject
 {
+    /// <summary>
+    /// Web Image Infomation
+    /// </summary>
     public class ImageItem
     {
         public string name { get; set; }
@@ -18,6 +21,9 @@ namespace StudyConsoleProject
         public string url { get; set; }
     }
 
+    /// <summary>
+    /// Web request시 image 관련 정보
+    /// </summary>
     public class ImageContext
     {
         public WebRequest webRequest { get; set; }
@@ -26,6 +32,9 @@ namespace StudyConsoleProject
         public string downloadedfFileName { get; set; }
     }
 
+    /// <summary>
+    /// Download 완료 정보
+    /// </summary>
     public class Complete
     {
         Action completedAction;
@@ -46,6 +55,7 @@ namespace StudyConsoleProject
             }
         }
     }
+
     class ImageDownloadManager
     {
         static Stopwatch mWatch = null;

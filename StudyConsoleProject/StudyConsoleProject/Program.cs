@@ -18,11 +18,14 @@ namespace StudyConsoleProject
         static void Main(string[] args)
         {
 
-            DownloadWebImage();
+            WebImageDownloadManagerExecute();
             Console.ReadLine();
         }
 
-        public static void DownloadWebImage() 
+        /// <summary>
+        /// 웹 검색(goole)을 
+        /// </summary>
+        public static void WebImageDownloadManagerExecute() 
         {
             String[] searchWordList = new String[] { "강아지", "고양이", "코끼리", "호랑이", "돌고래", "코알라", "비버", "다람쥐", "기린", "벌새" };
 
