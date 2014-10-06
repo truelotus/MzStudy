@@ -30,7 +30,13 @@ namespace StudyConsoleProject
             //FileExplorerForm form = new FileExplorerForm();
             //form.ShowDialog();
 
+            //웹 이미지 다운로드 샘플 동작 코드
             //WebImageDownloadManagerExecute();
+
+            //APM 샘플 동작코드 
+            //APMTechExam ex = new APMTechExam();
+            //ex.ReadFileStreamOfApm();
+            //ex.ReadFileStreamOfPolling();
             Console.ReadLine();
         }
 
