@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.ComponentModel;
 using StudyConsoleProject.Server.CameraControllerCore.Server;
+using StudyConsoleProject.File;
 
 
 namespace StudyConsoleProject
@@ -18,20 +19,23 @@ namespace StudyConsoleProject
     {
         static void Main(string[] args)
         {
+            using (var server = new KoServer())
+            {
+                server.Run();
 
-            //using (var server = new KoServer())
-            //{
-            //    server.Run();
+                Console.ReadLine();
+            }
 
-            //    Console.ReadLine();
-            //}
 
-            WebImageDownloadManagerExecute();
+            //FileExplorerForm form = new FileExplorerForm();
+            //form.ShowDialog();
+
+            //WebImageDownloadManagerExecute();
             Console.ReadLine();
         }
 
         /// <summary>
-        /// 웹 검색(goole)을 
+        /// 웹 검색(goole) 대상을 지정하여 검색을 시작 합니다.
         /// </summary>
         public static void WebImageDownloadManagerExecute() 
         {

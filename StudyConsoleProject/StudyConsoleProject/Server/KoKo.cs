@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.ServiceModel.Web;
 using System.IO;
+using StudyConsoleProject.File;
 
 namespace StudyConsoleProject.Server
 {
@@ -36,6 +37,34 @@ namespace StudyConsoleProject.Server
             streamWriter.Flush();
             memStream.Seek(0, SeekOrigin.Begin);
             return memStream;            
+        }
+
+        public Stream GetMyDocumentList()
+        {
+            FileManager manager = new FileManager();
+
+            IEnumerable<string> list = manager.GetList();
+
+            WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
+
+            var memStream = new MemoryStream();
+            var streamWriter = new StreamWriter(memStream);
+            foreach (var item in list)
+            {
+                streamWriter.WriteLine(item);
+                streamWriter.WriteLine(" ");
+            }
+            
+            streamWriter.Flush();
+            memStream.Seek(0, SeekOrigin.Begin);
+            return memStream;   
+        }
+
+
+        public string GetHtmlView()
+        {
+            FileManager manager = new FileManager();
+            return manager.GetHtmlView();
         }
     }
 }
