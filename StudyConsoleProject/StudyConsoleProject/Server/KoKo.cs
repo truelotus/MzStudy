@@ -43,28 +43,61 @@ namespace StudyConsoleProject.Server
         {
             FileManager manager = new FileManager();
 
-            IEnumerable<string> list = manager.GetList();
+            IEnumerable<string> list = manager.GetMyDocumentList();
 
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
 
-            var memStream = new MemoryStream();
-            var streamWriter = new StreamWriter(memStream);
-            foreach (var item in list)
-            {
-                streamWriter.WriteLine(item);
-                streamWriter.WriteLine(" ");
-            }
-            
-            streamWriter.Flush();
-            memStream.Seek(0, SeekOrigin.Begin);
+            Stream memStream = GetLinkWriteStream(list);
+
             return memStream;   
         }
 
 
-        public string GetHtmlView()
+        public Stream MovePath(string path)
         {
+            if (String.IsNullOrEmpty(path))
+            {
+                Console.WriteLine("경로가 없습니다.");
+                return null;
+            }
+
             FileManager manager = new FileManager();
-            return manager.GetHtmlView();
+           // string url = HttpUtility.UrlEncode(path, System.Text.Encoding.GetEncoding("euc-kr"));
+            IEnumerable<string> list = manager.GetDirectoryList(path);
+
+            WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
+
+            Stream memStream = GetLinkWriteStream(list);
+            
+            return memStream;   
+        }
+
+        private Stream GetLinkWriteStream(IEnumerable<string> list) 
+        {
+            if (list==null)
+            {
+                return null;
+            }
+            var memStream = new MemoryStream();
+            var streamWriter = new StreamWriter(memStream);
+            streamWriter.WriteLine("<html>");
+            streamWriter.WriteLine("<body>");
+            foreach (var item in list)
+            {
+                streamWriter.WriteLine("<p/>");
+                string uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", item);
+                //string trim = uriTemplate.Replace(" ", "");
+                string url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
+                string str = "<a href=" + url + ">" + item + "</a>";
+                streamWriter.Write(str);
+                streamWriter.WriteLine(" ");
+            }
+            streamWriter.WriteLine("</body>");
+            streamWriter.WriteLine("</html>");
+            streamWriter.Flush();
+            memStream.Seek(0, SeekOrigin.Begin);
+
+            return memStream;
         }
     }
 }

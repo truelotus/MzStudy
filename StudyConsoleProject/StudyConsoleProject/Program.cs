@@ -26,7 +26,6 @@ namespace StudyConsoleProject
                 Console.ReadLine();
             }
 
-
             //FileExplorerForm form = new FileExplorerForm();
             //form.ShowDialog();
 
