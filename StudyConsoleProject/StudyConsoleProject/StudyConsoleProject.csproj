@@ -87,6 +87,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\folder.PNG" />
     <Content Include="Resources\Penguins.jpg" />
     <Content Include="View\HTMLFrame.htm" />
   </ItemGroup>

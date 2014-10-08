@@ -54,14 +54,16 @@ namespace StudyConsoleProject.File
 
                 temp = list.ToArray();
 
+                int size = list.Count() + fileList.Count();
                 if (fileList.Count() > 0)
                 {
                     if (list != null)
                         temp = fileList.ToArray();
 
-                    Array.Resize(ref temp, fileList.Count());
+                    //파일과 디렉토리를 합친다.
+                    Array.Resize(ref temp, size);
                     Console.WriteLine("resize Dir list count is {0}", temp.Count());
-                    Array.Copy(fileList.ToArray(), temp, fileList.Count() - 1);
+                    Array.Copy(list.ToArray(), temp, list.Count() - 1);
                     Console.WriteLine("after copy Dir list count is {0}", temp.Count());
                 }
                 
@@ -79,13 +81,7 @@ namespace StudyConsoleProject.File
 
             for (int i = 0; i < temp.Length; i++)
             {
-                if (temp[i] == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("return list item is null. count is ", i);
-                    Console.ResetColor();
-                }
-                else
+                if (temp[i] != null)
                 {
                     Console.Write("return item : ");
                     Console.ResetColor();

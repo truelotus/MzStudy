@@ -14,6 +14,8 @@ namespace StudyConsoleProject.Server
 {
     public class KoKo : IKoKo
     {
+        public string mDirPath;
+
         public string Test()
         {
 
@@ -68,7 +70,6 @@ namespace StudyConsoleProject.Server
 
             if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                
                 WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
                 list = FileManager.GetDirectoryList(path);
             }
@@ -116,17 +117,67 @@ namespace StudyConsoleProject.Server
             var memStream = new MemoryStream();
             var streamWriter = new StreamWriter(memStream);
             streamWriter.WriteLine("<html>");
+            streamWriter.WriteLine("<header>");
+            streamWriter.WriteLine("<title>");
+            streamWriter.WriteLine("Web local file explorer");
+            streamWriter.WriteLine("</title>");
+            streamWriter.WriteLine("</header>");
             streamWriter.WriteLine("<body>");
+            
+            //
+            string uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", Path.GetDirectoryName(Path.GetDirectoryName(list.FirstOrDefault())));
+            string url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
+            string uriPath = "<a href=" + url + ">" + "[Go to upper directory..]" + "</a>";
+            
+            streamWriter.WriteLine(uriPath);
+
+            streamWriter.WriteLine("<h1>");
+            streamWriter.WriteLine(Path.GetDirectoryName(list.FirstOrDefault())+"의 색인");
+            streamWriter.WriteLine("</h1>");
+            streamWriter.WriteLine("<hr/>");
+            string iconPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Resources\\folder.jpg";
+
+            streamWriter.WriteLine("<table>");
             foreach (var item in list)
             {
-                streamWriter.WriteLine("<p/>");
-                string uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", item);
-                //string trim = uriTemplate.Replace(" ", "");
-                string url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
-                string str = "<a href=" + url + ">" + item + "</a>";
-                streamWriter.Write(str);
-                streamWriter.WriteLine(" ");
+               
+                if (item!=null)
+                {
+                    streamWriter.WriteLine("<tr>");
+                    long size = 0;
+                    DateTime lastTime;
+                    if ((System.IO.File.GetAttributes(item) & FileAttributes.Directory) == FileAttributes.Directory)
+                    {
+                        DirectoryInfo info = new DirectoryInfo(item);
+                        size = 0;
+                        lastTime = info.LastWriteTime;
+                    }
+                    else
+                    {
+                        FileInfo info = new FileInfo(item);
+                        size = 0;
+                        lastTime = info.LastWriteTime;
+                    }
+                    uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", item);
+                    url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
+                    uriPath = "<a href=" + url + ">" + Path.GetFileName(item) + "</a>";
+                    streamWriter.WriteLine("<td>");
+                    streamWriter.Write("<img src=" + iconPath + "</img>");
+                    streamWriter.Write(uriPath);
+                    streamWriter.WriteLine("</td>");
+                    streamWriter.WriteLine("<td>");
+                    streamWriter.Write(size);
+                    streamWriter.WriteLine("</td>");
+                    streamWriter.WriteLine("<td>");
+                    streamWriter.Write(lastTime);
+                    streamWriter.WriteLine("</td>");
+                    streamWriter.WriteLine(" ");
+                    streamWriter.WriteLine("<tr>");
+                }
+                
             }
+
+            streamWriter.WriteLine("<table>");
             streamWriter.WriteLine("</body>");
             streamWriter.WriteLine("</html>");
             streamWriter.Flush();
