@@ -7,6 +7,8 @@ using System.Web.Configuration;
 using System.ServiceModel.Web;
 using System.IO;
 using StudyConsoleProject.File;
+using System.Net.Mime;
+using System.Net;
 
 namespace StudyConsoleProject.Server
 {
@@ -30,54 +32,87 @@ namespace StudyConsoleProject.Server
         public Stream Test3(string text)
         {
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
-            
+
             var memStream = new MemoryStream();
             var streamWriter = new StreamWriter(memStream);
             streamWriter.WriteLine(text);
             streamWriter.Flush();
             memStream.Seek(0, SeekOrigin.Begin);
-            return memStream;            
+            return memStream;
         }
 
         public Stream GetMyDocumentList()
         {
-            FileManager manager = new FileManager();
 
-            IEnumerable<string> list = manager.GetMyDocumentList();
+            IEnumerable<string> list = FileManager.GetMyDocumentList();
 
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
 
-            Stream memStream = GetLinkWriteStream(list);
+            Stream memStream = GetPageLinkStream(list, false);
 
-            return memStream;   
+            return memStream;
         }
 
 
-        public Stream MovePath(string path)
+        public Stream Move(string path)
         {
             if (String.IsNullOrEmpty(path))
             {
-                Console.WriteLine("경로가 없습니다.");
+                Console.WriteLine("not found path!..");
                 return null;
             }
 
-            FileManager manager = new FileManager();
-           // string url = HttpUtility.UrlEncode(path, System.Text.Encoding.GetEncoding("euc-kr"));
-            IEnumerable<string> list = manager.GetDirectoryList(path);
+            bool isFile = false;
 
-            WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
+            IEnumerable<string> list = null;
 
-            Stream memStream = GetLinkWriteStream(list);
+            if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                
+                WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
+                list = FileManager.GetDirectoryList(path);
+            }
+            else
+            {
+                string fileName = Path.GetFileName(path);
+                //브라우저가 보여줄 파일 명/타입을 지정한다.
+                WebOperationContext.Current.OutgoingResponse.ContentType = "application/octet-stream";
+                WebOperationContext.Current.OutgoingResponse.Headers.Set("content-disposition", "attachment;filename=" + fileName);
+                list = new string[] { path };
+                isFile = true;
+            }
+
             
-            return memStream;   
+
+            Stream memStream = GetPageLinkStream(list, isFile);
+
+            return memStream;
         }
 
-        private Stream GetLinkWriteStream(IEnumerable<string> list) 
+        private Stream GetPageLinkStream(IEnumerable<string> list, bool isFile)
         {
-            if (list==null)
-            {
+            if (list == null)
                 return null;
+
+            if (isFile)
+            {
+                try
+                {
+                    FileStream fileStream = null;
+                    var item = list.FirstOrDefault();
+                    
+                    fileStream = new FileStream(item, FileMode.Open,FileAccess.Read);
+                    return fileStream;
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(ex.Message);
+                    Console.ResetColor();
+                }
             }
+
+
             var memStream = new MemoryStream();
             var streamWriter = new StreamWriter(memStream);
             streamWriter.WriteLine("<html>");

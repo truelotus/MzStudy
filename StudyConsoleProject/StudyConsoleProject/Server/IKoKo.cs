@@ -29,6 +29,6 @@ namespace StudyConsoleProject.Server
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "GetMyDocumentList?move={path}")]
-        Stream MovePath(string path);
+        Stream Move(string path);
     }
 }
