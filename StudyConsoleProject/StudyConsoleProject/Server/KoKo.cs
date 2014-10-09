@@ -50,7 +50,7 @@ namespace StudyConsoleProject.Server
 
             WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
 
-            Stream memStream = GetPageLinkStream(list, false);
+            Stream memStream = GetPageLinkStream(list, false,"");
 
             return memStream;
         }
@@ -60,37 +60,45 @@ namespace StudyConsoleProject.Server
         {
             if (String.IsNullOrEmpty(path))
             {
-                Console.WriteLine("not found path!..");
-                return null;
+                Console.WriteLine("not found path! path is C:/ ");
+                path = "C:/";
             }
 
             bool isFile = false;
 
             IEnumerable<string> list = null;
 
-            if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+            try
             {
-                WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
-                list = FileManager.GetDirectoryList(path);
+                if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
+                    list = FileManager.GetDirectoryList(path);
+                }
+                else
+                {
+                    string fileName = Path.GetFileName(path);
+                    //브라우저가 보여줄 파일 명/타입을 지정한다.
+                    WebOperationContext.Current.OutgoingResponse.ContentType = "application/octet-stream";
+                    WebOperationContext.Current.OutgoingResponse.Headers.Set("content-disposition", "attachment;filename=" + fileName);
+                    list = new string[] { path };
+                    isFile = true;
+                }
             }
-            else
+            catch (Exception ex)
             {
-                string fileName = Path.GetFileName(path);
-                //브라우저가 보여줄 파일 명/타입을 지정한다.
-                WebOperationContext.Current.OutgoingResponse.ContentType = "application/octet-stream";
-                WebOperationContext.Current.OutgoingResponse.Headers.Set("content-disposition", "attachment;filename=" + fileName);
-                list = new string[] { path };
-                isFile = true;
+                //TODO: FileNotFoundedException 일 경우.. 브라우저에 에러 팝업 띄어줘야한다.
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
             }
 
-            
-
-            Stream memStream = GetPageLinkStream(list, isFile);
+            Stream memStream = GetPageLinkStream(list, isFile, path);
 
             return memStream;
         }
 
-        private Stream GetPageLinkStream(IEnumerable<string> list, bool isFile)
+        private Stream GetPageLinkStream(IEnumerable<string> list, bool isFile,string parentPath)
         {
             if (list == null)
                 return null;
@@ -127,17 +135,18 @@ namespace StudyConsoleProject.Server
             //
             string uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", Path.GetDirectoryName(Path.GetDirectoryName(list.FirstOrDefault())));
             string url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
-            string uriPath = "<a href=" + url + ">" + "[Go to upper directory..]" + "</a>";
-            
-            streamWriter.WriteLine(uriPath);
 
             streamWriter.WriteLine("<h1>");
-            streamWriter.WriteLine(Path.GetDirectoryName(list.FirstOrDefault())+"의 색인");
+            streamWriter.WriteLine(Path.GetDirectoryName(list.FirstOrDefault())+" Index");
             streamWriter.WriteLine("</h1>");
-            streamWriter.WriteLine("<hr/>");
-            string iconPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + "\\Resources\\folder.jpg";
-
+            if (!parentPath.Equals("C:/"))
+            {
+                string parentUrlButton = "<a href=" + url + ">" + "[Go to parent directory..]" + "</a>";
+                streamWriter.WriteLine(parentUrlButton);
+            }
+            string iconPath = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.FullName + @"\Resources\folder.PNG";
             streamWriter.WriteLine("<table>");
+            int i = 0;
             foreach (var item in list)
             {
                
@@ -146,8 +155,10 @@ namespace StudyConsoleProject.Server
                     streamWriter.WriteLine("<tr>");
                     long size = 0;
                     DateTime lastTime;
+                    bool isDir = false;
                     if ((System.IO.File.GetAttributes(item) & FileAttributes.Directory) == FileAttributes.Directory)
                     {
+                        isDir = true;
                         DirectoryInfo info = new DirectoryInfo(item);
                         size = 0;
                         lastTime = info.LastWriteTime;
@@ -160,19 +171,45 @@ namespace StudyConsoleProject.Server
                     }
                     uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", item);
                     url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
-                    uriPath = "<a href=" + url + ">" + Path.GetFileName(item) + "</a>";
+                    string uriPath = "<a href=" + url + ">" + Path.GetFileName(item) + "</a>";
+                    if (i==0)
+                    {
+                        streamWriter.WriteLine("<tr>");
+                        streamWriter.WriteLine("<td>");
+                        streamWriter.WriteLine("<b>");
+                        streamWriter.WriteLine("Name");
+                        streamWriter.WriteLine("</td>");
+                        streamWriter.WriteLine("<td>");
+                        streamWriter.WriteLine("<b>");
+                        streamWriter.WriteLine("Size");
+                        streamWriter.WriteLine("</td>");
+                        streamWriter.WriteLine("<td>");
+                        streamWriter.WriteLine("<b>");
+                        streamWriter.WriteLine("DateModified");
+                        streamWriter.WriteLine("</td>");
+                        streamWriter.WriteLine("</tr>");
+                        streamWriter.WriteLine("<hr/>");
+                    }
                     streamWriter.WriteLine("<td>");
                     streamWriter.Write("<img src=" + iconPath + "</img>");
                     streamWriter.Write(uriPath);
                     streamWriter.WriteLine("</td>");
                     streamWriter.WriteLine("<td>");
-                    streamWriter.Write(size);
+                    if (isDir)
+                    {
+                        streamWriter.Write("");
+                    }
+                    else
+                    {
+                        streamWriter.Write(size);
+                    }
                     streamWriter.WriteLine("</td>");
                     streamWriter.WriteLine("<td>");
                     streamWriter.Write(lastTime);
                     streamWriter.WriteLine("</td>");
                     streamWriter.WriteLine(" ");
                     streamWriter.WriteLine("<tr>");
+                    i++;
                 }
                 
             }

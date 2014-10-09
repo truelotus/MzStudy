@@ -63,15 +63,24 @@ namespace StudyConsoleProject.File
                     //파일과 디렉토리를 합친다.
                     Array.Resize(ref temp, size);
                     Console.WriteLine("resize Dir list count is {0}", temp.Count());
-                    Array.Copy(list.ToArray(), temp, list.Count() - 1);
+                    if (list.Count()!=0)
+                    {
+                        Array.Copy(list.ToArray(), temp, list.Count() - 1); 
+                    }
+                    
                     Console.WriteLine("after copy Dir list count is {0}", temp.Count());
                 }
                 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                //액세스 예외 상황일 시..
+                if (ex.Source.Equals("mscorlib"))
+                {
+                    temp = new string[] { path };
+                }
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(e.Message);
+                Console.WriteLine(ex.Message);
                 Console.ResetColor();
             }
 
