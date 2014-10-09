@@ -43,17 +43,17 @@ namespace StudyConsoleProject.Server
             return memStream;
         }
 
-        public Stream GetMyDocumentList()
-        {
+				//public Stream GetMyDocumentList()
+				//{
 
-            IEnumerable<string> list = FileManager.GetMyDocumentList();
+				//    IEnumerable<string> list = FileManager.GetMyDocumentList();
 
-            WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
+				//    WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
 
-            Stream memStream = GetPageLinkStream(list, false,"");
+				//    Stream memStream = GetPageLinkStream(list, false,"");
 
-            return memStream;
-        }
+				//    return memStream;
+				//}
 
 
         public Stream Move(string path)
@@ -61,7 +61,7 @@ namespace StudyConsoleProject.Server
             if (String.IsNullOrEmpty(path))
             {
                 Console.WriteLine("not found path! path is C:/ ");
-                path = "C:/";
+								path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
 
             bool isFile = false;
@@ -80,9 +80,8 @@ namespace StudyConsoleProject.Server
                     string fileName = Path.GetFileName(path);
                     //브라우저가 보여줄 파일 명/타입을 지정한다.
                     WebOperationContext.Current.OutgoingResponse.ContentType = "application/octet-stream";
-                    WebOperationContext.Current.OutgoingResponse.Headers.Set("content-disposition", "attachment;filename=" + fileName);
-                    list = new string[] { path };
-                    isFile = true;
+                    WebOperationContext.Current.OutgoingResponse.Headers.Set("content-disposition", "attachment;filename=" + HttpUtility.UrlEncode(fileName));
+										return System.IO.File.OpenRead(path);
                 }
             }
             catch (Exception ex)
@@ -93,34 +92,15 @@ namespace StudyConsoleProject.Server
                 Console.ResetColor();
             }
 
-            Stream memStream = GetPageLinkStream(list, isFile, path);
+            Stream memStream = GetPageLinkStream(list, path);
 
             return memStream;
         }
 
-        private Stream GetPageLinkStream(IEnumerable<string> list, bool isFile,string parentPath)
+        private Stream GetPageLinkStream(IEnumerable<string> list, string parentPath)
         {
             if (list == null)
                 return null;
-
-            if (isFile)
-            {
-                try
-                {
-                    FileStream fileStream = null;
-                    var item = list.FirstOrDefault();
-                    
-                    fileStream = new FileStream(item, FileMode.Open,FileAccess.Read);
-                    return fileStream;
-                }
-                catch (Exception ex)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(ex.Message);
-                    Console.ResetColor();
-                }
-            }
-
 
             var memStream = new MemoryStream();
             var streamWriter = new StreamWriter(memStream);
@@ -131,13 +111,11 @@ namespace StudyConsoleProject.Server
             streamWriter.WriteLine("</title>");
             streamWriter.WriteLine("</header>");
             streamWriter.WriteLine("<body>");
+                        
+						string url = String.Format("GetMyDocumentList?move=" + "{0}", HttpUtility.UrlEncode(Path.GetDirectoryName(parentPath)));
             
-            //
-            string uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", Path.GetDirectoryName(Path.GetDirectoryName(list.FirstOrDefault())));
-            string url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
-
             streamWriter.WriteLine("<h1>");
-            streamWriter.WriteLine(Path.GetDirectoryName(list.FirstOrDefault())+" Index");
+            streamWriter.WriteLine(parentPath);
             streamWriter.WriteLine("</h1>");
             if (!parentPath.Equals("C:/"))
             {
@@ -166,11 +144,11 @@ namespace StudyConsoleProject.Server
                     else
                     {
                         FileInfo info = new FileInfo(item);
-                        size = 0;
+                        size = info.Length;
                         lastTime = info.LastWriteTime;
                     }
-                    uriTemplate = String.Format("GetMyDocumentList?move=" + "{0}", item);
-                    url = HttpUtility.UrlEncode(uriTemplate, System.Text.Encoding.GetEncoding("euc-kr"));
+										url = String.Format("GetMyDocumentList?move=" + "{0}", HttpUtility.UrlEncode(item));
+                    
                     string uriPath = "<a href=" + url + ">" + Path.GetFileName(item) + "</a>";
                     if (i==0)
                     {
@@ -191,7 +169,7 @@ namespace StudyConsoleProject.Server
                         streamWriter.WriteLine("<hr/>");
                     }
                     streamWriter.WriteLine("<td>");
-                    streamWriter.Write("<img src=" + iconPath + "</img>");
+										streamWriter.Write("<img src='/fordericon' />");
                     streamWriter.Write(uriPath);
                     streamWriter.WriteLine("</td>");
                     streamWriter.WriteLine("<td>");
@@ -222,5 +200,12 @@ namespace StudyConsoleProject.Server
 
             return memStream;
         }
-    }
+
+
+				public Stream GetFolderIcon()
+				{
+					WebOperationContext.Current.OutgoingResponse.ContentType = "image/png";
+					return System.IO.File.OpenRead(@"..\..\Resources\folder.PNG");					
+				}
+		}
 }

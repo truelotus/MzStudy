@@ -23,12 +23,19 @@ namespace StudyConsoleProject.Server
         [WebInvoke(Method = "GET", UriTemplate = "test3?text={text}")]
         Stream Test3(string text);
 
-        [OperationContract]
-        [WebInvoke(Method = "GET")]
-        Stream GetMyDocumentList();
+				//[OperationContract]
+				//[WebInvoke(Method = "GET")]
+				//Stream GetMyDocumentList();
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "GetMyDocumentList?move={path}")]
         Stream Move(string path);
+
+
+				[OperationContract]
+				[WebInvoke(Method = "GET", UriTemplate = "fordericon")]
+				Stream GetFolderIcon();
+
+
     }
 }
