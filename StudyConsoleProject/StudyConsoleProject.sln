@@ -3,16 +3,56 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyConsoleProject", "StudyConsoleProject\StudyConsoleProject.csproj", "{84C3746E-E262-4A87-9402-CDC9213A44E9}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebSite1", "WebSite1\", "{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/WebSite1"
+		Debug.AspNetCompiler.PhysicalPath = "WebSite1\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\WebSite1\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/WebSite1"
+		Release.AspNetCompiler.PhysicalPath = "WebSite1\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\WebSite1\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "59359"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Debug|x86.ActiveCfg = Debug|x86
 		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Debug|x86.Build.0 = Debug|x86
+		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Release|Any CPU.ActiveCfg = Release|x86
+		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Release|Mixed Platforms.Build.0 = Release|x86
 		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Release|x86.ActiveCfg = Release|x86
 		{84C3746E-E262-4A87-9402-CDC9213A44E9}.Release|x86.Build.0 = Release|x86
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|x86.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

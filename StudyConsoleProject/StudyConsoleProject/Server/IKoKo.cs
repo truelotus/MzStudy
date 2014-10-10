@@ -35,7 +35,5 @@ namespace StudyConsoleProject.Server
 				[OperationContract]
 				[WebInvoke(Method = "GET", UriTemplate = "fordericon")]
 				Stream GetFolderIcon();
-
-
     }
 }
