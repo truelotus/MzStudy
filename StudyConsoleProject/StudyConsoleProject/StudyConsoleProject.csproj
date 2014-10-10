@@ -89,7 +89,7 @@
   <ItemGroup>
     <Content Include="Resources\folder.PNG" />
     <Content Include="Resources\Penguins.jpg" />
-    <Content Include="View\HTMLFrame.htm" />
+    <EmbeddedResource Include="View\ExplorerPage.htm" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
