@@ -12,7 +12,7 @@
 <body>
 	<form id="form1" runat="server">
 	<hr />
-	<table id="t_list">
+	<table id="t_list" >
 		<!--아이템 넣어 주는 부분 처음만 위 세항목 출력-->
 		<%
 		int i = 0;
@@ -20,8 +20,7 @@
 	if (list == null)
   {
 		%>
-		<td>
-		<b>"디렉토리에 접근 할 수 없습니다."</b></td>
+		<td><b>"디렉토리에 접근 할 수 없습니다."</b></td>
 		<%
 	return;
   }
@@ -33,6 +32,8 @@
 		  {
 		%>
 		<tr>
+		<td>
+		</td>
 			<td>
 				<b>Name</b>
 			</td>
@@ -43,6 +44,7 @@
 				<b>DateModified</b>
 			</td>
 		</tr>
+
 		<%
 	  }
 		%>

@@ -128,7 +128,7 @@ namespace StudyConsoleProject.Server
 
 				if (item != null)
 				{
-					streamWriter.WriteLine("<tr>");
+
 					long size = 0;
 					DateTime lastTime;
 					bool isDir = false;
@@ -155,15 +155,18 @@ namespace StudyConsoleProject.Server
 						streamWriter.WriteLine("<b>");
 						streamWriter.WriteLine("Name");
 						streamWriter.WriteLine("</td>");
+
 						streamWriter.WriteLine("<td>");
 						streamWriter.WriteLine("<b>");
 						streamWriter.WriteLine("Size");
 						streamWriter.WriteLine("</td>");
+
 						streamWriter.WriteLine("<td>");
 						streamWriter.WriteLine("<b>");
 						streamWriter.WriteLine("DateModified");
 						streamWriter.WriteLine("</td>");
 						streamWriter.WriteLine("</tr>");
+
 						streamWriter.WriteLine("<hr/>");
 					}
 					streamWriter.WriteLine("<td>");

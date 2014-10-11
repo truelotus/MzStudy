@@ -85,19 +85,19 @@ public partial class Default : System.Web.UI.Page
 		return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
 	}
 
-	public long GetSize(string item)
+	public string GetSize(string item)
 	{
-		long size = 0;
+		string size = "";
 		if ((System.IO.File.GetAttributes(item) & FileAttributes.Directory) == FileAttributes.Directory)
 		{
 			DirectoryInfo info = new DirectoryInfo(item);
-			size = 0;
+			size = "";
 
 		}
 		else
 		{
 			FileInfo info = new FileInfo(item);
-			size = info.Length;
+			size = info.Length.ToString();
 		}
 
 		return size;
