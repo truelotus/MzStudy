@@ -25,40 +25,14 @@ public partial class Default : System.Web.UI.Page
 	{
 		var url = Request.Url.AbsoluteUri;
 		var moveDirUrl = Request.QueryString["move"];
+		Move(moveDirUrl);
 
-		if (!String.IsNullOrEmpty(moveDirUrl))
-		{
-			
-			Move(moveDirUrl);
-		}
-		else
-		{
-			//기본 경로 설정.
-			mCurrentDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			mParentDirectoryPath = HttpUtility.UrlEncode(Path.GetDirectoryName(mCurrentDirectoryPath));
-			Move(mCurrentDirectoryPath);
-		}
 	}
 
-	public static IEnumerable<string> GetMyDocumentDirList()
-	{
-		String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-		IEnumerable<string> myDocumentDirs = Directory.EnumerateDirectories(path);
-		return myDocumentDirs;
-	}
-
-	public static IEnumerable<string> GetAllFiles(string path)
-	{
-		if (String.IsNullOrEmpty(path))
-		{
-			return null;
-		}
-		return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
-	}
 
 	public void Move(string path)
 	{
-		if (String.IsNullOrEmpty(path))
+		 if (String.IsNullOrEmpty(path))
 		{
 			Console.WriteLine("not found path!");
 			path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -81,6 +55,9 @@ public partial class Default : System.Web.UI.Page
 				Response.ContentType = "application/octet-stream";
 				Response.Headers.Set("content-disposition", "attachment;filename=" + HttpUtility.UrlEncode(fileName));
 			}
+
+			mCurrentDirectoryPath = path;
+			mParentDirectoryPath = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(Path.GetDirectoryName(path)));
 		}
 		catch (Exception ex)
 		{
@@ -92,25 +69,20 @@ public partial class Default : System.Web.UI.Page
 
 	}
 
-	private Stream GetPageLinkStream(IEnumerable<string> list, string parentPath)
+	
+	public static IEnumerable<string> GetMyDocumentDirList()
 	{
-		if (list == null)
+		String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+		IEnumerable<string> myDocumentDirs = Directory.EnumerateDirectories(path);
+		return myDocumentDirs;
+	}
+
+	public static IEnumerable<string> GetAllFiles(string path)
+	{
+		if (String.IsNullOrEmpty(path))
 			return null;
-
-		var memStream = new MemoryStream();
-		var streamWriter = new StreamWriter(memStream);
-
-
-		string url = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(Path.GetDirectoryName(parentPath)));
-		mCurrentDirectoryPath = parentPath;
-		if (!parentPath.Equals("C:/"))
-		{
-			string parentUrlButton = "<a href=" + url + ">" + "[Go to parent directory..]" + "</a>";
-
-		}
-		mParentDirectoryPath = url;
-
-		return memStream;
+		
+		return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
 	}
 
 	public long GetSize(string item)
@@ -161,6 +133,7 @@ public partial class Default : System.Web.UI.Page
 
 	public string GetUrl(string item) 
 	{
-		return String.Format(Request.Url.AbsoluteUri + "?move=" + "{0}", HttpUtility.UrlEncode(item));
+		string url = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(item));
+		return url;
 	}
 }
