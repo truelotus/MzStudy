@@ -161,7 +161,7 @@ public partial class Default : System.Web.UI.Page
 
 	public string GetFolderIcon()
 	{
-		return "http://localhost:50157/WebSite1/Resources/folder.PNG";
+		return "Resources/folder.PNG";
 	}
 
 	public string GetShortName(string item) 
