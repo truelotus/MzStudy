@@ -51,9 +51,43 @@ public partial class Default : System.Web.UI.Page
 			else
 			{
 				string fileName = Path.GetFileName(path);
-				//브라우저가 보여줄 파일 명/타입을 지정한다.
-				Response.ContentType = "application/octet-stream";
-				Response.Headers.Set("content-disposition", "attachment;filename=" + HttpUtility.UrlEncode(fileName));
+                Stream stream = null;
+                byte[] buffer = new Byte[10000];
+
+                try
+                {
+                    FileWebRequest fileRequest = (FileWebRequest)FileWebRequest.Create(path);
+                    FileWebResponse fileResponse = (FileWebResponse)fileRequest.GetResponse();
+
+                    if (fileRequest.ContentLength > 0)
+                        fileResponse.ContentLength = fileRequest.ContentLength;
+
+                    stream = fileResponse.GetResponseStream();
+
+                    //클라이언트에 보내줄 형식과 이름
+                    var response = HttpContext.Current.Response;
+                    response.ContentType = "application/octet-stream";
+                    response.AddHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+                    int length;
+                    do
+                    {
+                        if (response.IsClientConnected)
+                        {
+                            length = stream.Read(buffer, 0, 10000);
+                            response.OutputStream.Write(buffer, 0, length);
+                            response.Flush();
+                        }
+                        else
+                        {
+                            length = -1;
+                        }
+                    } while (length > 0);
+                }
+                finally
+                {
+                    if (stream != null)
+                        stream.Close();
+                }
 			}
 
 			mCurrentDirectoryPath = path;
@@ -81,8 +115,12 @@ public partial class Default : System.Web.UI.Page
 	{
 		if (String.IsNullOrEmpty(path))
 			return null;
-		
-		return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
+
+        if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+        {
+            return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
+        }
+        return new[] { path };
 	}
 
 	public string GetSize(string item)
