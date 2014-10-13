@@ -23,6 +23,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebSite1", "WebSite1\", "{D
 		VWDPort = "59359"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileExplorerWebApplication", "FileExplorerWebApplication\FileExplorerWebApplication.csproj", "{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,16 @@ Global
 		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
 		{D04DFA5D-9FAB-44AE-BBC0-BD302F561B58}.Release|x86.ActiveCfg = Debug|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
