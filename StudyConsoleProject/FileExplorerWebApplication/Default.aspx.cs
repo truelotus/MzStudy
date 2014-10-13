@@ -20,14 +20,13 @@ namespace FileExplorerWebApplication
 		public string mCurrentDirectoryPath = null;
 		public string mParentDirectoryPath = null;
 		public IEnumerable<string> mDirectories = null;
-
+        public static string previousPath = String.Empty;
 
 		protected void Page_Load(object sender, EventArgs e)
 		{
 			var url = Request.Url.AbsoluteUri;
 			var moveDirUrl = Request.QueryString["move"];
 			Move(moveDirUrl);
-
 		}
 
 
@@ -35,22 +34,26 @@ namespace FileExplorerWebApplication
 		{
 			if (String.IsNullOrEmpty(path))
 			{
-				Console.WriteLine("not found path!");
-				path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                if (previousPath.Equals("C:\\"))
+                    path = Path.GetPathRoot("C:\\");
+                else
+                {
+                    Console.WriteLine("Path not founded..Default path is MyDocuments.");
+                    path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
 			}
-
-			IEnumerable<string> list = null;
 
 			try
 			{
 				if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
 				{
+                    //디렉토리 일 경우
 					Response.ContentType = "text/html";
-					//WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
-					list = GetAllFiles(path);
+					//list = GetAllFiles(path);
 				}
 				else
 				{
+                    //파일일 경우 클라이언트로 출력한다.
 					string fileName = Path.GetFileName(path);
 					Stream stream = null;
 					byte[] buffer = new Byte[10000];
@@ -91,17 +94,16 @@ namespace FileExplorerWebApplication
 					}
 				}
 
-				mCurrentDirectoryPath = path;
+                previousPath = mCurrentDirectoryPath = path;
 				mParentDirectoryPath = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(Path.GetDirectoryName(path)));
 			}
 			catch (Exception ex)
 			{
-				//TODO: FileNotFoundedException 일 경우.. 브라우저에 에러 팝업 띄어줘야한다.
+				//FileNotFoundedException
 				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine(ex.Message);
 				Console.ResetColor();
 			}
-
 		}
 
 
@@ -131,7 +133,6 @@ namespace FileExplorerWebApplication
 			{
 				DirectoryInfo info = new DirectoryInfo(item);
 				size = "";
-
 			}
 			else
 			{
@@ -149,7 +150,6 @@ namespace FileExplorerWebApplication
 			{
 				DirectoryInfo info = new DirectoryInfo(item);
 				dateTime = info.LastWriteTime;
-
 			}
 			else
 			{
@@ -160,10 +160,13 @@ namespace FileExplorerWebApplication
 			return dateTime;
 		}
 
-		public string GetFolderIcon()
-		{
-			return "Resources/folder.PNG";
-		}
+        public string GetIcon(string path) 
+        {
+            if (IsFile(path))
+                return "Resources/file.PNG";
+            else
+                return "Resources/folder.PNG";
+        }
 
 		public string GetShortName(string item)
 		{
@@ -172,8 +175,19 @@ namespace FileExplorerWebApplication
 
 		public string GetUrl(string item)
 		{
-			string url = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(item));
-			return url;
+            return String.Format("?move=" + "{0}", HttpUtility.UrlEncode(item));
 		}
+
+        public bool IsFile(string path) 
+        {
+            if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 	}
 }

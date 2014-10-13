@@ -19,7 +19,7 @@ public partial class Default : System.Web.UI.Page
 	public string mCurrentDirectoryPath = null;
 	public string mParentDirectoryPath = null;
 	public IEnumerable<string> mDirectories = null;
-
+    public static string previousPath = String.Empty;
 
 	protected void Page_Load(object sender, EventArgs e)
 	{
@@ -32,21 +32,22 @@ public partial class Default : System.Web.UI.Page
 
 	public void Move(string path)
 	{
-		 if (String.IsNullOrEmpty(path))
-		{
-			Console.WriteLine("not found path!");
-			path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-		}
-
-		IEnumerable<string> list = null;
+        if (String.IsNullOrEmpty(path))
+        {
+            if (previousPath.Equals("C:\\"))
+                path = Path.GetPathRoot("C:\\");
+            else
+            {
+                Console.WriteLine("Path not founded..Default path is MyDocuments.");
+                path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            }
+        }
 
 		try
 		{
 			if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
 			{
 				Response.ContentType = "text/html";
-				//WebOperationContext.Current.OutgoingResponse.ContentType = "text/html";
-				list = GetAllFiles(path);
 			}
 			else
 			{
@@ -90,7 +91,7 @@ public partial class Default : System.Web.UI.Page
                 }
 			}
 
-			mCurrentDirectoryPath = path;
+            previousPath = mCurrentDirectoryPath = path;
 			mParentDirectoryPath = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(Path.GetDirectoryName(path)));
 		}
 		catch (Exception ex)
@@ -159,10 +160,13 @@ public partial class Default : System.Web.UI.Page
 		return dateTime;
 	}
 
-	public string GetFolderIcon()
-	{
-		return "Resources/folder.PNG";
-	}
+    public string GetIcon(string path)
+    {
+        if (IsFile(path))
+            return "Resources/file.PNG";
+        else
+            return "Resources/folder.PNG";
+    }
 
 	public string GetShortName(string item) 
 	{
@@ -174,4 +178,15 @@ public partial class Default : System.Web.UI.Page
 		string url = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(item));
 		return url;
 	}
+    public bool IsFile(string path)
+    {
+        if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }

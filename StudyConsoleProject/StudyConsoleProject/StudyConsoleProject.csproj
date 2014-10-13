@@ -87,6 +87,7 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\file.PNG" />
     <Content Include="Resources\folder.PNG" />
     <Content Include="Resources\Penguins.jpg" />
     <EmbeddedResource Include="View\ExplorerPage.htm" />

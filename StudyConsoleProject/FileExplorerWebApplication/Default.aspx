@@ -51,7 +51,8 @@
 		<tr>
 			<!--item image-->
 			<td>
-				<img src='<%=GetFolderIcon()%>' />
+				<img src='<%=GetIcon(item)
+				%>' />
 			</td>
 			<!--item path-->
 			<td>
