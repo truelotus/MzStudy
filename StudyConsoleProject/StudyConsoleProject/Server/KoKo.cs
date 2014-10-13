@@ -77,7 +77,7 @@ namespace StudyConsoleProject.Server
                 {
                     //브라우저에서 보여질 파일 명/타입을 지정한다.
                     WebOperationContext.Current.OutgoingResponse.ContentType = "application/octet-stream";
-                    WebOperationContext.Current.OutgoingResponse.Headers.Set("content-disposition", "attachment;filename=" 
+                    WebOperationContext.Current.OutgoingResponse.Headers.Set("content-disposition", "attachment;filename="
                         + HttpUtility.UrlEncode(Path.GetFileName(path)));
                     return System.IO.File.OpenRead(path);
                 }
@@ -182,7 +182,7 @@ namespace StudyConsoleProject.Server
                     {
                         streamWriter.Write("<img src='/fileicon'/>");
                     }
-                    
+
                     streamWriter.Write(uriPath);
                     streamWriter.WriteLine("</td>");
 

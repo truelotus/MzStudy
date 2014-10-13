@@ -7,12 +7,12 @@ namespace StudyConsoleProject
 {
     class ConsoleList
     {
-        public ConsoleList() 
+        public ConsoleList()
         {
             OutPutTest();
         }
 
-        private void OutPutTest() 
+        private void OutPutTest()
         {
             //List class 만들기. younhome(https://github.com/truelotus/MzStudy.git)에서 수정함.
             List<String> listOrigin = new List<string>();

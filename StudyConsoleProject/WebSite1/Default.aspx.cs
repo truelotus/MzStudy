@@ -15,23 +15,23 @@ using System.ServiceModel.Web;
 public partial class Default : System.Web.UI.Page
 {
 
-	//aspx 단에서 보여지는 부분
-	public string mCurrentDirectoryPath = null;
-	public string mParentDirectoryPath = null;
-	public IEnumerable<string> mDirectories = null;
+    //aspx 단에서 보여지는 부분
+    public string mCurrentDirectoryPath = null;
+    public string mParentDirectoryPath = null;
+    public IEnumerable<string> mDirectories = null;
     public static string previousPath = String.Empty;
 
-	protected void Page_Load(object sender, EventArgs e)
-	{
-		var url = Request.Url.AbsoluteUri;
-		var moveDirUrl = Request.QueryString["move"];
-		Move(moveDirUrl);
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        var url = Request.Url.AbsoluteUri;
+        var moveDirUrl = Request.QueryString["move"];
+        Move(moveDirUrl);
 
-	}
+    }
 
 
-	public void Move(string path)
-	{
+    public void Move(string path)
+    {
         if (String.IsNullOrEmpty(path))
         {
             if (previousPath.Equals("C:\\"))
@@ -43,15 +43,15 @@ public partial class Default : System.Web.UI.Page
             }
         }
 
-		try
-		{
-			if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
-			{
-				Response.ContentType = "text/html";
-			}
-			else
-			{
-				string fileName = Path.GetFileName(path);
+        try
+        {
+            if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                Response.ContentType = "text/html";
+            }
+            else
+            {
+                string fileName = Path.GetFileName(path);
                 Stream stream = null;
                 byte[] buffer = new Byte[10000];
 
@@ -89,76 +89,76 @@ public partial class Default : System.Web.UI.Page
                     if (stream != null)
                         stream.Close();
                 }
-			}
+            }
 
             previousPath = mCurrentDirectoryPath = path;
-			mParentDirectoryPath = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(Path.GetDirectoryName(path)));
-		}
-		catch (Exception ex)
-		{
-			//TODO: FileNotFoundedException 일 경우.. 브라우저에 에러 팝업 띄어줘야한다.
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.WriteLine(ex.Message);
-			Console.ResetColor();
-		}
+            mParentDirectoryPath = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(Path.GetDirectoryName(path)));
+        }
+        catch (Exception ex)
+        {
+            //TODO: FileNotFoundedException 일 경우.. 브라우저에 에러 팝업 띄어줘야한다.
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(ex.Message);
+            Console.ResetColor();
+        }
 
-	}
+    }
 
-	
-	public static IEnumerable<string> GetMyDocumentDirList()
-	{
-		String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-		IEnumerable<string> myDocumentDirs = Directory.EnumerateDirectories(path);
-		return myDocumentDirs;
-	}
 
-	public static IEnumerable<string> GetAllFiles(string path)
-	{
-		if (String.IsNullOrEmpty(path))
-			return null;
+    public static IEnumerable<string> GetMyDocumentDirList()
+    {
+        String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        IEnumerable<string> myDocumentDirs = Directory.EnumerateDirectories(path);
+        return myDocumentDirs;
+    }
+
+    public static IEnumerable<string> GetAllFiles(string path)
+    {
+        if (String.IsNullOrEmpty(path))
+            return null;
 
         if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
         {
             return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
         }
         return new[] { path };
-	}
+    }
 
-	public string GetSize(string item)
-	{
-		string size = "";
-		if ((System.IO.File.GetAttributes(item) & FileAttributes.Directory) == FileAttributes.Directory)
-		{
-			DirectoryInfo info = new DirectoryInfo(item);
-			size = "";
+    public string GetSize(string item)
+    {
+        string size = "";
+        if ((System.IO.File.GetAttributes(item) & FileAttributes.Directory) == FileAttributes.Directory)
+        {
+            DirectoryInfo info = new DirectoryInfo(item);
+            size = "";
 
-		}
-		else
-		{
-			FileInfo info = new FileInfo(item);
-			size = info.Length.ToString();
-		}
+        }
+        else
+        {
+            FileInfo info = new FileInfo(item);
+            size = info.Length.ToString();
+        }
 
-		return size;
-	}
+        return size;
+    }
 
-	public DateTime GetModifiedDate(string item)
-	{
-		DateTime dateTime;
-		if ((System.IO.File.GetAttributes(item) & FileAttributes.Directory) == FileAttributes.Directory)
-		{
-			DirectoryInfo info = new DirectoryInfo(item);
-			dateTime = info.LastWriteTime;
+    public DateTime GetModifiedDate(string item)
+    {
+        DateTime dateTime;
+        if ((System.IO.File.GetAttributes(item) & FileAttributes.Directory) == FileAttributes.Directory)
+        {
+            DirectoryInfo info = new DirectoryInfo(item);
+            dateTime = info.LastWriteTime;
 
-		}
-		else
-		{
-			FileInfo info = new FileInfo(item);
-			dateTime = info.LastWriteTime;
-		}
+        }
+        else
+        {
+            FileInfo info = new FileInfo(item);
+            dateTime = info.LastWriteTime;
+        }
 
-		return dateTime;
-	}
+        return dateTime;
+    }
 
     public string GetIcon(string path)
     {
@@ -168,16 +168,16 @@ public partial class Default : System.Web.UI.Page
             return "Resources/folder.PNG";
     }
 
-	public string GetShortName(string item) 
-	{
-		return Path.GetFileName(item);
-	}
+    public string GetShortName(string item)
+    {
+        return Path.GetFileName(item);
+    }
 
-	public string GetUrl(string item) 
-	{
-		string url = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(item));
-		return url;
-	}
+    public string GetUrl(string item)
+    {
+        string url = String.Format("?move=" + "{0}", HttpUtility.UrlEncode(item));
+        return url;
+    }
     public bool IsFile(string path)
     {
         if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)

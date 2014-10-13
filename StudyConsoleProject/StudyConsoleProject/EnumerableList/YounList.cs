@@ -14,7 +14,7 @@ namespace StudyConsoleProject
 
         private int mIndex;
 
-        public YounListEnumerator(YounList<T> list) 
+        public YounListEnumerator(YounList<T> list)
         {
             mArray = list;
             mItem = default(T);
@@ -40,7 +40,7 @@ namespace StudyConsoleProject
         public bool MoveNext()
         {
             mIndex = ++mIndex;
-            if (mIndex<mArray.Count)
+            if (mIndex < mArray.Count)
             {
                 //이동 할 요소가 있으면 next item이 current가 되어야한다.
                 mItem = mArray[mIndex];
@@ -59,7 +59,7 @@ namespace StudyConsoleProject
     }
 
 
-    public class YounList<T>: IList<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
+    public class YounList<T> : IList<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable
     {
         T[] mArray = null;
 
@@ -67,47 +67,48 @@ namespace StudyConsoleProject
         {
             mArray = new T[0];
         }
-        
-        public void Add(T item) {
+
+        public void Add(T item)
+        {
 
             Array.Resize(ref mArray, mArray.Length + 1);
             mArray[mArray.Length - 1] = item;
 
-           //현재 배열의 사이즈 고려하여 아이템 추가
-           /*T[] arrayB = new T[mArray.Length+1];
-           arrayB[mArray.Length] = item;
-           for (int i = 0; i < mArray.Length; i++)
-           {
-               arrayB[i] = mArray[i];
-           }
-           mArray = arrayB;*/
-           //updateArray(mArray, mArray.Length);
+            //현재 배열의 사이즈 고려하여 아이템 추가
+            /*T[] arrayB = new T[mArray.Length+1];
+            arrayB[mArray.Length] = item;
+            for (int i = 0; i < mArray.Length; i++)
+            {
+                arrayB[i] = mArray[i];
+            }
+            mArray = arrayB;*/
+            //updateArray(mArray, mArray.Length);
         }
 
 
-       /* private void updateArray(T[] array, int length)
-        {
-            T[] tempArray = new T[length];
+        /* private void updateArray(T[] array, int length)
+         {
+             T[] tempArray = new T[length];
 
-            for (int i = 0; i < length; i++)
-            {
-                if (i < array.Length)
-                {
-                    tempArray[i] = array[i];
-                }
-                else
-                {
-                    tempArray[i] = default(T);
-                }
-            }
+             for (int i = 0; i < length; i++)
+             {
+                 if (i < array.Length)
+                 {
+                     tempArray[i] = array[i];
+                 }
+                 else
+                 {
+                     tempArray[i] = default(T);
+                 }
+             }
 
-            mArray = new T[length + 1];
-            for (int i = 0; i < length; i++)
-            {
-                mArray[i] = tempArray[i];
-            }
-        }
-        */
+             mArray = new T[length + 1];
+             for (int i = 0; i < length; i++)
+             {
+                 mArray[i] = tempArray[i];
+             }
+         }
+         */
 
         public IEnumerator GetEnumerator()
         {
@@ -119,7 +120,7 @@ namespace StudyConsoleProject
             return new YounListEnumerator<T>(this);
         }
 
-       
+
         public void CopyTo(Array array, int index)
         {
             Array.Copy(mArray, array, index);
@@ -128,7 +129,7 @@ namespace StudyConsoleProject
 
         public int Count
         {
-            get {return mArray.Length; }
+            get { return mArray.Length; }
         }
 
         public bool IsSynchronized
@@ -152,7 +153,7 @@ namespace StudyConsoleProject
         {
             for (int i = 0; i < mArray.Length; i++)
             {
-                if (Array.Equals(mArray[i],item))
+                if (Array.Equals(mArray[i], item))
                 {
                     return true;
                 }
@@ -163,7 +164,7 @@ namespace StudyConsoleProject
         //특정 Array 인덱스에서 시작하여 ICollection<T>의 요소를 Array에 복사합니다.
         public void CopyTo(T[] array, int arrayIndex)
         {
-            Array.ConstrainedCopy(mArray,0,array,arrayIndex,mArray.Length);
+            Array.ConstrainedCopy(mArray, 0, array, arrayIndex, mArray.Length);
             return;
         }
 
@@ -220,7 +221,8 @@ namespace StudyConsoleProject
 
 
         }
-        private T GetItem(int index){
+        private T GetItem(int index)
+        {
             return mArray[index];
         }
 
@@ -229,7 +231,7 @@ namespace StudyConsoleProject
             //IList<T>에서 특정 항목의 인덱스를 확인합니다.
             for (int i = 0; i < mArray.Length; i++)
             {
-                if (Array.Equals(mArray[i],item))
+                if (Array.Equals(mArray[i], item))
                 {
                     return i;
                 }
@@ -241,10 +243,10 @@ namespace StudyConsoleProject
         {
             //인덱스에 들어가고 들어간 자리만큼 한자리 늘어나야한다.
             int n = 0;
-            T[] bArray = new T[mArray.Length+1];
+            T[] bArray = new T[mArray.Length + 1];
             for (int i = 0; i < bArray.Length; i++)
             {
-                if (i==index)
+                if (i == index)
                 {
                     bArray[i] = item;
                 }
@@ -263,10 +265,10 @@ namespace StudyConsoleProject
 
             int n = 0;
             T[] bArray = new T[mArray.Length];
-            
+
             for (int i = 0; i < mArray.Length; i++)
             {
-                if (i!=index)
+                if (i != index)
                 {
                     bArray[n] = mArray[i];
                     n = n + 1;
@@ -278,9 +280,9 @@ namespace StudyConsoleProject
             mArray = cArray;
         }
 
-        public T this[int index, T item] 
+        public T this[int index, T item]
         {
-            set 
+            set
             {
                 mArray[index] = item;
             }
@@ -295,10 +297,10 @@ namespace StudyConsoleProject
             }
             set
             {
-               mArray[index] = value;
+                mArray[index] = value;
             }
         }
     }
- 
- 
+
+
 }

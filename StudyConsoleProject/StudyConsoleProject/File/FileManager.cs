@@ -9,16 +9,16 @@ using System.Web.UI;
 
 namespace StudyConsoleProject.File
 {
-   public static class FileManager
+    public static class FileManager
     {
-       public static IEnumerable<string> GetMyDocumentList()
+        public static IEnumerable<string> GetMyDocumentList()
         {
             String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             IEnumerable<string> myDocumentDirs = Directory.EnumerateDirectories(path);
             return myDocumentDirs;
         }
 
-       public static string GetHtmlView() 
+        public static string GetHtmlView()
         {
             XmlDocument doc = new XmlDocument();
             //string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "HTMLPage1.htm");
@@ -28,88 +28,88 @@ namespace StudyConsoleProject.File
             return doc.ToString();
         }
 
-       public static IEnumerable<string> GetDirectoryList(string path)
+        public static IEnumerable<string> GetDirectoryList(string path)
         {
-					return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
+            return new[] { Directory.EnumerateDirectories(path), Directory.EnumerateFiles(path) }.SelectMany(item => item);
 
-						//IEnumerable<string> list = null;
-						//String[] temp = null;
+            //IEnumerable<string> list = null;
+            //String[] temp = null;
 
-						////임시 : 특수 폴더 일 경우에는 SpecialFolder 경로를 사용합니다.
-						////if (path.Contains("My"))
-						////{
-						////    if (path.Contains("My Music"))
-						////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-						////    else if (path.Contains("My Vidios"))
-						////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
-						////    else if (path.Contains("My Pictures"))
-						////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-						////    else if (path.Contains("My Documents"))
-						////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-						////}
+            ////임시 : 특수 폴더 일 경우에는 SpecialFolder 경로를 사용합니다.
+            ////if (path.Contains("My"))
+            ////{
+            ////    if (path.Contains("My Music"))
+            ////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+            ////    else if (path.Contains("My Vidios"))
+            ////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
+            ////    else if (path.Contains("My Pictures"))
+            ////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+            ////    else if (path.Contains("My Documents"))
+            ////        path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            ////}
 
-						//try
-						//{						
-							
-
-						//    list = Directory.EnumerateDirectories(path);
-						//    Console.WriteLine("previous copy only Dir list count is {0}", list.Count());
-
-						//    var fileList = Directory.EnumerateFiles(path);
-						//    Console.WriteLine("only file list count is {0}", fileList.Count());
-
-						//    var tempList = list.ToList();
-						//    tempList.AddRange(fileList);
-						//    return tempList;
-								
-						//    temp = list.ToArray();
-
-						//    int size = list.Count() + fileList.Count();
-						//    if (fileList.Count() > 0)
-						//    {
-						//        if (list != null)
-						//            temp = fileList.ToArray();
-
-						//        //파일과 디렉토리를 합친다.
-						//        Array.Resize(ref temp, size);
-						//        Console.WriteLine("resize Dir list count is {0}", temp.Count());
-						//        if (list.Count()!=0)
-						//        {
-						//            Array.Copy(list.ToArray(), temp, list.Count() - 1); 
-						//        }
-                    
-						//        Console.WriteLine("after copy Dir list count is {0}", temp.Count());
-						//    }
-                
-						//}
-						//catch (Exception ex)
-						//{
-						//    //액세스 예외 상황일 시..
-						//    if (ex.Source.Equals("mscorlib"))
-						//    {
-						//        temp = new string[] { path };
-						//    }
-						//    Console.ForegroundColor = ConsoleColor.Red;
-						//    Console.WriteLine(ex.Message);
-						//    Console.ResetColor();
-						//}
-
-						//if (temp == null)
-						//    return null;
+            //try
+            //{						
 
 
-						//for (int i = 0; i < temp.Length; i++)
-						//{
-						//    if (temp[i] != null)
-						//    {
-						//        Console.Write("return item : ");
-						//        Console.ResetColor();
-						//        Console.ForegroundColor = ConsoleColor.DarkGreen;
-						//        Console.WriteLine(temp[i]);
-						//        Console.ResetColor();
-						//    }
-						//}
-						//return temp;
+            //    list = Directory.EnumerateDirectories(path);
+            //    Console.WriteLine("previous copy only Dir list count is {0}", list.Count());
+
+            //    var fileList = Directory.EnumerateFiles(path);
+            //    Console.WriteLine("only file list count is {0}", fileList.Count());
+
+            //    var tempList = list.ToList();
+            //    tempList.AddRange(fileList);
+            //    return tempList;
+
+            //    temp = list.ToArray();
+
+            //    int size = list.Count() + fileList.Count();
+            //    if (fileList.Count() > 0)
+            //    {
+            //        if (list != null)
+            //            temp = fileList.ToArray();
+
+            //        //파일과 디렉토리를 합친다.
+            //        Array.Resize(ref temp, size);
+            //        Console.WriteLine("resize Dir list count is {0}", temp.Count());
+            //        if (list.Count()!=0)
+            //        {
+            //            Array.Copy(list.ToArray(), temp, list.Count() - 1); 
+            //        }
+
+            //        Console.WriteLine("after copy Dir list count is {0}", temp.Count());
+            //    }
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    //액세스 예외 상황일 시..
+            //    if (ex.Source.Equals("mscorlib"))
+            //    {
+            //        temp = new string[] { path };
+            //    }
+            //    Console.ForegroundColor = ConsoleColor.Red;
+            //    Console.WriteLine(ex.Message);
+            //    Console.ResetColor();
+            //}
+
+            //if (temp == null)
+            //    return null;
+
+
+            //for (int i = 0; i < temp.Length; i++)
+            //{
+            //    if (temp[i] != null)
+            //    {
+            //        Console.Write("return item : ");
+            //        Console.ResetColor();
+            //        Console.ForegroundColor = ConsoleColor.DarkGreen;
+            //        Console.WriteLine(temp[i]);
+            //        Console.ResetColor();
+            //    }
+            //}
+            //return temp;
         }
     }
 }
