@@ -181,12 +181,8 @@ public partial class Default : System.Web.UI.Page
     public bool IsFile(string path)
     {
         if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
-        {
             return false;
-        }
         else
-        {
             return true;
-        }
     }
 }

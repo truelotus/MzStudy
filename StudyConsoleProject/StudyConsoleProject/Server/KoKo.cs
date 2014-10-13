@@ -58,8 +58,10 @@ namespace StudyConsoleProject.Server
                 if (previousPath.Equals("C:\\"))
                     path = Path.GetPathRoot("C:\\");
                 else
+                {
                     Console.WriteLine("Path not founded..Default path is MyDocuments.");
                     path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                }
             }
 
             IEnumerable<string> list = null;
@@ -133,10 +135,10 @@ namespace StudyConsoleProject.Server
 
                     long size = 0;
                     DateTime lastTime;
-                    bool isDir = false;
+
                     if (!IsFile(item))
                     {
-                        isDir = true;
+
                         DirectoryInfo info = new DirectoryInfo(item);
                         size = 0;
                         lastTime = info.LastWriteTime;
@@ -172,7 +174,7 @@ namespace StudyConsoleProject.Server
                         streamWriter.WriteLine("<hr/>");
                     }
                     streamWriter.WriteLine("<td>");
-                    if (isDir)
+                    if (!IsFile(item))
                     {
                         streamWriter.Write("<img src='/fordericon'/>");
                     }
@@ -185,7 +187,7 @@ namespace StudyConsoleProject.Server
                     streamWriter.WriteLine("</td>");
 
                     streamWriter.WriteLine("<td>");
-                    if (isDir)
+                    if (!IsFile(item))
                     {
                         streamWriter.Write(String.Empty);
                     }
