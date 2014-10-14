@@ -14,27 +14,13 @@ public partial class Board_Main : System.Web.UI.Page
 	public void Page_Load(object sender, EventArgs e)
 	{
 		var requestUrl = Request.Url.AbsoluteUri;
-
-		if (!String.IsNullOrEmpty(Request.QueryString["write"]))
-		{
-			//쓰기 페이지로 이동.
-		}
-		else if (!String.IsNullOrEmpty(Request.QueryString["read"]))
-		{
-			 //읽기 페이지로 이동.
-
-		}
 	}
 
 	public string GetArticleUrl(Article article) 
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		var url = String.Format("http://{0}/read.aspx?read={1}", portUrl, article.Id);
-
-		return url;
+		return String.Format("http://{0}/read.aspx?read={1}", portUrl, article.Id);
 	}
-
-
 
 	public IEnumerable<Article> GetList()
 	{

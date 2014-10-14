@@ -15,7 +15,7 @@ public partial class Board_Read : System.Web.UI.Page
 			if (!String.IsNullOrEmpty(Request.QueryString["read"]))
 			{
 				var article = GetArticleInfo(Request.QueryString["read"]);
-			
+				
 				//Request.Form["title"] = article.Title;
 				//Request.Form["contents"] = article.Contents;
 				//Request.Form["writer"] = article.Writer;
