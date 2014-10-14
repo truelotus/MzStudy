@@ -63,15 +63,20 @@
     <Content Include="write.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataBase\Article.cs" />
+    <Compile Include="DataBase\MsSqlDataBase.cs" />
     <Compile Include="index.aspx.cs">
       <DependentUpon>index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="read.aspx.cs">
       <DependentUpon>read.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="write.aspx.cs">
       <DependentUpon>write.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

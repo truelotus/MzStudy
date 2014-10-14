@@ -17,11 +17,11 @@
 				<input type="text" name="writer" />
 				<br />
 				Content
-				<input type="text" name="content" />
+				<TEXTAREA type="text" name="content" />
 				<br />
 				<tr>
 		</table>
-		<a href="Read.aspx">글 등록</a>
+		<a href="Read.aspx" onclick="">글 등록</a>
 	</div>
 	</form>
 </body>
