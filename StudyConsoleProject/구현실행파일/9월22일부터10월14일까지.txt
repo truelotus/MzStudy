@@ -1,0 +1,13 @@
+1차 작업: 열거형클래스, Linq구문, 스레드 샘플 코드 작성. => 이용하여 비동기로 웹 이미지 다운로드 프로그램
+
+
+2차 작업 : 구글 탐색기와 동일하게 동작하는 web explorer를 목표로 만들기 시작,
+
+-(서버코드클래스)console file explorer
+
+-(asp.net dev.server)웹사이트_web file explorer
+
+-(iis server)웹 응용 프로젝트_web file explorer
+
+
+3차 작업 진행중.:CRUD 웹 게시판 만들기. :  MS Sql사용.
