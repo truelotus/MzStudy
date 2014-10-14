@@ -11,17 +11,17 @@
 		<table>
 			<tr>
 				Title
-				<input type="text" name="title" />
+				<input type="text" name="title" id="title" />
 				<br />
 				Writer
-				<input type="text" name="writer" />
+				<input type="text" name="writer" id="writer"/>
 				<br />
 				Content
-				<TEXTAREA type="text" name="content" />
+				<TEXTAREA type="text" name="contents" id="contents" >글 영역입니다.</TEXTAREA>
 				<br />
 				<tr>
 		</table>
-		<a href="Read.aspx" onclick="">글 등록</a>
+		<a href="Read.aspx" >글 등록</a>
 	</div>
 	</form>
 </body>

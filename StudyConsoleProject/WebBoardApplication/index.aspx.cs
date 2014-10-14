@@ -6,35 +6,40 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using WebBoardApplication.DataBase;
 using System.Data;
+using System.IO;
 
 public partial class Board_Main : System.Web.UI.Page
 {
 
 	public void Page_Load(object sender, EventArgs e)
 	{
-		var url = Request.Url.AbsoluteUri;
+		var requestUrl = Request.Url.AbsoluteUri;
 
-		//string requestUrl = null;
+		if (!String.IsNullOrEmpty(Request.QueryString["write"]))
+		{
+			//쓰기 페이지로 이동.
+		}
+		else if (!String.IsNullOrEmpty(Request.QueryString["read"]))
+		{
+			 //읽기 페이지로 이동.
 
-
-		//if (String.IsNullOrEmpty(requestUrl = Request.QueryString["write"]))
-		//{
-
-		//}
-		//else if (String.IsNullOrEmpty(requestUrl = Request.QueryString["read"]))
-		//{
-
-		//}
-		//else if (String.IsNullOrEmpty(requestUrl = Request.QueryString["index"]))
-		//{
-
-		//}
+		}
 	}
+
+	public string GetArticleUrl(Article article) 
+	{
+		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
+		var url = String.Format("http://{0}/read.aspx?read={1}", portUrl, article.Id);
+
+		return url;
+	}
+
+
 
 	public IEnumerable<Article> GetList()
 	{
 
-		var dataSet = MsSqlDataBase.GetData();
+		var dataSet = MsSqlDataBase.GetArticlesData();
 		var list = new List<Article>();
 
 		if (dataSet.Tables.Count > 0)
