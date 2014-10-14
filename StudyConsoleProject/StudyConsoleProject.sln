@@ -25,6 +25,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "WebSite1", "WebSite1\", "{D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileExplorerWebApplication", "FileExplorerWebApplication\FileExplorerWebApplication.csproj", "{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebBoardApplication", "WebBoardApplication\WebBoardApplication.csproj", "{A3B18CE8-5705-4A1A-B16A-6266886D257F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,6 +67,16 @@ Global
 		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B9C4BFA3-549F-4D47-96B3-366EFD40A47A}.Release|x86.ActiveCfg = Release|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

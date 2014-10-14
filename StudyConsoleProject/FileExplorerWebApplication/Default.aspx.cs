@@ -181,13 +181,9 @@ namespace FileExplorerWebApplication
         public bool IsFile(string path)
         {
             if ((System.IO.File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory)
-            {
                 return false;
-            }
             else
-            {
                 return true;
-            }
         }
     }
 }

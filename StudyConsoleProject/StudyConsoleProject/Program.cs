@@ -19,12 +19,12 @@ namespace StudyConsoleProject
     {
         static void Main(string[] args)
         {
-            using (var server = new KoServer())
-            {
-                server.Run();
+						using (var server = new KoServer())
+						{
+						    server.Run();
 
-                Console.ReadLine();
-            }
+						    Console.ReadLine();
+						}
 
             //FileExplorerForm form = new FileExplorerForm();
             //form.ShowDialog();
