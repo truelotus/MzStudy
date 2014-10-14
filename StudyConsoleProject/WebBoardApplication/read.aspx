@@ -11,18 +11,19 @@
 		<table>
 			<tr>
 				<td>
-					<b>Title</b> this is title
+					<b >Title</b>
+					<p id="title"></p>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<b>Writer</b> younha
+					<b>Writer</b> 
+					<p id="writer"></p>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<b>Content</b> London is the capital city of England. It is the most populous city
-					in the United Kingdom, with a metropolitan area of over 13 million inhabitants.
+					<b>Contents</b><p id="contents"></p>
 				</td>
 			</tr>
 		</table>

@@ -33,27 +33,29 @@
 				<!--게시판 테이블 데이터 태그-->
 				<% var list = GetList();
 	   foreach (WebBoardApplication.DataBase.Article item in list)
-	   {
-		 if (item!=null)
-		 {%>
-				<td>
-					<%=item.No%>
-				</td>
-				<td>
-					<%=item.Title%>
-				</td>
-				<td>
-					<%=item.Writer%>
-				</td>
-				<td>
-					<%=item.Date%>
-				</td>
-				<td>
-					<%=item.Hits%>
-				</td>
+	 {
+		 if (item != null)
+	 {%>
+				<tr>
+					<td>
+						<%=item.No%>
+					</td>
+					<td>
+						<a href=<%=GetArticleUrl(item)%>><%=item.Title%></a>
+					</td>
+					<td>
+						<%=item.Writer%>
+					</td>
+					<td>
+						<%=item.Date%>
+					</td>
+					<td>
+						<%=item.Hits%>
+					</td>
+				</tr>
 				<% }
-				
-	}%>
+
+	 }%>
 			</tr>
 		</table>
 		<a href="write.aspx">글 작성</a>
