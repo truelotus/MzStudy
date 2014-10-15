@@ -109,6 +109,36 @@ namespace WebBoardApplication.DataBase
 			return dataSet;
 		}
 
+		public static bool HasArticleData(string no)
+		{
+			if (String.IsNullOrEmpty(no))
+				return false;
+
+			var query = String.Format("SELECT * FROM ARTICLE_INFO WHERE NO = {0}", no);
+			var cmd = new SqlCommand(query, GetConnection());
+			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+			DataSet dataSet = new DataSet();
+			adapter.Fill(dataSet, DB_TABLE_NAME);
+			var dataTbl = dataSet.Tables[DB_TABLE_NAME];
+
+			if (dataSet.Tables.Count > 0)
+			{
+				foreach (DataRow dRow in dataTbl.Rows) 
+				{
+					if (dRow["NO"]==null)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+				}
+			}
+
+				return false;
+		}
+
 		/// <summary>
 		/// DB에서 ID를 조회하여 데이터를 삭제한다.
 		/// </summary>
@@ -126,20 +156,19 @@ namespace WebBoardApplication.DataBase
 			connect.Close();
 		}
 
+		/// <summary>
+		/// Article의 No 정보를 가지고 DB Update한다.
+		/// </summary>
+		/// <param name="article"></param>
 		public static void UpdateArticleData(Article article) 
 		{
 			//아이디 조회
-			var dataSet = GetSelectedArticleData(article.Id);
-			var dataTbl = dataSet.Tables["ARTICLE_INFO"];
-
-			if (dataSet.Tables.Count > 0)
+			if (HasArticleData(article.No))
 			{
-				//var query = String.Format("UPDATE INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
-				//, article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
-
 				var connect = GetConnection();
-				var cmd = new SqlCommand("SP_UpdateArticle2", connect);
+				var cmd = new SqlCommand("SP_UpdateArticle", connect);
 				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@No", SqlDbType.VarChar).Value = article.No;
 				cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
 				cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
 				cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
@@ -150,11 +179,11 @@ namespace WebBoardApplication.DataBase
 					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
 
 				connect.Open();
-
 				cmd.ExecuteNonQuery();
-
 				connect.Close();
 			}
+			else
+				return;
 		}
 	}
 }

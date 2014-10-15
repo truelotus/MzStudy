@@ -10,9 +10,10 @@
 	<div>
 		<table>
 			<tr>
+				No
+				<input type="text" name="no" id="No" value="<%=mNo%>"/>
 				Title
-				<input type="text" name="title" id="Title" value="<%=mTitle %>"/>
-				<br />
+				<input type="text" name="title" id="Title" value="<%=mTitle%>"/>
 				Writer
 				<input type="text" name="writer" value="<%=mWriter %>" />
 				<br />
@@ -22,7 +23,7 @@
 				<tr>
 		</table>
 		<%--<asp:Button ID="Btn_Write" AlternateText="글 등록" />--%>
-		<input type="submit" value="글등록" />
+		<input type="submit" value="글등록"  />
 		<%--<a id="write" href="<%=GetArticleUrl(mArticleId)%>">글 등록</a>--%>
 	</div>
 	</form>

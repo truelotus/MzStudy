@@ -18,20 +18,20 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE PROCEDURE SP_UpdateArticle2 
+CREATE PROCEDURE SP_UpdateArticle 
 	-- Add the parameters for the stored procedure here
+	@No int,
 	@Title varchar(50),
 	@Contents varchar(max),
 	@Writer varchar(50),
 	@Password varchar(50)
+	
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-    -- Insert statements for procedure here
-	-- UPDATE INTO ARTICLE_INFO (TITLE,CONTENTS,WRITER,PASSWORD) VALUES(@Title,@Contents,@Writer,@Password)
-	update ARTICLE_INFO set TITLE= @Title, CONTENTS = @Contents, WRITER =@Writer, PASSWORD = @Password
+	UPDATE ARTICLE_INFO SET TITLE= @Title, CONTENTS = @Contents, WRITER = @Writer, PASSWORD = @Password where NO = @No
 END
 GO
