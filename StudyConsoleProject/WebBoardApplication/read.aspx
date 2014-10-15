@@ -32,7 +32,7 @@
 		</table>
 		<tr>
 			<a href="Default.aspx">글 목록</a> 
-			<a href="write.aspx">글 수정</a>
+			<a href="<%=GetUpdateArticleUrl(mArticle) %>">글 수정</a>
 			<a href="<%=GetDeleteArticleUrl(mArticle)%>">글 삭제</a>
 		</tr>
 	</form>

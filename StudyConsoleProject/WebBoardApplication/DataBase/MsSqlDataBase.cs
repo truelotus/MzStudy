@@ -99,6 +99,27 @@ namespace WebBoardApplication.DataBase
 			connect.Close();
 		}
 
+		public static void UpdateArticleData(Article article) 
+		{
+			//아이디 조회
+			var dataSet = GetSelectedArticleData(article.Id);
+			var dataTbl = dataSet.Tables["ARTICLE_INFO"];
+
+			if (dataSet.Tables.Count > 0)
+			{
+				var query = String.Format("UPDATE INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
+				, article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
+
+				var connect = GetConnection();
+				var command = new SqlCommand(query, connect);
+				connect.Open();
+				command.ExecuteNonQuery();
+
+				connect.Close();
+			}
+
+			//게시글 덮어 씌우기.
+		}
 
 		private static string getConnectionString()
 		{

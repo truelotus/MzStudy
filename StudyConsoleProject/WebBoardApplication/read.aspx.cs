@@ -20,8 +20,7 @@ public partial class Board_Read : System.Web.UI.Page
 			}
 			else
 			{
-				SetDatabase(Request);
-				
+				SetDatabase(Request);	
 			}
     }
 
@@ -29,6 +28,12 @@ public partial class Board_Read : System.Web.UI.Page
 		{
 			var portUrl = Request.Url.Host + ":" + Request.Url.Port;
 			return String.Format("http://{0}/Default.aspx?delete={1}", portUrl, article.Id);
+		}
+
+		public string GetUpdateArticleUrl(Article article)
+		{
+			var portUrl = Request.Url.Host + ":" + Request.Url.Port;
+			return String.Format("http://{0}/write.aspx?update={1}", portUrl, article.Id);
 		}
 
 		public void SetDatabase(HttpRequest request)

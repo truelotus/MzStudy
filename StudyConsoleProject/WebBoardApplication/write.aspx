@@ -11,13 +11,13 @@
 		<table>
 			<tr>
 				Title
-				<input type="text" name="title" id="Title" />
+				<input type="text" name="title" id="Title" value="<%=mTitle %>"/>
 				<br />
 				Writer
-				<input type="text" name="writer" id="Writer"/>
+				<input type="text" name="writer" />
 				<br />
 				Content
-				<TEXTAREA type="text" name="contents" id="Contents" >글 영역입니다.</TEXTAREA>
+				<TEXTAREA type="text" name="contents" ><%=mContents%></TEXTAREA>
 				<br />
 				<tr>
 		</table>
