@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Data.SqlClient;
 using System.Data;
+using System.Configuration;
 
 namespace WebBoardApplication.DataBase
 {
@@ -15,7 +16,7 @@ namespace WebBoardApplication.DataBase
 
 		public static SqlConnection GetConnection()
 		{
-			return new SqlConnection(getConnectionString());
+			return new SqlConnection(ConfigurationManager.ConnectionStrings["aticle_write"].ToString());
 		}
 
 
@@ -120,11 +121,5 @@ namespace WebBoardApplication.DataBase
 
 			//게시글 덮어 씌우기.
 		}
-
-		private static string getConnectionString()
-		{
-			return @"Data Source=localhost; Database=Article; USER ID=sa; PASSWORD=Youn820!;";
-		}
-
 	}
 }
