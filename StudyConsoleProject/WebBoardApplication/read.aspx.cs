@@ -9,37 +9,57 @@ using System.Data;
 
 public partial class Board_Read : System.Web.UI.Page
 {
+		public Article mArticle;
     protected void Page_Load(object sender, EventArgs e)
     {
 			var requestUrl = Request.Url.AbsoluteUri;
+
 			if (!String.IsNullOrEmpty(Request.QueryString["read"]))
 			{
-				var article = GetArticleInfo(Request.QueryString["read"]);
-				
-				//Request.Form["title"] = article.Title;
-				//Request.Form["contents"] = article.Contents;
-				//Request.Form["writer"] = article.Writer;
+				mArticle = GetArticleInfo(Request.QueryString["read"]);
+			}
+			else
+			{
+				SetDatabase(Request);
 			}
     }
+
+		public void SetDatabase(HttpRequest request)
+		{
+
+			Random r = new Random();
+			string strRandomNum = r.Next(1, 100).ToString();
+			var id = strRandomNum; 
+
+			string title = request.Params["title"];
+			string contents = request.Params["contents"];
+			string writer = request.Params["writer"];
+			string date = DateTime.Now.ToString();
+			int no = MsSqlDataBase.GetDataBaseCount() + 1;
+			mArticle = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
+			//DB Set
+			MsSqlDataBase.SetArticleData(mArticle);
+		}
+
 
 		public Article GetArticleInfo(string id) 
 		{
 			var article = new Article();
 			var dataSet = MsSqlDataBase.GetSelectedArticleData(id);
+			var dataTbl = dataSet.Tables["ARTICLE_INFO"];
 
 			if (dataSet.Tables.Count > 0)
 			{
-
-				foreach (DataRow row in dataSet.Tables[0].Rows)
+				foreach (DataRow dRow in dataTbl.Rows) 
 				{
-					article.Id = row["ID"].ToString();
-					article.No = row["NO"].ToString();
-					article.Title = row["TITLE"].ToString();
-					article.Contents = row["CONTENTS"].ToString();
-					article.Writer = row["WRITER"].ToString();
-					article.Date = row["DATE"].ToString();
-					article.Password = row["PASSWORD"].ToString();
-					article.Hits = row["HITS"].ToString();
+					article.Id = dRow["ID"].ToString();
+					article.No = (int)dRow["NO"];
+					article.Title = dRow["TITLE"].ToString();
+					article.Contents = dRow["CONTENTS"].ToString();
+					article.Writer = dRow["WRITER"].ToString();
+					article.Date = dRow["DATE"].ToString();
+					article.Password = dRow["PASSWORD"].ToString();
+					article.Hits = dRow["HITS"].ToString();
 				}
 			}
 

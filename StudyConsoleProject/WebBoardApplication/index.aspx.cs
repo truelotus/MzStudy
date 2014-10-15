@@ -13,7 +13,7 @@ public partial class Board_Main : System.Web.UI.Page
 
 	public void Page_Load(object sender, EventArgs e)
 	{
-		var requestUrl = Request.Url.AbsoluteUri;
+
 	}
 
 	public string GetArticleUrl(Article article) 
@@ -34,7 +34,7 @@ public partial class Board_Main : System.Web.UI.Page
 			{
 				var item = new Article();
 				item.Id = row["ID"].ToString();
-				item.No = row["NO"].ToString();
+				item.No = (int)row["NO"];
 				item.Title = row["TITLE"].ToString();
 				item.Contents = row["CONTENTS"].ToString();
 				item.Writer = row["WRITER"].ToString();

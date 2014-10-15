@@ -12,18 +12,18 @@
 			<tr>
 				<td>
 					<b >Title</b>
-					<p id="title"></p>
+					<p id="title"><%=mArticle.Title %></p>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<b>Writer</b> 
-					<p id="writer"></p>
+					<p id="writer"><%=mArticle.Writer %></p>
 				</td>
 			</tr>
 			<tr>
 				<td>
-					<b>Contents</b><p id="contents"></p>
+					<b>Contents</b><p id="contents"><%=mArticle.Contents %></p>
 				</td>
 			</tr>
 		</table>

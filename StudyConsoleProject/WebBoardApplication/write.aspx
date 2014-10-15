@@ -6,22 +6,24 @@
 	<title></title>
 </head>
 <body>
-	<form id="form1" runat="server">
+	<form id="form1" runat="server" method="post" action="read.aspx">
 	<div>
 		<table>
 			<tr>
 				Title
-				<input type="text" name="title" id="title" />
+				<input type="text" name="title" id="Title" />
 				<br />
 				Writer
-				<input type="text" name="writer" id="writer"/>
+				<input type="text" name="writer" id="Writer"/>
 				<br />
 				Content
-				<TEXTAREA type="text" name="contents" id="contents" >글 영역입니다.</TEXTAREA>
+				<TEXTAREA type="text" name="contents" id="Contents" >글 영역입니다.</TEXTAREA>
 				<br />
 				<tr>
 		</table>
-		<a href="Read.aspx" >글 등록</a>
+		<%--<asp:Button ID="Btn_Write" AlternateText="글 등록" />--%>
+		<input type="submit" value="글등록" />
+		<%--<a id="write" href="<%=GetArticleUrl(mArticleId)%>">글 등록</a>--%>
 	</div>
 	</form>
 </body>
