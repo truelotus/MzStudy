@@ -11,11 +11,11 @@
 		<table>
 			<tr>
 				No
-				<input type="text" name="no" id="No" value="<%=mNo%>"/>
+				<input type="text" name="no" disabled="disabled" id="No" value="<%=mNo%>"/>
 				Title
 				<input type="text" name="title" id="Title" value="<%=mTitle%>"/>
 				Writer
-				<input type="text" name="writer" value="<%=mWriter %>" />
+				<input type="text" name="writer" value="<%=mWriter%>" />
 				<br />
 				Content
 				<TEXTAREA type="text" name="contents" ><%=mContents%></TEXTAREA>
