@@ -28,7 +28,7 @@
 			</tr>
 		</table>
 		<tr>
-			<a href="index.aspx">글 목록</a> <a>글 수정</a> <a>글 삭제</a>
+			<a href="index.aspx">글 목록</a> <a>글 수정</a> <a >글 삭제</a>
 		</tr>
 	</div>
 	</form>

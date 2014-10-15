@@ -61,6 +61,7 @@ namespace WebBoardApplication.DataBase
 			var command = new SqlCommand(query, connection);
 			connection.Open();
 			command.ExecuteNonQuery();
+			connection.Close();
 		}
 
 		/// <summary>
@@ -73,7 +74,7 @@ namespace WebBoardApplication.DataBase
 			if (String.IsNullOrEmpty(id))
 				return null;
 
-			var query = String.Format("SELECT * FROM " + DB_TABLE_NAME + " WHERE NO = {0}", id);
+			var query = String.Format("SELECT * FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
 			var command = new SqlCommand(query, GetConnection());
 			SqlDataAdapter adapter = new SqlDataAdapter(command);
 			DataSet dataSet = new DataSet();
@@ -92,8 +93,11 @@ namespace WebBoardApplication.DataBase
 				return;
 
 			var query = String.Format("DELETE FROM " + DB_TABLE_NAME + " WHERE ID = {0}", article.Id);
-			var command = new SqlCommand(query, GetConnection());
+			var connect = GetConnection();
+			var command = new SqlCommand(query, connect);
 			command.ExecuteNonQuery();
+
+			connect.Close();
 		}
 
 
