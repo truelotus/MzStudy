@@ -11,7 +11,7 @@
 		<table>
 			<tr>
 				No
-				<input type="text" name="no" disabled="disabled" id="No" value="<%=mNo%>"/>
+				<input type="text" name="no" id="No" value="<%=mNo%>"/>
 				Title
 				<input type="text" name="title" id="Title" value="<%=mTitle%>"/>
 				Writer

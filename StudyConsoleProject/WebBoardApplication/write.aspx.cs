@@ -19,14 +19,8 @@ public partial class Board_write : System.Web.UI.Page
     {
 			if (String.IsNullOrEmpty(Request.QueryString["update"]))
 			{
-				Random r = new Random();
-				string strRandomNum = r.Next(1, 100).ToString();
-				mArticleId = strRandomNum;
 				mNo = (MsSqlDataBase.GetDataBaseCount() + 1).ToString();
-				if (MsSqlDataBase.HasArticleData(mNo))
-				{
-					
-				}
+				mArticleId = mNo;
 			}
 			else
 			{

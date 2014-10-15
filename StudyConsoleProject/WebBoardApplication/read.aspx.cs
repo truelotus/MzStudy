@@ -54,10 +54,7 @@ public partial class Board_Read : System.Web.UI.Page
 		else
 		{
 			//없다면 일반 데이터 추가이다.
-			Random r = new Random();
-			string strRandomNum = r.Next(1, 100).ToString();
-			var id = strRandomNum;
-
+			var id = (MsSqlDataBase.GetDataBaseCount() + 1).ToString();
 			string title = request.Params["title"];
 			string contents = request.Params["contents"];
 			string writer = request.Params["writer"];
