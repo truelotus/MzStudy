@@ -47,7 +47,7 @@ public partial class Board_Main : System.Web.UI.Page
 			{
 				var item = new Article();
 				item.Id = row["ID"].ToString();
-				item.No = (int)row["NO"];
+				item.No = row["NO"].ToString();
 				item.Title = row["TITLE"].ToString();
 				item.Contents = row["CONTENTS"].ToString();
 				item.Writer = row["WRITER"].ToString();

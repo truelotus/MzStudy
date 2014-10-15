@@ -48,7 +48,7 @@ public partial class Board_Read : System.Web.UI.Page
 			string writer = request.Params["writer"];
 			string date = DateTime.Now.ToString();
 			int no = MsSqlDataBase.GetDataBaseCount() + 1;
-			mArticle = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
+			mArticle = new Article() { Id = id, No = no.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 			//DB Set
 			MsSqlDataBase.SetArticleData(mArticle);
 		}
@@ -65,7 +65,7 @@ public partial class Board_Read : System.Web.UI.Page
 				foreach (DataRow dRow in dataTbl.Rows) 
 				{
 					article.Id = dRow["ID"].ToString();
-					article.No = (int)dRow["NO"];
+					article.No = dRow["NO"].ToString();
 					article.Title = dRow["TITLE"].ToString();
 					article.Contents = dRow["CONTENTS"].ToString();
 					article.Writer = dRow["WRITER"].ToString();

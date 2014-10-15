@@ -14,7 +14,7 @@
 				<input type="text" name="title" id="Title" value="<%=mTitle %>"/>
 				<br />
 				Writer
-				<input type="text" name="writer" />
+				<input type="text" name="writer" value="<%=mWriter %>" />
 				<br />
 				Content
 				<TEXTAREA type="text" name="contents" ><%=mContents%></TEXTAREA>

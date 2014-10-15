@@ -56,12 +56,33 @@ namespace WebBoardApplication.DataBase
 			if (article == null)
 				return;
 
-			var query = String.Format("INSERT INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
-				, article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
+			//일반 Sql query문
+			//var query = String.Format("INSERT INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
+			//  , article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
+
 			var connection = GetConnection();
-			var command = new SqlCommand(query, connection);
+
+			var cmd = new SqlCommand("SP_InsertNewArticle", connection);
 			connection.Open();
-			command.ExecuteNonQuery();
+			cmd.CommandType = CommandType.StoredProcedure;
+			
+			cmd.Parameters.Add("@Id", SqlDbType.Int, 10).Value = Convert.ToInt32(article.Id);
+			cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
+			cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
+			cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
+			cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
+			cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = article.Date;
+			if (article.Password==null)
+			{
+				cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
+			}
+			else
+			{
+				cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
+			}
+			cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
+
+			cmd.ExecuteNonQuery();
 			connection.Close();
 		}
 
@@ -118,8 +139,6 @@ namespace WebBoardApplication.DataBase
 
 				connect.Close();
 			}
-
-			//게시글 덮어 씌우기.
 		}
 	}
 }

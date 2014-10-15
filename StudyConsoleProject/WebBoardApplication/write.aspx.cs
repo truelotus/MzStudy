@@ -11,6 +11,7 @@ public partial class Board_write : System.Web.UI.Page
 
 		public string mTitle;
 		public string mContents;
+		public string mWriter;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -39,7 +40,7 @@ public partial class Board_write : System.Web.UI.Page
 					 
 					 mTitle = dRow["TITLE"].ToString();
 					 mContents = dRow["CONTENTS"].ToString();
-
+					 mWriter = dRow["WRITER"].ToString();
 				 }
 			 }
 		}
