@@ -26,7 +26,8 @@ namespace WebBoardApplication.DataBase
 		/// <returns></returns>
 		public static DataSet GetArticlesData()
 		{
-			var command = new SqlCommand("SELECT * FROM " + DB_TABLE_NAME, GetConnection());
+			var command = new SqlCommand("SP_SelectAllArticles", GetConnection());
+			command.CommandType = CommandType.StoredProcedure;
 			SqlDataAdapter adapter = new SqlDataAdapter(command);
 			DataSet dataSet = new DataSet();
 			adapter.Fill(dataSet);
@@ -72,17 +73,17 @@ namespace WebBoardApplication.DataBase
 			cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
 			cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
 			cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = article.Date;
+
+			//null을 허용한 컬럼.
 			if (article.Password==null)
-			{
 				cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
-			}
 			else
-			{
 				cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
-			}
+
 			cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
 
 			cmd.ExecuteNonQuery();
+
 			connection.Close();
 		}
 
@@ -96,9 +97,12 @@ namespace WebBoardApplication.DataBase
 			if (String.IsNullOrEmpty(id))
 				return null;
 
-			var query = String.Format("SELECT * FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
-			var command = new SqlCommand(query, GetConnection());
-			SqlDataAdapter adapter = new SqlDataAdapter(command);
+			//var query = String.Format("SELECT * FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
+
+			var cmd = new SqlCommand("SP_SelectArticle", GetConnection());
+			cmd.CommandType = CommandType.StoredProcedure;
+			cmd.Parameters.Add("@Id", SqlDbType.Int).Value = Convert.ToInt32(id);
+			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 			DataSet dataSet = new DataSet();
 			adapter.Fill(dataSet, "ARTICLE_INFO");
 
@@ -112,12 +116,13 @@ namespace WebBoardApplication.DataBase
 		public static void DeleteArticleData(string id)
 		{
 
-			var query = String.Format("DELETE FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
+			//var query = String.Format("DELETE FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
 			var connect = GetConnection();
-			var command = new SqlCommand(query, connect);
+			var cmd = new SqlCommand("Sp_DeleteArticle", connect);
+			cmd.CommandType = CommandType.StoredProcedure;
+			cmd.Parameters.Add("@Id", SqlDbType.Int).Value = Convert.ToInt32(id);
 			connect.Open();
-			command.ExecuteNonQuery();
-
+			cmd.ExecuteNonQuery();
 			connect.Close();
 		}
 
@@ -129,13 +134,24 @@ namespace WebBoardApplication.DataBase
 
 			if (dataSet.Tables.Count > 0)
 			{
-				var query = String.Format("UPDATE INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
-				, article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
+				//var query = String.Format("UPDATE INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
+				//, article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
 
 				var connect = GetConnection();
-				var command = new SqlCommand(query, connect);
+				var cmd = new SqlCommand("SP_UpdateArticle2", connect);
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
+				cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
+				cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
+				//null을 허용한 컬럼.
+				if (article.Password == null)
+					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
+
 				connect.Open();
-				command.ExecuteNonQuery();
+
+				cmd.ExecuteNonQuery();
 
 				connect.Close();
 			}
