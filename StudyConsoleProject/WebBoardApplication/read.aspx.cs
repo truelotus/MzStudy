@@ -21,8 +21,15 @@ public partial class Board_Read : System.Web.UI.Page
 			else
 			{
 				SetDatabase(Request);
+				
 			}
     }
+
+		public string GetDeleteArticleUrl(Article article)
+		{
+			var portUrl = Request.Url.Host + ":" + Request.Url.Port;
+			return String.Format("http://{0}/Default.aspx?delete={1}", portUrl, article.Id);
+		}
 
 		public void SetDatabase(HttpRequest request)
 		{
@@ -65,4 +72,5 @@ public partial class Board_Read : System.Web.UI.Page
 
 			return article;
 		}
+
 }

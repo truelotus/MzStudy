@@ -51,7 +51,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="index.aspx" />
+    <Content Include="Default.aspx" />
     <Content Include="read.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -65,8 +65,8 @@
   <ItemGroup>
     <Compile Include="DataBase\Article.cs" />
     <Compile Include="DataBase\MsSqlDataBase.cs" />
-    <Compile Include="index.aspx.cs">
-      <DependentUpon>index.aspx</DependentUpon>
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

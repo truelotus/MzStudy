@@ -87,14 +87,13 @@ namespace WebBoardApplication.DataBase
 		/// DB에서 ID를 조회하여 데이터를 삭제한다.
 		/// </summary>
 		/// <param name="article"></param>
-		public static void DeleteArticleData(Article article)
+		public static void DeleteArticleData(string id)
 		{
-			if (article == null)
-				return;
 
-			var query = String.Format("DELETE FROM " + DB_TABLE_NAME + " WHERE ID = {0}", article.Id);
+			var query = String.Format("DELETE FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
 			var connect = GetConnection();
 			var command = new SqlCommand(query, connect);
+			connect.Open();
 			command.ExecuteNonQuery();
 
 			connect.Close();

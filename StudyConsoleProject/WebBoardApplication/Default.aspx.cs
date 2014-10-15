@@ -13,14 +13,27 @@ public partial class Board_Main : System.Web.UI.Page
 
 	public void Page_Load(object sender, EventArgs e)
 	{
-
+		if (Request!=null)
+		{
+			if (!String.IsNullOrEmpty(Request.QueryString["delete"]))
+			{
+				var id = Request.QueryString["delete"];
+				DeleteArticle(id);
+			}
+		}
 	}
 
-	public string GetArticleUrl(Article article) 
+	public void DeleteArticle(string id)
+	{
+		MsSqlDataBase.DeleteArticleData(id);
+	}
+
+	public string GetArticleUrl(Article article)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
 		return String.Format("http://{0}/read.aspx?read={1}", portUrl, article.Id);
 	}
+
 
 	public IEnumerable<Article> GetList()
 	{

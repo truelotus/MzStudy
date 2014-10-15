@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="index.aspx.cs" Inherits="Board_Main" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="Board_Main" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -34,14 +34,15 @@
 				<% var list = GetList();
 	   foreach (WebBoardApplication.DataBase.Article item in list)
 	 {
-		 if (item != null)
-	 {%>
+	   if (item != null)
+	   {%>
 				<tr>
 					<td>
 						<%=item.No%>
 					</td>
 					<td>
-						<a href=<%=GetArticleUrl(item)%>><%=item.Title%></a>
+						<a href="<%=GetArticleUrl(item)%>">
+							<%=item.Title%></a>
 					</td>
 					<td>
 						<%=item.Writer%>
@@ -55,7 +56,7 @@
 				</tr>
 				<% }
 
-	 }%>
+   }%>
 			</tr>
 		</table>
 		<a href="write.aspx">글 작성</a>
