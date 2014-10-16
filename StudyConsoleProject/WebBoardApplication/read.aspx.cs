@@ -13,14 +13,15 @@ public partial class Board_Read : System.Web.UI.Page
 	protected void Page_Load(object sender, EventArgs e)
 	{
 		var requestUrl = Request.Url.AbsoluteUri;
-		//
-		if (!String.IsNullOrEmpty(Request.QueryString["read"]))
-		{
+		var queryStr = Request.QueryString["read"];
+		if (!String.IsNullOrEmpty(queryStr))
 			mArticle = GetArticleInfo(Request.QueryString["read"]);
-		}
 		else
 		{
-			SetDatabase(Request);
+			queryStr = Request.QueryString["update"];
+
+			UpdateArticleDataBase();
+
 		}
 	}
 
@@ -36,25 +37,33 @@ public partial class Board_Read : System.Web.UI.Page
 		return String.Format("http://{0}/write.aspx?update={1}", portUrl, article.Id);
 	}
 
-	public void SetDatabase(HttpRequest request)
+	public void UpdateArticleDataBase()
 	{
+		var request = Request;
+		string id = request.Params["id"];
 		//id 정보를 가지고 디비에 있는지 확인
-		string num = request.Params["no"];
-		if (MsSqlDataBase.HasArticleData(num))
+		if (MsSqlDataBase.HasArticleData(id))
 		{
 			//있다면 해당 데이터를 업데이트(제목,작성자,내용) 친다.
+			
 			string title = request.Params["title"];
 			string contents = request.Params["contents"];
 			string writer = request.Params["writer"];
 			string date = DateTime.Now.ToString();
-			mArticle = new Article() { No = num, Title = title, Contents = contents, Writer = writer, Password = null };
+			mArticle = new Article() { Id = id, Title = title, Contents = contents, Writer = writer, Password = null };
 			//DB Set
 			MsSqlDataBase.UpdateArticleData(mArticle);
 		}
 		else
 		{
-			//없다면 일반 데이터 추가이다.
-			var id = (MsSqlDataBase.GetDataBaseCount() + 1).ToString();
+			InsertNewArticleDatabase();
+		}
+	}
+
+	public void InsertNewArticleDatabase()
+	{
+			var request = Request;
+			var id = System.Guid.NewGuid().ToString();
 			string title = request.Params["title"];
 			string contents = request.Params["contents"];
 			string writer = request.Params["writer"];
@@ -63,7 +72,6 @@ public partial class Board_Read : System.Web.UI.Page
 			mArticle = new Article() { Id = id, No = no.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 			//DB Set
 			MsSqlDataBase.SetArticleData(mArticle);
-		}
 	}
 
 

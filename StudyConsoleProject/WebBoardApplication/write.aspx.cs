@@ -8,8 +8,8 @@ using System.Web;
 public partial class Board_write : System.Web.UI.Page
 {
 		public string mUrl;
-		private string mArticleId;
 
+		public string mArticleId;
 		public string mNo; 
 		public string mTitle;
 		public string mContents;
@@ -17,14 +17,15 @@ public partial class Board_write : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-			if (String.IsNullOrEmpty(Request.QueryString["update"]))
+			var queryStr = Request.QueryString["update"];
+			if (String.IsNullOrEmpty(queryStr))
 			{
+				mArticleId = System.Guid.NewGuid().ToString();
 				mNo = (MsSqlDataBase.GetDataBaseCount() + 1).ToString();
-				mArticleId = mNo;
 			}
 			else
 			{
-				SetUpdateArticle(Request.QueryString["update"]);
+				SetUpdateArticle(queryStr.Split('=')[0]);
 			}
     }
 
@@ -34,11 +35,12 @@ public partial class Board_write : System.Web.UI.Page
 	/// <param name="id"></param>
 		public void SetUpdateArticle(string id) 
 		{
+			mArticleId = id;
 			var dataSet = MsSqlDataBase.GetSelectedArticleData(id);
 			var dataTbl = dataSet.Tables["ARTICLE_INFO"];
 			 if (dataSet.Tables.Count > 0)
 			 {
-				 foreach (DataRow dRow in dataTbl	.Rows)
+				 foreach (DataRow dRow in dataTbl.Rows)
 				 {
 					 mNo = dRow["NO"].ToString();
 					 mTitle = dRow["TITLE"].ToString();
@@ -46,9 +48,10 @@ public partial class Board_write : System.Web.UI.Page
 					 mWriter = dRow["WRITER"].ToString();
 				 }
 			 }
-			 else
-			 {
-				 //DB에서 찾을 수 없음.
-			 }
+		}
+
+		public string GetArticleUrl(string id)
+		{
+			return String.Format("read.aspx?update={0}", id);
 		}
 }

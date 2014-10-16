@@ -67,7 +67,7 @@ namespace WebBoardApplication.DataBase
 			connection.Open();
 			cmd.CommandType = CommandType.StoredProcedure;
 			
-			cmd.Parameters.Add("@Id", SqlDbType.Int, 10).Value = Convert.ToInt32(article.Id);
+			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
 			cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
 			cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
 			cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
@@ -101,7 +101,7 @@ namespace WebBoardApplication.DataBase
 
 			var cmd = new SqlCommand("SP_SelectArticle", GetConnection());
 			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.Parameters.Add("@Id", SqlDbType.Int).Value = Convert.ToInt32(id);
+			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
 			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 			DataSet dataSet = new DataSet();
 			adapter.Fill(dataSet, "ARTICLE_INFO");
@@ -109,12 +109,12 @@ namespace WebBoardApplication.DataBase
 			return dataSet;
 		}
 
-		public static bool HasArticleData(string no)
+		public static bool HasArticleData(string id)
 		{
-			if (String.IsNullOrEmpty(no))
+			if (String.IsNullOrEmpty(id))
 				return false;
 
-			var query = String.Format("SELECT * FROM ARTICLE_INFO WHERE NO = {0}", no);
+			var query = String.Format("SELECT * FROM ARTICLE_INFO WHERE ID = '{0}'", id);
 			var cmd = new SqlCommand(query, GetConnection());
 			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 			DataSet dataSet = new DataSet();
@@ -125,14 +125,10 @@ namespace WebBoardApplication.DataBase
 			{
 				foreach (DataRow dRow in dataTbl.Rows) 
 				{
-					if (dRow["NO"]==null)
-					{
+					if (dRow["ID"]==null)
 						return false;
-					}
 					else
-					{
 						return true;
-					}
 				}
 			}
 
@@ -163,12 +159,12 @@ namespace WebBoardApplication.DataBase
 		public static void UpdateArticleData(Article article) 
 		{
 			//아이디 조회
-			if (HasArticleData(article.No))
+			if (HasArticleData(article.Id))
 			{
 				var connect = GetConnection();
 				var cmd = new SqlCommand("SP_UpdateArticle", connect);
 				cmd.CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.Add("@No", SqlDbType.VarChar).Value = article.No;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
 				cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
 				cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
 				cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;

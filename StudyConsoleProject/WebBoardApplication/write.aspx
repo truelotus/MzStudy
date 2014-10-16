@@ -8,10 +8,10 @@
 <body>
 	<form id="form1" runat="server" method="post" action="read.aspx">
 	<div>
+	<input type="text" style="visibility:hidden" name="id" id="Id" value="<%=mArticleId%>"/>
+	<input type="text" style="visibility:hidden" name="no" id="No" value="<%=mNo%>"/>
 		<table>
 			<tr>
-				No
-				<input type="text" name="no" id="No" value="<%=mNo%>"/>
 				Title
 				<input type="text" name="title" id="Title" value="<%=mTitle%>"/>
 				Writer
