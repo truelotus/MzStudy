@@ -32,7 +32,7 @@ public partial class Board_write : System.Web.UI.Page
 	public Article InsertNewArticleDatabase()
 	{
 		var request = Request;
-
+		Article article = null;
 		string id = request.Params["id"];
 		string no = request.Params["no"];
 		string title = request.Params["title"];
@@ -46,23 +46,21 @@ public partial class Board_write : System.Web.UI.Page
 			id = System.Guid.NewGuid().ToString();
 			var dbNo = MsSqlDataBase.GetDataBaseCount() + 1;
 			date = DateTime.Now.ToString();
-			var article = new Article() { Id = id, No = dbNo.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
+			article = new Article() { Id = id, No = dbNo.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 
 			MsSqlDataBase.SetArticleData(article);
-			return article;
 
 		}
 		else
 		{
 			//수정
-			var article = new Article() { Id = id, No = no.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
+			article = new Article() { Id = id, No = no.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 
 			MsSqlDataBase.UpdateArticleData(article);
-
 			RedirectReadPage(article.Id);
-			return article;
-
 		}
+
+		return article;
 	}
 
 	private void RedirectReadPage(string id)
