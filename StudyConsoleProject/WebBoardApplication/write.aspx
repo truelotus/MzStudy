@@ -6,19 +6,20 @@
 	<title></title>
 </head>
 <body>
-	<form id="form1" runat="server" method="post" action="read.aspx">
+	<form id="form1" runat="server" method="post" action="write.aspx">
 	<div>
-	<input type="text" style="visibility:hidden" name="id" id="Id" value="<%=mArticleId%>"/>
-	<input type="text" style="visibility:hidden" name="no" id="No" value="<%=mNo%>"/>
+	<input type="text" style="visibility:hidden" name="id" id="Id" value="<%=mArticle.Id%>"/>
+	<input type="text" style="visibility:hidden" name="no" id="No" value="<%=mArticle.No%>"/>
+	<input type="text" style="visibility:hidden" name="date" id="Date" value="<%=mArticle.Date%>"/>
 		<table>
 			<tr>
 				Title
-				<input type="text" name="title" id="Title" value="<%=mTitle%>"/>
+				<input type="text" name="title" id="Title" value="<%=mArticle.Title%>"/>
 				Writer
-				<input type="text" name="writer" value="<%=mWriter%>" />
+				<input type="text" name="writer" value="<%=mArticle.Writer%>" />
 				<br />
 				Content
-				<TEXTAREA type="text" name="contents" ><%=mContents%></TEXTAREA>
+				<TEXTAREA type="text" name="contents" ><%=mArticle.Contents%></TEXTAREA>
 				<br />
 				<tr>
 		</table>

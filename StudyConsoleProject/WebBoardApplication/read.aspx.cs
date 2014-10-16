@@ -15,14 +15,7 @@ public partial class Board_Read : System.Web.UI.Page
 		var requestUrl = Request.Url.AbsoluteUri;
 		var queryStr = Request.QueryString["read"];
 		if (!String.IsNullOrEmpty(queryStr))
-			mArticle = GetArticleInfo(Request.QueryString["read"]);
-		else
-		{
-			queryStr = Request.QueryString["update"];
-
-			UpdateArticleDataBase();
-
-		}
+			mArticle = GetArticleInfo(queryStr);
 	}
 
 	public string GetDeleteArticleUrl(Article article)
@@ -36,44 +29,6 @@ public partial class Board_Read : System.Web.UI.Page
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
 		return String.Format("http://{0}/write.aspx?update={1}", portUrl, article.Id);
 	}
-
-	public void UpdateArticleDataBase()
-	{
-		var request = Request;
-		string id = request.Params["id"];
-		//id 정보를 가지고 디비에 있는지 확인
-		if (MsSqlDataBase.HasArticleData(id))
-		{
-			//있다면 해당 데이터를 업데이트(제목,작성자,내용) 친다.
-			
-			string title = request.Params["title"];
-			string contents = request.Params["contents"];
-			string writer = request.Params["writer"];
-			string date = DateTime.Now.ToString();
-			mArticle = new Article() { Id = id, Title = title, Contents = contents, Writer = writer, Password = null };
-			//DB Set
-			MsSqlDataBase.UpdateArticleData(mArticle);
-		}
-		else
-		{
-			InsertNewArticleDatabase();
-		}
-	}
-
-	public void InsertNewArticleDatabase()
-	{
-			var request = Request;
-			var id = System.Guid.NewGuid().ToString();
-			string title = request.Params["title"];
-			string contents = request.Params["contents"];
-			string writer = request.Params["writer"];
-			string date = DateTime.Now.ToString();
-			int no = MsSqlDataBase.GetDataBaseCount() + 1;
-			mArticle = new Article() { Id = id, No = no.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
-			//DB Set
-			MsSqlDataBase.SetArticleData(mArticle);
-	}
-
 
 	public Article GetArticleInfo(string id)
 	{

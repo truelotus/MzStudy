@@ -43,7 +43,7 @@ namespace WebBoardApplication.DataBase
 			var connection = GetConnection();
 			var command = new SqlCommand("SELECT COUNT(*) FROM " + DB_TABLE_NAME, connection);
 			connection.Open();
-			var num = (int) command.ExecuteScalar();
+			var num = (int)command.ExecuteScalar();
 			connection.Close();
 			return num;
 		}
@@ -52,39 +52,57 @@ namespace WebBoardApplication.DataBase
 		/// DB에 데이터를 추가한다.
 		/// </summary>
 		/// <param name="article"></param>
-		public static void SetArticleData(Article article)
+		public static bool SetArticleData(Article article)
 		{
 			if (article == null)
-				return;
+				return false;
 
 			//일반 Sql query문
 			//var query = String.Format("INSERT INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
 			//  , article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
+			try
+			{
+				var connection = GetConnection();
 
-			var connection = GetConnection();
+				var cmd = new SqlCommand("SP_InsertNewArticle", connection);
+				connection.Open();
+				cmd.CommandType = CommandType.StoredProcedure;
 
-			var cmd = new SqlCommand("SP_InsertNewArticle", connection);
-			connection.Open();
-			cmd.CommandType = CommandType.StoredProcedure;
-			
-			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
-			cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
-			cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
-			cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
-			cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
-			cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = article.Date;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
+				cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
+				if (article.Title == null)
+					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
 
-			//null을 허용한 컬럼.
-			if (article.Password==null)
-				cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
-			else
-				cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
+				if (article.Contents == null)
+					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
 
-			cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
+				if (article.Writer == null)
+					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
 
-			cmd.ExecuteNonQuery();
+				cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = article.Date;
 
-			connection.Close();
+				if (article.Password == null)
+					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
+
+				cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
+
+				cmd.ExecuteNonQuery();
+
+				connection.Close();
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+			return true;
 		}
 
 		/// <summary>
@@ -123,16 +141,16 @@ namespace WebBoardApplication.DataBase
 
 			if (dataSet.Tables.Count > 0)
 			{
-				foreach (DataRow dRow in dataTbl.Rows) 
+				foreach (DataRow dRow in dataTbl.Rows)
 				{
-					if (dRow["ID"]==null)
+					if (dRow["ID"] == null)
 						return false;
 					else
 						return true;
 				}
 			}
 
-				return false;
+			return false;
 		}
 
 		/// <summary>
@@ -146,7 +164,7 @@ namespace WebBoardApplication.DataBase
 			var connect = GetConnection();
 			var cmd = new SqlCommand("Sp_DeleteArticle", connect);
 			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.Parameters.Add("@Id", SqlDbType.Int).Value = Convert.ToInt32(id);
+			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
 			connect.Open();
 			cmd.ExecuteNonQuery();
 			connect.Close();
@@ -156,7 +174,7 @@ namespace WebBoardApplication.DataBase
 		/// Article의 No 정보를 가지고 DB Update한다.
 		/// </summary>
 		/// <param name="article"></param>
-		public static void UpdateArticleData(Article article) 
+		public static void UpdateArticleData(Article article)
 		{
 			//아이디 조회
 			if (HasArticleData(article.Id))
