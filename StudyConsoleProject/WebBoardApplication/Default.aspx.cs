@@ -20,9 +20,17 @@ public partial class Board_Main : System.Web.UI.Page
 				var id = Request.QueryString["delete"];
 				DeleteArticle(id);
 			}
+			else if (!String.IsNullOrEmpty(Request.QueryString["page"]))
+			{
+				//만들어질 페이지 갯수
+				int pageCount = this.GetPageCount(1, 10);
+				//페이지에 들어갈 게시글을 디비에서 조회 
+	
+			}
 		}
 	}
 
+	
 	public void DeleteArticle(string id)
 	{
 		MsSqlDataBase.DeleteArticleData(id);
@@ -59,5 +67,17 @@ public partial class Board_Main : System.Web.UI.Page
 			}
 		}
 		return list;
+	}
+
+	public int GetPageCount(int page, int count)
+	{
+		//게시글 총 갯수
+		var total = MsSqlDataBase.GetDataBaseCount();
+		//페이지 갯수
+		int pageCount = total / count;
+		int remain = total % count;
+		if (remain > 0)
+			pageCount++;
+		return pageCount;
 	}
 }
