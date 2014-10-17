@@ -25,11 +25,12 @@ public partial class Board_Main : System.Web.UI.Page
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["page"]))
 		{
+			var pageParam = Convert.ToInt32(Request.QueryString["page"]);
 			//만들어질 전체 페이지 블럭 총 갯수
-			mBlockCount = this.GetTotalPageCount(page, pageCountValue);
+			mBlockCount = this.GetTotalPageCount(pageParam, pageCountValue);
 
 			//현재 페이지에 들어갈 게시글을 디비에서 조회하여 리턴.
-			int end = pageCountValue * page;
+			int end = pageCountValue * pageParam;
 			int start = end - (pageCountValue - 1);
 			mList = MsSqlDataBase.GetArticleBetweenDataList(start, end);
 		}
@@ -37,11 +38,14 @@ public partial class Board_Main : System.Web.UI.Page
 		{
 			//1.첫 진입 시 게시판 메인 접근 시DB에서 게시글 데이터 조회
 			int articleTotalCount = MsSqlDataBase.GetDataBaseCount();
+
 			if (articleTotalCount > 0)
 			{
 				if (articleTotalCount >10)
 				{
-					//초과시 
+					//초과 시 만들어질 전체 페이지 블럭 총 갯수
+					mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
+					mBlockCount = this.GetTotalPageCount(1, pageCountValue);
 				}
 				else
 				{
@@ -55,7 +59,7 @@ public partial class Board_Main : System.Web.UI.Page
 	public string GetPageUrl(int pageNum) 
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/read.aspx?page={1}", portUrl,pageNum);
+		return String.Format("http://{0}/Default.aspx?page={1}", portUrl,pageNum);
 	}
 
 
