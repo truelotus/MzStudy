@@ -132,7 +132,7 @@ namespace WebBoardApplication.DataBase
 			if (String.IsNullOrEmpty(id))
 				return false;
 
-			var query = String.Format("SELECT * FROM ARTICLE_INFO WHERE ID = '{0}'", id);
+			var query = String.Format("SELECT * FROM "+DB_TABLE_NAME+" WHERE ID = '{0}'", id);
 			var cmd = new SqlCommand(query, GetConnection());
 			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 			DataSet dataSet = new DataSet();
@@ -183,9 +183,20 @@ namespace WebBoardApplication.DataBase
 				var cmd = new SqlCommand("SP_UpdateArticle", connect);
 				cmd.CommandType = CommandType.StoredProcedure;
 				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
-				cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
-				cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
-				cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
+				if (article.Title == null)
+					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
+
+				if (article.Contents == null)
+					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
+
+				if (article.Writer == null)
+					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
+				else
+					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
 				//null을 허용한 컬럼.
 				if (article.Password == null)
 					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;

@@ -63,7 +63,6 @@ public partial class Board_write : System.Web.UI.Page
 		{
 			//수정
 			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
-
 			MsSqlDataBase.UpdateArticleData(article);
 			RedirectReadPage(article.Id);
 		}
