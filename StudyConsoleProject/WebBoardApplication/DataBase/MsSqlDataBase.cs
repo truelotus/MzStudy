@@ -35,7 +35,7 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// ARTICLE_INFO의 데이터 갯수 반환한다
+		///DB 데이터 갯수 반환한다
 		/// </summary>
 		/// <returns></returns>
 		public static int GetDataBaseCount()
@@ -46,6 +46,21 @@ namespace WebBoardApplication.DataBase
 			var num = (int)command.ExecuteScalar();
 			connection.Close();
 			return num;
+		}
+
+		/// <summary>
+		/// 해당 게시물의 조회수를 업데이트 합니다.
+		/// </summary>
+		/// <param name="id"></param>
+		public static void UpdateHits(string id) 
+		{
+			var connection = GetConnection();
+			var cmd = new SqlCommand("SP_UpdateHits", connection);
+			cmd.CommandType = CommandType.StoredProcedure;
+			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+			connection.Open();
+			cmd.ExecuteNonQuery();
+			connection.Close();
 		}
 
 		/// <summary>

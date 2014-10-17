@@ -14,8 +14,11 @@ public partial class Board_Read : System.Web.UI.Page
 	{
 		var requestUrl = Request.Url.AbsoluteUri;
 		var queryStr = Request.QueryString["read"];
-		if (!String.IsNullOrEmpty(queryStr))
+		if (!String.IsNullOrEmpty(queryStr)) 
+		{
 			mArticle = GetArticleInfo(queryStr);
+		}
+			
 	}
 
 	public string GetDeleteArticleUrl(Article article)
@@ -33,6 +36,9 @@ public partial class Board_Read : System.Web.UI.Page
 	public Article GetArticleInfo(string id)
 	{
 		var article = new Article();
+
+		MsSqlDataBase.UpdateHits(id);
+
 		var dataSet = MsSqlDataBase.GetSelectedArticleData(id);
 		var dataTbl = dataSet.Tables["ARTICLE_INFO"];
 

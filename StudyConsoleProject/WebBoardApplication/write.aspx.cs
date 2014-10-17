@@ -41,6 +41,7 @@ public partial class Board_write : System.Web.UI.Page
 		string title = request.Params["title"];
 		string contents = request.Params["contents"];
 		string writer = request.Params["writer"];
+		string hits = request.Params["hits"];
 		string date = DateTime.Now.ToString();
 
 		if (String.IsNullOrEmpty(id))
@@ -57,7 +58,7 @@ public partial class Board_write : System.Web.UI.Page
 		else
 		{
 			//수정
-			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
+			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = hits };
 			MsSqlDataBase.UpdateArticleData(article);
 			RedirectReadPage(article.Id);
 		}
@@ -89,6 +90,7 @@ public partial class Board_write : System.Web.UI.Page
 				mArticle.Title = dRow["TITLE"].ToString();
 				mArticle.Contents = dRow["CONTENTS"].ToString();
 				mArticle.Writer = dRow["WRITER"].ToString();
+				mArticle.Hits = dRow["Hits"].ToString();
 			}
 		}
 	}

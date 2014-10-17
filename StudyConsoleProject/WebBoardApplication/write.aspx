@@ -11,6 +11,7 @@
 		<input type="text" style="visibility: hidden" name="id" id="Id" value="<%=mArticle.Id%>" />
 		<input type="text" style="visibility: hidden" name="no" id="No" value="<%=mArticle.No%>" />
 		<input type="text" style="visibility: hidden" name="date" id="Date" value="<%=mArticle.Date%>" />
+		<input type="text" style="visibility: hidden" name="hits" id="Hits" value="<%=mArticle.Hits%>" />
 		<table>
 			<tr>
 			<div>
