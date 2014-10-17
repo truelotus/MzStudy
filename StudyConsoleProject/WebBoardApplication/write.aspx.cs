@@ -11,29 +11,23 @@ public partial class Board_write : System.Web.UI.Page
 
 	protected void Page_Load(object sender, EventArgs e)
 	{
-		if (Request!=null)
+		if (Request != null)
 		{
 			if (!String.IsNullOrEmpty(Request.Params["title"]))
 			{
-				//새 게시글 등록 
+				//새 게시물을 등록
 				mArticle = InsertNewArticleDatabase();
 			}
-
 		}
 
 		if (String.IsNullOrEmpty(Request.QueryString["update"]))
 		{
-			
 			if (mArticle == null)
-			{
-				//저장 실패로 인한 메세지 처리.
 				mArticle = new Article();
-
-			}
 		}
 		else
 		{
-			//게시글 업데이트.
+			//게시 글 업데이트.
 			SetUpdateArticle(Request.QueryString["update"].Split('=')[0]);
 		}
 	}

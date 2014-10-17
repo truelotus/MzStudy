@@ -19,37 +19,32 @@ public partial class Board_Main : System.Web.UI.Page
 		//현재 페이지 TODO: 기본값은 1이고 요청시 변경되어야함.
 		int page = 1;
 
-		if (Request!=null)
+		if (!String.IsNullOrEmpty(Request.QueryString["delete"]))
 		{
-			if (!String.IsNullOrEmpty(Request.QueryString["delete"]))
-			{
-				DeleteArticle(Request.QueryString["delete"]);
-			}
-			else if (!String.IsNullOrEmpty(Request.QueryString["page"]))
-			{
+			DeleteArticle(Request.QueryString["delete"]);
+		}
+		else if (!String.IsNullOrEmpty(Request.QueryString["page"]))
+		{
+			//만들어질 전체 페이지 블럭 총 갯수
+			mBlockCount = this.GetTotalPageCount(page, pageCountValue);
 
-				//만들어질 전체 페이지 블럭 총 갯수
-				mBlockCount = this.GetTotalPageCount(page, pageCountValue);
-				
-				//현재 페이지에 들어갈 게시글을 디비에서 조회하여 리턴.
-				int end = pageCountValue * page;
-				int start = end - (pageCountValue - 1);
-				mList = MsSqlDataBase.GetArticleBetweenDataList(start, end);
-
-			}
-			else
+			//현재 페이지에 들어갈 게시글을 디비에서 조회하여 리턴.
+			int end = pageCountValue * page;
+			int start = end - (pageCountValue - 1);
+			mList = MsSqlDataBase.GetArticleBetweenDataList(start, end);
+		}
+		else
+		{
+			//1.첫 진입 시 게시판 메인 접근 시DB에서 게시글 데이터 조회
+			if (MsSqlDataBase.GetDataBaseCount() > 0)
 			{
-				//1.첫 진입 시 게시판 메인 접근 시DB에서 게시글 데이터 조회
-				if (MsSqlDataBase.GetDataBaseCount() > 0)
-				{
-					mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
-					mBlockCount = this.GetTotalPageCount(1, pageCountValue);
-				}
+				mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
+				mBlockCount = this.GetTotalPageCount(1, pageCountValue);
 			}
 		}
 	}
 
-	
+
 	public void DeleteArticle(string id)
 	{
 		MsSqlDataBase.DeleteArticleData(id);
@@ -64,7 +59,7 @@ public partial class Board_Main : System.Web.UI.Page
 
 	public IEnumerable<Article> GetList()
 	{
-		if (mList!=null)
+		if (mList != null)
 			return mList;
 
 		var dataSet = MsSqlDataBase.GetArticlesData();
@@ -106,8 +101,8 @@ public partial class Board_Main : System.Web.UI.Page
 		if (remain > 0)
 			pageCount++;
 
-		if (pageCount==0)
-					return 1;
+		if (pageCount == 0)
+			return 1;
 
 		return pageCount;
 	}
