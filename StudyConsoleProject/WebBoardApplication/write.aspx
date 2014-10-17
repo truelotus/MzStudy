@@ -21,7 +21,7 @@
 				<br />
 				Content
 				<br />
-				<textarea type="text" style="width:450px; name="contents" ><%=mArticle.Contents%></textarea>
+				<textarea type="text" name="contents" ><%=mArticle.Contents%></textarea>
 				<br />
 				</div>
 			<tr>

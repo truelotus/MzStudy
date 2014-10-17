@@ -36,12 +36,26 @@ public partial class Board_Main : System.Web.UI.Page
 		else
 		{
 			//1.첫 진입 시 게시판 메인 접근 시DB에서 게시글 데이터 조회
-			if (MsSqlDataBase.GetDataBaseCount() > 0)
+			int articleTotalCount = MsSqlDataBase.GetDataBaseCount();
+			if (articleTotalCount > 0)
 			{
-				mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
-				mBlockCount = this.GetTotalPageCount(1, pageCountValue);
+				if (articleTotalCount >10)
+				{
+					//초과시 
+				}
+				else
+				{
+					mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
+					mBlockCount = this.GetTotalPageCount(1, pageCountValue);
+				}
 			}
 		}
+	}
+
+	public string GetPageUrl(int pageNum) 
+	{
+		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
+		return String.Format("http://{0}/read.aspx?page={1}", portUrl,pageNum);
 	}
 
 

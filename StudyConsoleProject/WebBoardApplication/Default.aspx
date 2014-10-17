@@ -60,7 +60,6 @@
    }%>
 			</tr>
 		</table>
-		<tr>
 			<% 
 		  if (mList != null && mList.Count() > 0)
 		  {
@@ -70,12 +69,11 @@
 		  for (int i = 1; i < mBlockCount+1; i++)
 			{
 				%>
-				<a href=""><%=i.ToString()%></a>
+				<a href="<%=GetPageUrl(i)%>"><%=i.ToString()%></a>
 				<%
 			}
 		  } 
 			%>
-		</tr>
 	</div>
 	</form>
 </body>

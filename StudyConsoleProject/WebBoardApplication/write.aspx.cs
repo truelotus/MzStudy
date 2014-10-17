@@ -48,6 +48,7 @@ public partial class Board_write : System.Web.UI.Page
 			//생성
 			id = System.Guid.NewGuid().ToString();
 			date = DateTime.Now.ToString();
+			no = (MsSqlDataBase.GetDataBaseCount() + 1).ToString();
 			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 
 			MsSqlDataBase.SetArticleData(article);

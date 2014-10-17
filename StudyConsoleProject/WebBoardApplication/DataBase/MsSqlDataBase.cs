@@ -70,6 +70,8 @@ namespace WebBoardApplication.DataBase
 
 				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
 
+				cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
+
 				if (article.Title == null)
 					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
 				else
@@ -212,7 +214,7 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// No를 기준으로 시작~끝 위치에 존재하는 게시글 데이터를 날짜 오름차순으로 추출
+		/// index 기준으로 시작~끝 위치에 존재하는 게시글 데이터를 날짜 오름차순으로 추출
 		/// </summary>
 		/// <param name="start"></param>
 		/// <param name="end"></param>
