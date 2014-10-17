@@ -47,11 +47,6 @@ public partial class Board_Main : System.Web.UI.Page
 					mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
 					mBlockCount = this.GetTotalPageCount(1, pageCountValue);
 				}
-				else
-				{
-					mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
-					mBlockCount = this.GetTotalPageCount(1, pageCountValue);
-				}
 			}
 		}
 	}
