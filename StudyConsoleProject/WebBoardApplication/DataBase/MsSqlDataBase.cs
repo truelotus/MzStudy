@@ -11,7 +11,7 @@ namespace WebBoardApplication.DataBase
 	public static class MsSqlDataBase
 	{
 
-		public const string DB_TABLE_NAME = "ARTICLE_INFO";
+		public const string DB_TABLE_NAME = "ARTICLE_INFORMATION";
 
 
 		public static SqlConnection GetConnection()
@@ -69,7 +69,7 @@ namespace WebBoardApplication.DataBase
 				cmd.CommandType = CommandType.StoredProcedure;
 
 				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
-				cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
+
 				if (article.Title == null)
 					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
 				else
@@ -198,6 +198,53 @@ namespace WebBoardApplication.DataBase
 			}
 			else
 				return;
+		}
+
+		/// <summary>
+		/// No를 기준으로 시작~끝 위치에 존재하는 게시글 데이터를 날짜 오름차순으로 추출
+		/// </summary>
+		/// <param name="start"></param>
+		/// <param name="end"></param>
+		/// <returns></returns>
+		public static IEnumerable<Article> GetArticleBetweenDataList(int start, int end)
+		{
+			var connect = GetConnection();
+			var cmd = new SqlCommand("SP_SelectBetweenArticles", connect);
+			cmd.CommandType = CommandType.StoredProcedure;
+			cmd.Parameters.Add("@StartNo", SqlDbType.Int).Value = start;
+			cmd.Parameters.Add("@EndNo", SqlDbType.Int).Value = end;
+
+			connect.Open();
+			cmd.ExecuteNonQuery();
+			connect.Close();
+
+			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+			DataSet dataSet = new DataSet();
+			adapter.Fill(dataSet, DB_TABLE_NAME);
+			var dataTbl = dataSet.Tables[DB_TABLE_NAME];
+
+			var articleList = new List<Article>();
+			if (dataSet.Tables.Count > 0)
+			{
+
+				foreach (DataRow dRow in dataTbl.Rows)
+				{
+					var article = new Article();
+					article.Id = dRow["ID"].ToString();
+					article.No = dRow["NO"].ToString();
+					article.Title = dRow["TITLE"].ToString();
+					article.Contents = dRow["CONTENTS"].ToString();
+					article.Writer = dRow["WRITER"].ToString();
+					article.Date = dRow["DATE"].ToString();
+					article.Password = dRow["PASSWORD"].ToString();
+					article.Hits = dRow["HITS"].ToString();
+					articleList.Add(article);
+				}
+			}
+			else
+				return null;
+
+			return articleList;
 		}
 	}
 }

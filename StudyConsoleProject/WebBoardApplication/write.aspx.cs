@@ -11,21 +11,30 @@ public partial class Board_write : System.Web.UI.Page
 
 	protected void Page_Load(object sender, EventArgs e)
 	{
-		var queryStr = Request.QueryString["update"];
-
-		if (String.IsNullOrEmpty(queryStr))
+		if (Request!=null)
 		{
-			//새 게시글 등록 
-			mArticle = InsertNewArticleDatabase();
+			if (!String.IsNullOrEmpty(Request.Params["title"]))
+			{
+				//새 게시글 등록 
+				mArticle = InsertNewArticleDatabase();
+			}
+
+		}
+
+		if (String.IsNullOrEmpty(Request.QueryString["update"]))
+		{
+			
 			if (mArticle == null)
 			{
 				//저장 실패로 인한 메세지 처리.
+				mArticle = new Article();
+
 			}
 		}
 		else
 		{
 			//게시글 업데이트.
-			SetUpdateArticle(queryStr.Split('=')[0]);
+			SetUpdateArticle(Request.QueryString["update"].Split('=')[0]);
 		}
 	}
 
@@ -44,17 +53,16 @@ public partial class Board_write : System.Web.UI.Page
 		{
 			//생성
 			id = System.Guid.NewGuid().ToString();
-			var dbNo = MsSqlDataBase.GetDataBaseCount() + 1;
 			date = DateTime.Now.ToString();
-			article = new Article() { Id = id, No = dbNo.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
+			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 
 			MsSqlDataBase.SetArticleData(article);
-
+			RedirectReadPage(article.Id);
 		}
 		else
 		{
 			//수정
-			article = new Article() { Id = id, No = no.ToString(), Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
+			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 
 			MsSqlDataBase.UpdateArticleData(article);
 			RedirectReadPage(article.Id);

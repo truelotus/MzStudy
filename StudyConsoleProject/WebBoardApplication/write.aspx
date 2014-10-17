@@ -6,25 +6,28 @@
 	<title></title>
 </head>
 <body>
-	<form id="form1" runat="server" method="post" action="write.aspx">
+	<form id="form1" style="text-align:left" runat="server" method="post" action="write.aspx">
 	<div>
-	<input type="text" style="visibility:hidden" name="id" id="Id" value="<%=mArticle.Id%>"/>
-	<input type="text" style="visibility:hidden" name="no" id="No" value="<%=mArticle.No%>"/>
-	<input type="text" style="visibility:hidden" name="date" id="Date" value="<%=mArticle.Date%>"/>
+		<input type="text" style="visibility: hidden" name="id" id="Id" value="<%=mArticle.Id%>" />
+		<input type="text" style="visibility: hidden" name="no" id="No" value="<%=mArticle.No%>" />
+		<input type="text" style="visibility: hidden" name="date" id="Date" value="<%=mArticle.Date%>" />
 		<table>
 			<tr>
+			<div>
 				Title
-				<input type="text" name="title" id="Title" value="<%=mArticle.Title%>"/>
+				<input type="text" name="title" id="Title" value="<%=mArticle.Title%>" />
 				Writer
 				<input type="text" name="writer" value="<%=mArticle.Writer%>" />
 				<br />
 				Content
-				<TEXTAREA type="text" name="contents" ><%=mArticle.Contents%></TEXTAREA>
 				<br />
-				<tr>
+				<textarea type="text" style="width: 450px; name="contents" ><%=mArticle.Contents%></textarea>
+				<br />
+				</div>
+			<tr>
 		</table>
 		<%--<asp:Button ID="Btn_Write" AlternateText="글 등록" />--%>
-		<input type="submit" value="글등록"  />
+		<input type="submit" value="글등록" />
 		<%--<a id="write" href="<%=GetArticleUrl(mArticleId)%>">글 등록</a>--%>
 	</div>
 	</form>

@@ -10,6 +10,7 @@
 	<div>
 		<h1>
 			List</h1>
+		<a href="write.aspx">글 작성</a>
 		<table>
 			<tr>
 				<!--게시판 테이블 헤더 태그-->
@@ -35,7 +36,7 @@
 	   foreach (WebBoardApplication.DataBase.Article item in list)
 	 {
 	   if (item != null)
-	   {%>
+	 {%>
 				<tr>
 					<td>
 						<%=item.No%>
@@ -59,7 +60,22 @@
    }%>
 			</tr>
 		</table>
-		<a href="write.aspx">글 작성</a>
+		<tr>
+			<% 
+		  if (mList != null && mList.Count() > 0)
+		  {
+		  	  %>
+			  <HR/>
+			  <%
+		  for (int i = 1; i < mBlockCount+1; i++)
+			{
+				%>
+				<a href=""><%=i.ToString()%></a>
+				<%
+			}
+		  } 
+			%>
+		</tr>
 	</div>
 	</form>
 </body>
