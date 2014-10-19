@@ -140,7 +140,7 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// Article ID를 가진 데이터의 존위여부를 확인합니다.
+		/// Article ID를 가진 데이터의 존재여부를 확인합니다.
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
