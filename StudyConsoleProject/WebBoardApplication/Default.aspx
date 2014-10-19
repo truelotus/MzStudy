@@ -66,7 +66,7 @@
 		  	  %>
 			  <HR/>
 			  <%
-		  for (int i = 1; i < mBlockCount+1; i++)
+		  for (int i = 1; i < mPageBlockCount + 1; i++)
 			{
 				%>
 				<a href="<%=GetPageUrl(i)%>"><%=i.ToString()%></a>

@@ -10,14 +10,14 @@ using System.Data;
 public partial class Board_Read : System.Web.UI.Page
 {
 	public Article mArticle;
+
 	protected void Page_Load(object sender, EventArgs e)
 	{
-		var requestUrl = Request.Url.AbsoluteUri;
+		//var requestUrl = Request.Url.AbsoluteUri;
 		var queryStr = Request.QueryString["read"];
+
 		if (!String.IsNullOrEmpty(queryStr)) 
-		{
 			mArticle = GetArticleInfo(queryStr);
-		}
 			
 	}
 
@@ -32,7 +32,7 @@ public partial class Board_Read : System.Web.UI.Page
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
 		return String.Format("http://{0}/write.aspx?update={1}", portUrl, article.Id);
 	}
-
+	
 	public Article GetArticleInfo(string id)
 	{
 		var article = new Article();
@@ -40,10 +40,11 @@ public partial class Board_Read : System.Web.UI.Page
 		MsSqlDataBase.UpdateHits(id);
 
 		var dataSet = MsSqlDataBase.GetSelectedArticleData(id);
-		var dataTbl = dataSet.Tables["ARTICLE_INFO"];
+		var dataTbl = dataSet.Tables[MsSqlDataBase.DB_TABLE_NAME];
 
 		if (dataSet.Tables.Count > 0)
 		{
+
 			foreach (DataRow dRow in dataTbl.Rows)
 			{
 				article.Id = dRow["ID"].ToString();

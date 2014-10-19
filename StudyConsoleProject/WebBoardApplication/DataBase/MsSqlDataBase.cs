@@ -10,8 +10,7 @@ namespace WebBoardApplication.DataBase
 {
 	public static class MsSqlDataBase
 	{
-
-		public const string DB_TABLE_NAME = "ARTICLE_INFORMATION";
+		public static string DB_TABLE_NAME = "ARTICLE_INFORMATION";
 
 
 		public static SqlConnection GetConnection()
@@ -21,38 +20,39 @@ namespace WebBoardApplication.DataBase
 
 
 		/// <summary>
-		/// DB에 저장된 게시글 데이터를 전부 반환한다.
+		/// DB에 저장되어 있는 Article 데이터를 전부 반환합니다.
 		/// </summary>
 		/// <returns></returns>
 		public static DataSet GetArticlesData()
 		{
-			var command = new SqlCommand("SP_SelectAllArticles", GetConnection());
-			command.CommandType = CommandType.StoredProcedure;
-			SqlDataAdapter adapter = new SqlDataAdapter(command);
+			var cmd = new SqlCommand("SP_SelectAllArticles", GetConnection());
+			cmd.CommandType = CommandType.StoredProcedure;
+			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 			DataSet dataSet = new DataSet();
 			adapter.Fill(dataSet);
 			return dataSet;
 		}
 
 		/// <summary>
-		///DB 데이터 갯수 반환한다
+		///DB 데이터 갯수 반환합니다.
 		/// </summary>
 		/// <returns></returns>
 		public static int GetDataBaseCount()
 		{
 			var connection = GetConnection();
-			var command = new SqlCommand("SELECT COUNT(*) FROM " + DB_TABLE_NAME, connection);
+			var cmd = new SqlCommand("SP_SelectCountArticles", connection);
+			cmd.CommandType = CommandType.StoredProcedure;
 			connection.Open();
-			var num = (int)command.ExecuteScalar();
+			var num = (int)cmd.ExecuteScalar();
 			connection.Close();
 			return num;
 		}
 
 		/// <summary>
-		/// 해당 게시물의 조회수를 업데이트 합니다.
+		/// 해당 Article 조회수를 업데이트 합니다.
 		/// </summary>
 		/// <param name="id"></param>
-		public static void UpdateHits(string id) 
+		public static void UpdateHits(string id)
 		{
 			var connection = GetConnection();
 			var cmd = new SqlCommand("SP_UpdateHits", connection);
@@ -64,7 +64,7 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// DB에 데이터를 추가한다.
+		/// DB에 Article 데이터를 추가합니다.
 		/// </summary>
 		/// <param name="article"></param>
 		public static bool SetArticleData(Article article)
@@ -72,9 +72,6 @@ namespace WebBoardApplication.DataBase
 			if (article == null)
 				return false;
 
-			//일반 Sql query문
-			//var query = String.Format("INSERT INTO " + DB_TABLE_NAME + "(ID,NO,TITLE,CONTENTS,WRITER,DATE,PASSWORD,HITS) VALUES({0},{1},'{2}','{3}','{4}','{5}','{6}',{7})"
-			//  , article.Id, article.No, article.Title, article.Contents, article.Writer, article.Date, article.Password, article.Hits);
 			try
 			{
 				var connection = GetConnection();
@@ -123,7 +120,7 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		///  DB에서 ID를 조회하여 데이터를 반환한다.
+		///  DB에서 ID를 조회하여 Article 데이터를 반환합니다.
 		/// </summary>
 		/// <param name="article"></param>
 		/// <returns></returns>
@@ -132,24 +129,27 @@ namespace WebBoardApplication.DataBase
 			if (String.IsNullOrEmpty(id))
 				return null;
 
-			//var query = String.Format("SELECT * FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
-
 			var cmd = new SqlCommand("SP_SelectArticle", GetConnection());
 			cmd.CommandType = CommandType.StoredProcedure;
 			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
 			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 			DataSet dataSet = new DataSet();
-			adapter.Fill(dataSet, "ARTICLE_INFO");
+			adapter.Fill(dataSet, DB_TABLE_NAME);
 
 			return dataSet;
 		}
 
+		/// <summary>
+		/// Article ID를 가진 데이터의 존위여부를 확인합니다.
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
 		public static bool HasArticleData(string id)
 		{
 			if (String.IsNullOrEmpty(id))
 				return false;
 
-			var query = String.Format("SELECT * FROM "+DB_TABLE_NAME+" WHERE ID = '{0}'", id);
+			var query = String.Format("SELECT * FROM " + DB_TABLE_NAME + " WHERE ID = '{0}'", id);
 			var cmd = new SqlCommand(query, GetConnection());
 			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 			DataSet dataSet = new DataSet();
@@ -171,13 +171,11 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// DB에서 ID를 조회하여 데이터를 삭제한다.
+		/// DB에서 ID를 조회하여 해당 Article데이터를 삭제합니다.
 		/// </summary>
 		/// <param name="article"></param>
 		public static void DeleteArticleData(string id)
 		{
-
-			//var query = String.Format("DELETE FROM " + DB_TABLE_NAME + " WHERE ID = {0}", id);
 			var connect = GetConnection();
 			var cmd = new SqlCommand("Sp_DeleteArticle", connect);
 			cmd.CommandType = CommandType.StoredProcedure;
@@ -188,7 +186,7 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// Article의 No 정보를 가지고 DB Update한다.
+		/// Article ID를 가지고 DB Update합니다.
 		/// </summary>
 		/// <param name="article"></param>
 		public static void UpdateArticleData(Article article)
@@ -229,10 +227,10 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// index 기준으로 시작~끝 위치에 존재하는 게시글 데이터를 날짜 오름차순으로 추출
+		/// 시작과 끝 범위 사이에 있는 해당하는 게시글 데이터를 날짜 오름차순으로 조회 합니다.
 		/// </summary>
-		/// <param name="start"></param>
-		/// <param name="end"></param>
+		/// <param name="start">조회 시작 번호</param>
+		/// <param name="end">조회 끝 번호</param>
 		/// <returns></returns>
 		public static IEnumerable<Article> GetArticleBetweenDataList(int start, int end)
 		{

@@ -6,8 +6,9 @@
 	<title></title>
 </head>
 <body>
-	<form id="form1" style="text-align:left" runat="server" method="post" action="write.aspx">
+	<form id="form1" style="text-align:left" runat="server" method="get" action="write.aspx">
 	<div>
+	<!--일기 정보를 폼에 담아 웹서버로 보내기 위함 -->
 		<input type="text" style="visibility: hidden" name="id" id="Id" value="<%=mArticle.Id%>" />
 		<input type="text" style="visibility: hidden" name="no" id="No" value="<%=mArticle.No%>" />
 		<input type="text" style="visibility: hidden" name="date" id="Date" value="<%=mArticle.Date%>" />
@@ -27,9 +28,7 @@
 				</div>
 			<tr>
 		</table>
-		<%--<asp:Button ID="Btn_Write" AlternateText="글 등록" />--%>
 		<input type="submit" value="글등록" />
-		<%--<a id="write" href="<%=GetArticleUrl(mArticleId)%>">글 등록</a>--%>
 	</div>
 	</form>
 </body>
