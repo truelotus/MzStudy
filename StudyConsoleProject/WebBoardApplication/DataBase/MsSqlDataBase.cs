@@ -25,12 +25,14 @@ namespace WebBoardApplication.DataBase
 		/// <returns></returns>
 		public static DataSet GetArticlesData()
 		{
-			var cmd = new SqlCommand("SP_SelectAllArticles", GetConnection());
-			cmd.CommandType = CommandType.StoredProcedure;
-			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-			DataSet dataSet = new DataSet();
-			adapter.Fill(dataSet);
-			return dataSet;
+			using (var cmd = new SqlCommand("SP_SelectAllArticles", GetConnection()))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+				DataSet dataSet = new DataSet();
+				adapter.Fill(dataSet);
+				return dataSet;
+			}
 		}
 
 		/// <summary>
@@ -39,13 +41,15 @@ namespace WebBoardApplication.DataBase
 		/// <returns></returns>
 		public static int GetDataBaseCount()
 		{
-			var connection = GetConnection();
-			var cmd = new SqlCommand("SP_SelectCountArticles", connection);
-			cmd.CommandType = CommandType.StoredProcedure;
-			connection.Open();
-			var num = (int)cmd.ExecuteScalar();
-			connection.Close();
-			return num;
+			using (var connection = GetConnection())
+			using (var cmd = new SqlCommand("SP_SelectCountArticles", connection))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				connection.Open();
+				var num = (int)cmd.ExecuteScalar();
+				connection.Close();
+				return num;
+			}
 		}
 
 		/// <summary>
@@ -54,13 +58,15 @@ namespace WebBoardApplication.DataBase
 		/// <param name="id"></param>
 		public static void UpdateHits(string id)
 		{
-			var connection = GetConnection();
-			var cmd = new SqlCommand("SP_UpdateHits", connection);
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
-			connection.Open();
-			cmd.ExecuteNonQuery();
-			connection.Close();
+			using (var connection = GetConnection())
+			using (var cmd = new SqlCommand("SP_UpdateHits", connection))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+				connection.Open();
+				cmd.ExecuteNonQuery();
+				connection.Close();
+			}
 		}
 
 		/// <summary>
@@ -74,43 +80,44 @@ namespace WebBoardApplication.DataBase
 
 			try
 			{
-				var connection = GetConnection();
+				using (var connection = GetConnection())
+				using (var cmd = new SqlCommand("SP_InsertNewArticle", connection))
+				{
+					connection.Open();
+					cmd.CommandType = CommandType.StoredProcedure;
 
-				var cmd = new SqlCommand("SP_InsertNewArticle", connection);
-				connection.Open();
-				cmd.CommandType = CommandType.StoredProcedure;
+					cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
 
-				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
+					cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
 
-				cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
+					if (article.Title == null)
+						cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
 
-				if (article.Title == null)
-					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
+					if (article.Contents == null)
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
 
-				if (article.Contents == null)
-					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
+					if (article.Writer == null)
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
 
-				if (article.Writer == null)
-					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
+					cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = article.Date;
 
-				cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = article.Date;
+					if (article.Password == null)
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
 
-				if (article.Password == null)
-					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
+					cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
 
-				cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
+					cmd.ExecuteNonQuery();
 
-				cmd.ExecuteNonQuery();
-
-				connection.Close();
+					connection.Close();
+				}
 			}
 			catch (Exception)
 			{
@@ -128,15 +135,16 @@ namespace WebBoardApplication.DataBase
 		{
 			if (String.IsNullOrEmpty(id))
 				return null;
+			using (var cmd = new SqlCommand("SP_SelectArticle", GetConnection()))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+				DataSet dataSet = new DataSet();
+				adapter.Fill(dataSet, DB_TABLE_NAME);
 
-			var cmd = new SqlCommand("SP_SelectArticle", GetConnection());
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
-			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-			DataSet dataSet = new DataSet();
-			adapter.Fill(dataSet, DB_TABLE_NAME);
-
-			return dataSet;
+				return dataSet;
+			}
 		}
 
 		/// <summary>
@@ -149,24 +157,26 @@ namespace WebBoardApplication.DataBase
 			if (String.IsNullOrEmpty(id))
 				return false;
 
-			var query = String.Format("SELECT * FROM " + DB_TABLE_NAME + " WHERE ID = '{0}'", id);
-			var cmd = new SqlCommand(query, GetConnection());
-			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-			DataSet dataSet = new DataSet();
-			adapter.Fill(dataSet, DB_TABLE_NAME);
-			var dataTbl = dataSet.Tables[DB_TABLE_NAME];
-
-			if (dataSet.Tables.Count > 0)
+			using (var cmd = new SqlCommand("SP_SelectArticle", GetConnection()))
 			{
-				foreach (DataRow dRow in dataTbl.Rows)
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+				DataSet dataSet = new DataSet();
+				adapter.Fill(dataSet, DB_TABLE_NAME);
+				var dataTbl = dataSet.Tables[DB_TABLE_NAME];
+
+				if (dataSet.Tables.Count > 0)
 				{
-					if (dRow["ID"] == null)
-						return false;
-					else
-						return true;
+					foreach (DataRow dRow in dataTbl.Rows)
+					{
+						if (dRow["ID"] == null)
+							return false;
+						else
+							return true;
+					}
 				}
 			}
-
 			return false;
 		}
 
@@ -176,13 +186,15 @@ namespace WebBoardApplication.DataBase
 		/// <param name="article"></param>
 		public static void DeleteArticleData(string id)
 		{
-			var connect = GetConnection();
-			var cmd = new SqlCommand("Sp_DeleteArticle", connect);
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
-			connect.Open();
-			cmd.ExecuteNonQuery();
-			connect.Close();
+			using (var connect = GetConnection())
+			using (var cmd = new SqlCommand("Sp_DeleteArticle", connect))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+				connect.Open();
+				cmd.ExecuteNonQuery();
+				connect.Close();	
+			}
 		}
 
 		/// <summary>
@@ -194,33 +206,35 @@ namespace WebBoardApplication.DataBase
 			//아이디 조회
 			if (HasArticleData(article.Id))
 			{
-				var connect = GetConnection();
-				var cmd = new SqlCommand("SP_UpdateArticle", connect);
-				cmd.CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
-				if (article.Title == null)
-					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
+				using (var connect = GetConnection())
+				using (var cmd = new SqlCommand("SP_UpdateArticle", connect))
+				{
+					cmd.CommandType = CommandType.StoredProcedure;
+					cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
+					if (article.Title == null)
+						cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = article.Title;
 
-				if (article.Contents == null)
-					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
+					if (article.Contents == null)
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = article.Contents;
 
-				if (article.Writer == null)
-					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
-				//null을 허용한 컬럼.
-				if (article.Password == null)
-					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
-				else
-					cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
+					if (article.Writer == null)
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
+					//null을 허용한 컬럼.
+					if (article.Password == null)
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
 
-				connect.Open();
-				cmd.ExecuteNonQuery();
-				connect.Close();
+					connect.Open();
+					cmd.ExecuteNonQuery();
+					connect.Close();
+				}
 			}
 			else
 				return;
@@ -234,43 +248,46 @@ namespace WebBoardApplication.DataBase
 		/// <returns></returns>
 		public static IEnumerable<Article> GetArticleBetweenDataList(int start, int end)
 		{
-			var connect = GetConnection();
-			var cmd = new SqlCommand("SP_SelectBetweenArticles", connect);
-			cmd.CommandType = CommandType.StoredProcedure;
-			cmd.Parameters.Add("@StartNo", SqlDbType.Int).Value = start;
-			cmd.Parameters.Add("@EndNo", SqlDbType.Int).Value = end;
-
-			connect.Open();
-			cmd.ExecuteNonQuery();
-			connect.Close();
-
-			SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-			DataSet dataSet = new DataSet();
-			adapter.Fill(dataSet, DB_TABLE_NAME);
-			var dataTbl = dataSet.Tables[DB_TABLE_NAME];
-
-			var articleList = new List<Article>();
-			if (dataSet.Tables.Count > 0)
+			using (var connect = GetConnection())
+			using (var cmd = new SqlCommand("SP_SelectBetweenArticles", connect))
 			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@StartNo", SqlDbType.Int).Value = start;
+				cmd.Parameters.Add("@EndNo", SqlDbType.Int).Value = end;
 
-				foreach (DataRow dRow in dataTbl.Rows)
+				connect.Open();
+				cmd.ExecuteNonQuery();
+				connect.Close();
+
+				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+				DataSet dataSet = new DataSet();
+				adapter.Fill(dataSet, DB_TABLE_NAME);
+				var dataTbl = dataSet.Tables[DB_TABLE_NAME];
+
+				var articleList = new List<Article>();
+				if (dataSet.Tables.Count > 0)
 				{
-					var article = new Article();
-					article.Id = dRow["ID"].ToString();
-					article.No = dRow["NO"].ToString();
-					article.Title = dRow["TITLE"].ToString();
-					article.Contents = dRow["CONTENTS"].ToString();
-					article.Writer = dRow["WRITER"].ToString();
-					article.Date = dRow["DATE"].ToString();
-					article.Password = dRow["PASSWORD"].ToString();
-					article.Hits = dRow["HITS"].ToString();
-					articleList.Add(article);
-				}
-			}
-			else
-				return null;
 
-			return articleList;
+					foreach (DataRow dRow in dataTbl.Rows)
+					{
+						var article = new Article();
+						article.Id = dRow["ID"].ToString();
+						article.No = dRow["NO"].ToString();
+						article.Title = dRow["TITLE"].ToString();
+						article.Contents = dRow["CONTENTS"].ToString();
+						article.Writer = dRow["WRITER"].ToString();
+						article.Date = dRow["DATE"].ToString();
+						article.Password = dRow["PASSWORD"].ToString();
+						article.Hits = dRow["HITS"].ToString();
+						articleList.Add(article);
+					}
+				}
+				else
+					return null;
+
+				return articleList;
+			}
+			
 		}
 	}
 }
