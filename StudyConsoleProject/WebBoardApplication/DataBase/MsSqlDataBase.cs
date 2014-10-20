@@ -8,7 +8,7 @@ using System.Configuration;
 
 namespace WebBoardApplication.DataBase
 {
-	public static class MsSqlDataBase
+	public static class MsSqlDataBaseManager
 	{
 		/// <summary>
 		/// 게시글 테이블
@@ -59,7 +59,6 @@ namespace WebBoardApplication.DataBase
 				cmd.CommandType = CommandType.StoredProcedure;
 				connection.Open();
 				var num = (int)cmd.ExecuteScalar();
-				connection.Close();
 				return num;
 			}
 		}
@@ -78,7 +77,6 @@ namespace WebBoardApplication.DataBase
 				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
 				connection.Open();
 				cmd.ExecuteNonQuery();
-				connection.Close();
 			}
 		}
 
@@ -130,7 +128,6 @@ namespace WebBoardApplication.DataBase
 
 					cmd.ExecuteNonQuery();
 
-					connection.Close();
 				}
 			}
 			catch (Exception)
@@ -367,8 +364,6 @@ namespace WebBoardApplication.DataBase
 						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = articleComment.Password;
 
 					cmd.ExecuteNonQuery();
-
-					connection.Close();
 				}
 			}
 			catch (Exception)
@@ -474,7 +469,6 @@ namespace WebBoardApplication.DataBase
 				cmd.Parameters.Add("@Article_id", SqlDbType.VarChar).Value = articleId;
 				connection.Open();
 				var num = (int)cmd.ExecuteScalar();
-				connection.Close();
 				return num;
 			}
 		}

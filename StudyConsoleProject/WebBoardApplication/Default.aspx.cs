@@ -16,7 +16,7 @@ public partial class Board_Main : System.Web.UI.Page
 
 	public void Page_Load(object sender, EventArgs e)
 	{
-		//페이지 블럭 당 게시글 갯수 10개 기준
+		//한 페이지 블럭 당 게시글 갯수 10개 기준이다.
 		int pageCountValue = 10;
 
 		if (!String.IsNullOrEmpty(Request.QueryString["delete"]))
@@ -32,19 +32,19 @@ public partial class Board_Main : System.Web.UI.Page
 			//현재 페이지에 들어갈 게시글을 디비에서 조회하여 리턴.
 			int end = pageCountValue * pageParam;
 			int start = end - (pageCountValue - 1);
-			mList = MsSqlDataBase.GetArticleBetweenDataList(start, end);
+			mList = MsSqlDataBaseManager.GetArticleBetweenDataList(start, end);
 		}
 		else
 		{
 			//1.목록 첫 진입 시 게시판 메인 접근 시 DB에서 게시글 데이터 조회
-			int articleTotalCount = MsSqlDataBase.GetArticleDataCount();
+			int articleTotalCount = MsSqlDataBaseManager.GetArticleDataCount();
 
 			if (articleTotalCount > 0)
 			{
 				if (articleTotalCount > 10)
 				{
 					//초과 시 만들어질 전체 페이지 블럭 총 갯수
-					mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
+					mList = MsSqlDataBaseManager.GetArticleBetweenDataList(1, pageCountValue);
 					mPageBlockCount = this.GetTotalPageCount(1, pageCountValue);
 				}
 			}
@@ -58,16 +58,21 @@ public partial class Board_Main : System.Web.UI.Page
 	}
 
 	/// <summary>
-	/// 일기 정보를 삭제한다.
+	/// 게시글 정보를 삭제한다.
 	/// </summary>
 	/// <param name="id"></param>
 	public void DeleteArticle(string id)
 	{
-		MsSqlDataBase.DeleteArticleData(id);
+		MsSqlDataBaseManager.DeleteArticleData(id);
 		Response.Redirect("Default.aspx");
 		Response.End();
 	}
 
+	/// <summary>
+	/// 게시글 읽기 페이지로 이동하는 주소를 보내준다.
+	/// </summary>
+	/// <param name="article">게시글 정보</param>
+	/// <returns>게시글 페이지 주소</returns>
 	public string GetArticleUrl(Article article)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
@@ -80,7 +85,7 @@ public partial class Board_Main : System.Web.UI.Page
 		if (mList != null)
 			return mList;
 
-		var dataSet = MsSqlDataBase.GetArticlesData();
+		var dataSet = MsSqlDataBaseManager.GetArticlesData();
 		var list = new List<Article>();
 
 		if (dataSet.Tables.Count > 0)
@@ -112,7 +117,7 @@ public partial class Board_Main : System.Web.UI.Page
 	public int GetTotalPageCount(int page, int count)
 	{
 		//DB에 저장된 게시글 총 갯수
-		var total = MsSqlDataBase.GetArticleDataCount();
+		var total = MsSqlDataBaseManager.GetArticleDataCount();
 
 		int pageCount = total / count;
 

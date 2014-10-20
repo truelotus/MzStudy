@@ -10,7 +10,6 @@ using System.Data;
 public partial class Board_Read : System.Web.UI.Page
 {
 	public Article mArticle = new Article();
-
 	public Comment mComment = new Comment();
 
 	protected void Page_Load(object sender, EventArgs e)
@@ -29,25 +28,26 @@ public partial class Board_Read : System.Web.UI.Page
 			mArticle = GetArticleInfo(queryStr);
 		}
 
-		if (!String.IsNullOrEmpty(Request.QueryString["updateCom"]))
+		if (!String.IsNullOrEmpty(Request.QueryString["reqCommentUpdate"]))
 		{
+			queryStr = Request.QueryString["reqCommentUpdate"].ToString();
 			//댓글 수정 요청 시 사용자가 수정을 할 수 있도록 댓글 작성 란에 정보를 보여준다.
-			
-			mComment = GetCommentInfo(Request.QueryString["updateCom"]);
+			mComment = GetCommentInfo(queryStr);
 			mArticle = GetArticleInfo(mComment.Article_Id);
 		}
-		else if (!String.IsNullOrEmpty(Request.QueryString["deleteCom"]))
+		else if (!String.IsNullOrEmpty(Request.QueryString["reqCommentDelete"]))
 		{
-			//삭제다.
-			var commentData = GetCommentInfo(Request.QueryString["deleteCom"].ToString());
+			//댓글 삭제 요청.
+			queryStr = Request.QueryString["reqCommentDelete"].ToString();
+			var commentData = GetCommentInfo(queryStr);
 			mArticle = GetArticleInfo(commentData.Article_Id);
-			MsSqlDataBase.DeleteArticleCommentData(Request.QueryString["deleteCom"]);
-			
+			MsSqlDataBaseManager.DeleteArticleCommentData(queryStr);
+
 			RedirectReadPage(commentData.Article_Id);
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["getComment"]))
 		{
-			//수정 페이지에서 작성자가 수정 완료를 눌렀을 경우.
+			//수정 페이지에서 작성자가 수정 완료를 눌렀을 경우. 업데이트한다.
 			var commentId = Request.QueryString["getComment"].ToString();
 			UpdateArticleComment(commentId);
 		}
@@ -59,34 +59,24 @@ public partial class Board_Read : System.Web.UI.Page
 			}
 			else
 			{
-				if (Request.Params["id"].Contains("commentId"))
+				//댓글 새로 작성 요청 왔다!
+				mComment = new Comment()
 				{
-					mComment = new Comment();
-				}
-				else
-				{
-					//댓글 새로 작성 요청 왔다!
-					mComment = new Comment()
-					{
-						Article_Id = Request.Params["id"].ToString(),
-						Id = System.Guid.NewGuid().ToString(),
-						Writer = Request.Params["writer"],
-						Contents = Request.Params["contents"],
-						Date = DateTime.Now.ToString(),
-						No = (MsSqlDataBase.GetCommentDataCount(Request.Params["id"].ToString()) + 1).ToString(),
-						Password = ""
-					};
-					var isSave = MsSqlDataBase.SetArticleComment(mComment);
-					if (isSave)
-					{
-						RedirectReadPage(mComment.Article_Id);
-					}
-				}
+					Article_Id = Request.Params["id"].ToString(),
+					Id = System.Guid.NewGuid().ToString(),
+					Writer = Request.Params["writer"],
+					Contents = Request.Params["contents"],
+					Date = DateTime.Now.ToString(),
+					No = (MsSqlDataBaseManager.GetCommentDataCount(Request.Params["id"].ToString()) + 1).ToString(),
+					Password = ""
+				};
+				var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
+				if (isSave)
+					RedirectReadPage(mComment.Article_Id);
 			}
-
 		}
-
 	}
+
 
 	public string GetReadPageUrl(string id)
 	{
@@ -101,7 +91,7 @@ public partial class Board_Read : System.Web.UI.Page
 	public string GetDeleteCommentPageUrl(string id)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/read.aspx?deleteCom={1}", portUrl, id);
+		return String.Format("http://{0}/read.aspx?reqCommentDelete={1}", portUrl, id);
 	}
 
 	/// <summary>
@@ -111,7 +101,7 @@ public partial class Board_Read : System.Web.UI.Page
 	public string GetUpdateCommentPageUrl(string id)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/read.aspx?updateCom={1}", portUrl, id);
+		return String.Format("http://{0}/read.aspx?reqCommentUpdate={1}", portUrl, id);
 	}
 
 	/// <summary>
@@ -164,18 +154,17 @@ public partial class Board_Read : System.Web.UI.Page
 			//Article 생성
 			id = System.Guid.NewGuid().ToString();
 			date = DateTime.Now.ToString();
-			no = (MsSqlDataBase.GetCommentDataCount(articleId) + 1).ToString();
+			no = (MsSqlDataBaseManager.GetCommentDataCount(articleId) + 1).ToString();
 			comment = new Comment() { Article_Id = articleId, Id = id, No = no, Contents = contents, Writer = writer, Date = date, Password = null };
 
-			MsSqlDataBase.SetArticleComment(comment);
+			MsSqlDataBaseManager.SetArticleComment(comment);
 		}
 		else
 		{
 			//Article 수정
 			comment = new Comment() { Article_Id = articleId, Id = id, No = no, Contents = contents, Writer = writer, Date = date, Password = null };
-			MsSqlDataBase.UpdateCommentData(comment);
+			MsSqlDataBaseManager.UpdateCommentData(comment);
 		}
-
 
 		RedirectReadPage(articleId);
 	}
@@ -183,8 +172,8 @@ public partial class Board_Read : System.Web.UI.Page
 	public Article GetArticleInfo(string id)
 	{
 		var article = new Article();
-		var dataSet = MsSqlDataBase.GetSelectedArticleData(id);
-		var dataTbl = dataSet.Tables[MsSqlDataBase.DATA_TABLE_ARTICLE_INFORMATION];
+		var dataSet = MsSqlDataBaseManager.GetSelectedArticleData(id);
+		var dataTbl = dataSet.Tables[MsSqlDataBaseManager.DATA_TABLE_ARTICLE_INFORMATION];
 
 		if (dataSet.Tables.Count > 0)
 		{
@@ -208,8 +197,8 @@ public partial class Board_Read : System.Web.UI.Page
 	public Comment GetCommentInfo(string id)
 	{
 		var comment = new Comment();
-		var dataSet = MsSqlDataBase.GetSelectedCommentData(id);
-		var dataTbl = dataSet.Tables[MsSqlDataBase.DATA_TABLE_ARTICLE_COMMENT];
+		var dataSet = MsSqlDataBaseManager.GetSelectedCommentData(id);
+		var dataTbl = dataSet.Tables[MsSqlDataBaseManager.DATA_TABLE_ARTICLE_COMMENT];
 
 		if (dataSet.Tables.Count > 0)
 		{
@@ -234,7 +223,7 @@ public partial class Board_Read : System.Web.UI.Page
 		if (String.IsNullOrEmpty(articleId))
 			return null;
 
-		var dataSet = MsSqlDataBase.GetArticleComments(articleId);
+		var dataSet = MsSqlDataBaseManager.GetArticleComments(articleId);
 		var list = new List<Comment>();
 
 		if (dataSet.Tables.Count > 0)
