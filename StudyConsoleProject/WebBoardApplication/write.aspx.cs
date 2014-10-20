@@ -51,7 +51,7 @@ public partial class Board_write : System.Web.UI.Page
 			//Article 생성
 			id = System.Guid.NewGuid().ToString();
 			date = DateTime.Now.ToString();
-			no = (MsSqlDataBase.GetDataBaseCount() + 1).ToString();
+			no = (MsSqlDataBase.GetArticleDataCount() + 1).ToString();
 			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 
 			MsSqlDataBase.SetArticleData(article);
@@ -85,7 +85,7 @@ public partial class Board_write : System.Web.UI.Page
 		mArticle = new Article();
 		mArticle.Id = id;
 		var dataSet = MsSqlDataBase.GetSelectedArticleData(id);
-		var dataTbl = dataSet.Tables[MsSqlDataBase.DB_TABLE_NAME];
+		var dataTbl = dataSet.Tables[MsSqlDataBase.DATA_TABLE_ARTICLE_INFORMATION];
 		if (dataSet.Tables.Count > 0)
 		{
 			foreach (DataRow dRow in dataTbl.Rows)

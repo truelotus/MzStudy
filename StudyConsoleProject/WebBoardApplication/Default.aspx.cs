@@ -37,11 +37,11 @@ public partial class Board_Main : System.Web.UI.Page
 		else
 		{
 			//1.목록 첫 진입 시 게시판 메인 접근 시 DB에서 게시글 데이터 조회
-			int articleTotalCount = MsSqlDataBase.GetDataBaseCount();
+			int articleTotalCount = MsSqlDataBase.GetArticleDataCount();
 
 			if (articleTotalCount > 0)
 			{
-				if (articleTotalCount >10)
+				if (articleTotalCount > 10)
 				{
 					//초과 시 만들어질 전체 페이지 블럭 총 갯수
 					mList = MsSqlDataBase.GetArticleBetweenDataList(1, pageCountValue);
@@ -51,10 +51,10 @@ public partial class Board_Main : System.Web.UI.Page
 		}
 	}
 
-	public string GetPageUrl(int pageNum) 
+	public string GetPageUrl(int pageNum)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/Default.aspx?page={1}", portUrl,pageNum);
+		return String.Format("http://{0}/Default.aspx?page={1}", portUrl, pageNum);
 	}
 
 
@@ -109,7 +109,7 @@ public partial class Board_Main : System.Web.UI.Page
 	public int GetTotalPageCount(int page, int count)
 	{
 		//DB에 저장된 게시글 총 갯수
-		var total = MsSqlDataBase.GetDataBaseCount();
+		var total = MsSqlDataBase.GetArticleDataCount();
 
 		int pageCount = total / count;
 

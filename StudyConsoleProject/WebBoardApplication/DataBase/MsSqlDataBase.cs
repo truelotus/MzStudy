@@ -10,8 +10,8 @@ namespace WebBoardApplication.DataBase
 {
 	public static class MsSqlDataBase
 	{
-		public static string DB_TABLE_NAME = "ARTICLE_INFORMATION";
-
+		public static string DATA_TABLE_ARTICLE_INFORMATION = "ARTICLE_INFORMATION";
+		public static string DATA_TABLE_ARTICLE_COMMENT = "ARTICLE_COMMENT";
 
 		public static SqlConnection GetConnection()
 		{
@@ -39,7 +39,7 @@ namespace WebBoardApplication.DataBase
 		///DB 데이터 갯수 반환합니다.
 		/// </summary>
 		/// <returns></returns>
-		public static int GetDataBaseCount()
+		public static int GetArticleDataCount()
 		{
 			using (var connection = GetConnection())
 			using (var cmd = new SqlCommand("SP_SelectCountArticles", connection))
@@ -141,7 +141,7 @@ namespace WebBoardApplication.DataBase
 				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
 				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 				DataSet dataSet = new DataSet();
-				adapter.Fill(dataSet, DB_TABLE_NAME);
+				adapter.Fill(dataSet, DATA_TABLE_ARTICLE_INFORMATION);
 
 				return dataSet;
 			}
@@ -163,8 +163,8 @@ namespace WebBoardApplication.DataBase
 				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
 				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 				DataSet dataSet = new DataSet();
-				adapter.Fill(dataSet, DB_TABLE_NAME);
-				var dataTbl = dataSet.Tables[DB_TABLE_NAME];
+				adapter.Fill(dataSet, DATA_TABLE_ARTICLE_INFORMATION);
+				var dataTbl = dataSet.Tables[DATA_TABLE_ARTICLE_INFORMATION];
 
 				if (dataSet.Tables.Count > 0)
 				{
@@ -193,7 +193,7 @@ namespace WebBoardApplication.DataBase
 				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
 				connect.Open();
 				cmd.ExecuteNonQuery();
-				connect.Close();	
+				connect.Close();
 			}
 		}
 
@@ -261,8 +261,8 @@ namespace WebBoardApplication.DataBase
 
 				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
 				DataSet dataSet = new DataSet();
-				adapter.Fill(dataSet, DB_TABLE_NAME);
-				var dataTbl = dataSet.Tables[DB_TABLE_NAME];
+				adapter.Fill(dataSet, DATA_TABLE_ARTICLE_INFORMATION);
+				var dataTbl = dataSet.Tables[DATA_TABLE_ARTICLE_INFORMATION];
 
 				var articleList = new List<Article>();
 				if (dataSet.Tables.Count > 0)
@@ -287,7 +287,167 @@ namespace WebBoardApplication.DataBase
 
 				return articleList;
 			}
+		}
+
+		/// <summary>
+		/// 게시글 id를 가진 Comment db 정보 조회(날짜 내림차순) 후 반환
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		public static DataSet GetArticleComments(string id) 
+		{
+			using (var cmd = new SqlCommand("SP_SelectArticleAllComment", GetConnection()))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Article_id", SqlDbType.VarChar).Value = id;
+				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+				DataSet dataSet = new DataSet();
+				adapter.Fill(dataSet);
+				return dataSet;
+			}
+		}
+		/// <summary>
+		/// 게시글 comment 정보 db에 입력
+		/// </summary>
+		/// <param name="articleComment"></param>
+		/// <returns></returns>
+		public static bool SetArticleComment(Comment articleComment)
+		{
+			if (articleComment == null)
+				return false;
+
+			try
+			{
+				using (var connection = GetConnection())
+				using (var cmd = new SqlCommand("SP_InsertArticleComment", connection))
+				{
+					connection.Open();
+					cmd.CommandType = CommandType.StoredProcedure;
+
+					cmd.Parameters.Add("@Article_id", SqlDbType.VarChar).Value = articleComment.Article_Id;
+
+					cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = articleComment.Id;
+
+					if (articleComment.Contents == null)
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = articleComment.Contents;
+
+					if (articleComment.Writer == null)
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = articleComment.Writer;
+
+					cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = articleComment.Date;
+
+					if (articleComment.Password == null)
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = articleComment.Password;
+
+					cmd.ExecuteNonQuery();
+
+					connection.Close();
+				}
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// DB에서  Comment ID를 조회하여 해당 Article comment 데이터를 삭제합니다.
+		/// </summary>
+		/// <param name="article"></param>
+		public static void DeleteArticleCommentData(string id)
+		{
+			using (var connect = GetConnection())
+			using (var cmd = new SqlCommand("SP_DeleteArticleComment", connect))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+				connect.Open();
+				cmd.ExecuteNonQuery();
+				connect.Close();
+			}
+		}
+
+		/// <summary>
+		///  DB에서 Comment ID를 조회하여 Comment 데이터를 반환합니다.
+		/// </summary>
+		/// <param name="comment"></param>
+		/// <returns></returns>
+		public static DataSet GetSelectedCommentData(string id)
+		{
+			if (String.IsNullOrEmpty(id))
+				return null;
+			using (var cmd = new SqlCommand("SP_SelectArticleComment", GetConnection()))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = id;
+				SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+				DataSet dataSet = new DataSet();
+				adapter.Fill(dataSet, DATA_TABLE_ARTICLE_COMMENT);
+
+				return dataSet;
+			}
+		}
+
+		/// <summary>
+		/// Comment ID를 가지고 DB Update합니다.
+		/// </summary>
+		/// <param name="comment"></param>
+		public static void UpdateCommentData(Comment comment)
+		{
+			//아이디 조회
+
+				using (var connect = GetConnection())
+				using (var cmd = new SqlCommand("SP_UpdateArticleComment", connect))
+				{
+					cmd.CommandType = CommandType.StoredProcedure;
+					cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = comment.Id;
+
+					if (comment.Contents == null)
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Contents", SqlDbType.VarChar).Value = comment.Contents;
+
+					if (comment.Writer == null)
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = comment.Writer;
+					//null을 허용한 컬럼.
+					if (comment.Password == null)
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
+					else
+						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = comment.Password;
+
+					connect.Open();
+					cmd.ExecuteNonQuery();
+					connect.Close();
+				}
 			
+				return;
+		}
+
+		/// <summary>
+		///DB 데이터 갯수 반환합니다.
+		/// </summary>
+		/// <returns></returns>
+		public static int GetCommentDataCount(string articleId)
+		{
+			using (var connection = GetConnection())
+			using (var cmd = new SqlCommand("SP_SelectCountComments", connection))
+			{
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.Add("@Article_id", SqlDbType.VarChar).Value = articleId;
+				connection.Open();
+				var num = (int)cmd.ExecuteScalar();
+				connection.Close();
+				return num;
+			}
 		}
 	}
 }
