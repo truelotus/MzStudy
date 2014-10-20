@@ -11,12 +11,12 @@ namespace WebBoardApplication.DataBase
 	public static class MsSqlDataBase
 	{
 		/// <summary>
-		/// 게시글 정보
+		/// 게시글 테이블
 		/// </summary>
 		public static string DATA_TABLE_ARTICLE_INFORMATION = "ARTICLE_INFORMATION";
 
 		/// <summary>
-		/// 댓글 정보
+		/// 댓글 테이블
 		/// </summary>
 		public static string DATA_TABLE_ARTICLE_COMMENT = "ARTICLE_COMMENT";
 
@@ -28,8 +28,9 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// DB에 저장되어 있는 Article 데이터를 전부 반환합니다.
+		/// Table : ARTICLE_INFORMATION
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>Article 데이터</returns>
 		public static DataSet GetArticlesData()
 		{
 			using (var cmd = new SqlCommand("SP_SelectAllArticles", GetConnection()))
@@ -44,6 +45,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		///DB 데이터 갯수 반환합니다.
+		///Table : ARTICLE_INFORMATION
 		/// </summary>
 		/// <returns></returns>
 		public static int GetArticleDataCount()
@@ -61,6 +63,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// 해당 Article 조회수를 업데이트 합니다.
+		/// Table : ARTICLE_INFORMATION
 		/// </summary>
 		/// <param name="id"></param>
 		public static void UpdateHits(string id)
@@ -78,6 +81,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// DB에 Article 데이터를 추가합니다.
+		/// Table : ARTICLE_INFORMATION
 		/// </summary>
 		/// <param name="article"></param>
 		public static bool SetArticleData(Article article)
@@ -135,6 +139,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		///  DB에서 ID를 조회하여 Article 데이터를 반환합니다.
+		///  Table : ARTICLE_INFORMATION
 		/// </summary>
 		/// <param name="article"></param>
 		/// <returns></returns>
@@ -156,6 +161,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// Article ID를 가진 데이터의 존재여부를 확인합니다.
+		/// Table : ARTICLE_INFORMATION
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -188,7 +194,8 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// DB에서 ID를 조회하여 해당 Article데이터를 삭제합니다.
+		/// DB에서 ID를 조회하여 해당 Article데이터와 댓글데이터를 삭제합니다.
+		/// Table : ARTICLE_INFORMATION & ARTICLE_COMMENT
 		/// </summary>
 		/// <param name="article"></param>
 		public static void DeleteArticleData(string id)
@@ -206,6 +213,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// Article ID를 가지고 DB Update합니다.
+		/// Table : ARTICLE_INFORMATION
 		/// </summary>
 		/// <param name="article"></param>
 		public static void UpdateArticleData(Article article)
@@ -249,6 +257,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// 시작과 끝 범위 사이에 있는 해당하는 게시글 데이터를 날짜 오름차순으로 조회 합니다.
+		/// Table : ARTICLE_INFORMATION
 		/// </summary>
 		/// <param name="start">조회 시작 번호</param>
 		/// <param name="end">조회 끝 번호</param>
@@ -297,7 +306,8 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// 게시글 id를 가진 Comment db 정보 조회(날짜 내림차순) 후 반환
+		/// 게시글 Id를 가진 Comment db 정보 조회 후 반환합니다.
+		/// Table : ARTICLE_COMMENT
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
@@ -314,7 +324,8 @@ namespace WebBoardApplication.DataBase
 			}
 		}
 		/// <summary>
-		/// 게시글 comment 정보 db에 입력
+		/// 댓글 정보를 데이터베이스에 입력합니다.
+		/// Table : ARTICLE_COMMENT
 		/// </summary>
 		/// <param name="articleComment"></param>
 		/// <returns></returns>
@@ -365,7 +376,8 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// DB에서 Comment ID를 조회하여 해당 Article comment 데이터를 삭제합니다.
+		/// DB에서 Comment ID를 조회하여 해당 Comment 데이터를 삭제합니다.
+		/// Table : ARTICLE_COMMENT
 		/// </summary>
 		/// <param name="article"></param>
 		public static void DeleteArticleCommentData(string id)
@@ -383,6 +395,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// DB에서 Comment ID를 조회하여 해당하는 Comment 데이터를 반환합니다.
+		/// Table : ARTICLE_COMMENT
 		/// </summary>
 		/// <param name="id">Comment ID</param>
 		/// <returns>Comment DataSet</returns>
@@ -404,6 +417,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		/// 댓글 정보를 수정합니다.
+		/// Table : ARTICLE_COMMENT
 		/// </summary>
 		/// <param name="comment">수정한 댓글 정보</param>
 		public static void UpdateCommentData(Comment comment)
@@ -441,6 +455,7 @@ namespace WebBoardApplication.DataBase
 
 		/// <summary>
 		///  게시글 ID를 가진 댓글 데이터의 총 갯수를 반환합니다.
+		///  Table : ARTICLE_COMMENT
 		/// </summary>
 		/// <param name="articleId">게시글 ID</param>
 		/// <returns>게시글 ID를 가진 댓글 데이터의 총 갯수</returns>

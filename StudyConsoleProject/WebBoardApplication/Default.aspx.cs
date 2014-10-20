@@ -57,7 +57,10 @@ public partial class Board_Main : System.Web.UI.Page
 		return String.Format("http://{0}/Default.aspx?page={1}", portUrl, pageNum);
 	}
 
-
+	/// <summary>
+	/// 일기 정보를 삭제한다.
+	/// </summary>
+	/// <param name="id"></param>
 	public void DeleteArticle(string id)
 	{
 		MsSqlDataBase.DeleteArticleData(id);

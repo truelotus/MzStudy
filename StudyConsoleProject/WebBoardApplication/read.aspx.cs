@@ -95,7 +95,7 @@ public partial class Board_Read : System.Web.UI.Page
 	}
 
 	/// <summary>
-	/// 읽기페이지로 댓글 삭제 요청 한다.
+	/// 댓글 삭제 요청(read.aspx) 한다.
 	/// </summary>
 	/// <param name="id"></param>
 	public string GetDeleteCommentPageUrl(string id)
@@ -105,7 +105,7 @@ public partial class Board_Read : System.Web.UI.Page
 	}
 
 	/// <summary>
-	/// 읽기페이지로 댓글 수정 요청 한다.
+	/// 댓글 수정 요청(read.aspx) 한다.
 	/// </summary>
 	/// <param name="id"></param>
 	public string GetUpdateCommentPageUrl(string id)
@@ -124,12 +124,22 @@ public partial class Board_Read : System.Web.UI.Page
 		Response.End();
 	}
 
-	public string GetDeleteArticleUrl(Article article)
+	/// <summary>
+	/// 게시글 삭제 요청 url을 반환한다.
+	/// </summary>
+	/// <param name="id">article id</param>
+	/// <returns></returns>
+	public string GetDeleteArticleUrl(string id)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/Default.aspx?delete={1}", portUrl, article.Id);
+		return String.Format("http://{0}/Default.aspx?delete={1}", portUrl, id);
 	}
 
+	/// <summary>
+	/// 게시글 업데이트 요청 url을 반환한다.
+	/// </summary>
+	/// <param name="article">article</param>
+	/// <returns></returns>
 	public string GetUpdateArticleUrl(Article article)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
