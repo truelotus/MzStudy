@@ -136,6 +136,10 @@ public partial class Board_Read : System.Web.UI.Page
 		return String.Format("http://{0}/write.aspx?update={1}", portUrl, article.Id);
 	}
 
+	/// <summary>
+	/// 댓글 데이터를 수정 한다.
+	/// </summary>
+	/// <param name="commentId">댓글 id</param>
 	public void UpdateArticleComment(string commentId)
 	{
 		var comId = Request.QueryString["updateCom"];
@@ -169,6 +173,11 @@ public partial class Board_Read : System.Web.UI.Page
 		RedirectReadPage(articleId);
 	}
 
+	/// <summary>
+	/// 게시글 데이터를 수정 한다.
+	/// </summary>
+	/// <param name="id">게시글 id</param>
+	/// <returns></returns>
 	public Article GetArticleInfo(string id)
 	{
 		var article = new Article();
@@ -193,7 +202,11 @@ public partial class Board_Read : System.Web.UI.Page
 		return article;
 	}
 
-
+	/// <summary>
+	/// DB에서 댓글 정보를 가져온다
+	/// </summary>
+	/// <param name="id">댓글 id</param>
+	/// <returns></returns>
 	public Comment GetCommentInfo(string id)
 	{
 		var comment = new Comment();
@@ -217,7 +230,11 @@ public partial class Board_Read : System.Web.UI.Page
 	}
 
 
-
+	/// <summary>
+	/// 게시글에 등록되어 있는 댓글 리스트를 반환합니다.
+	/// </summary>
+	/// <param name="articleId">게시글 ID</param>
+	/// <returns></returns>
 	public IEnumerable<Comment> GetComments(string articleId)
 	{
 		if (String.IsNullOrEmpty(articleId))
