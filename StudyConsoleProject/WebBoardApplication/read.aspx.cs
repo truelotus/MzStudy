@@ -15,19 +15,24 @@ public partial class Board_Read : System.Web.UI.Page
 
 	protected void Page_Load(object sender, EventArgs e)
 	{
-		//var requestUrl = Request.Url.AbsoluteUri;
-
-
 		var queryStr = Request.QueryString["read"];
 
 		if (!String.IsNullOrEmpty(queryStr))
+		{
+			mArticle = GetArticleInfo(queryStr);
+			GetUpdateArticleUrl(mArticle);
+			return;
+		}
+
+		if (!String.IsNullOrEmpty(Request.QueryString["update"]))
 		{
 			mArticle = GetArticleInfo(queryStr);
 		}
 
 		if (!String.IsNullOrEmpty(Request.QueryString["updateCom"]))
 		{
-			//수정 시작시.
+			//댓글 수정 요청 시 사용자가 수정을 할 수 있도록 댓글 작성 란에 정보를 보여준다.
+			
 			mComment = GetCommentInfo(Request.QueryString["updateCom"]);
 			mArticle = GetArticleInfo(mComment.Article_Id);
 		}
@@ -42,7 +47,7 @@ public partial class Board_Read : System.Web.UI.Page
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["getComment"]))
 		{
-			//작성자가 수정 완료를 눌렀다.
+			//수정 페이지에서 작성자가 수정 완료를 눌렀을 경우.
 			var commentId = Request.QueryString["getComment"].ToString();
 			UpdateArticleComment(commentId);
 		}
@@ -90,7 +95,7 @@ public partial class Board_Read : System.Web.UI.Page
 	}
 
 	/// <summary>
-	/// 읽기페이지로 댓글 삭제 요청 날린다.
+	/// 읽기페이지로 댓글 삭제 요청 한다.
 	/// </summary>
 	/// <param name="id"></param>
 	public string GetDeleteCommentPageUrl(string id)
@@ -100,7 +105,7 @@ public partial class Board_Read : System.Web.UI.Page
 	}
 
 	/// <summary>
-	/// 읽기페이지로 댓글 생성 및 수정 요청 날린다.
+	/// 읽기페이지로 댓글 수정 요청 한다.
 	/// </summary>
 	/// <param name="id"></param>
 	public string GetUpdateCommentPageUrl(string id)

@@ -10,7 +10,14 @@ namespace WebBoardApplication.DataBase
 {
 	public static class MsSqlDataBase
 	{
+		/// <summary>
+		/// 게시글 정보
+		/// </summary>
 		public static string DATA_TABLE_ARTICLE_INFORMATION = "ARTICLE_INFORMATION";
+
+		/// <summary>
+		/// 댓글 정보
+		/// </summary>
 		public static string DATA_TABLE_ARTICLE_COMMENT = "ARTICLE_COMMENT";
 
 		public static SqlConnection GetConnection()
@@ -358,7 +365,7 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// DB에서  Comment ID를 조회하여 해당 Article comment 데이터를 삭제합니다.
+		/// DB에서 Comment ID를 조회하여 해당 Article comment 데이터를 삭제합니다.
 		/// </summary>
 		/// <param name="article"></param>
 		public static void DeleteArticleCommentData(string id)
@@ -375,10 +382,10 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		///  DB에서 Comment ID를 조회하여 Comment 데이터를 반환합니다.
+		/// DB에서 Comment ID를 조회하여 해당하는 Comment 데이터를 반환합니다.
 		/// </summary>
-		/// <param name="comment"></param>
-		/// <returns></returns>
+		/// <param name="id">Comment ID</param>
+		/// <returns>Comment DataSet</returns>
 		public static DataSet GetSelectedCommentData(string id)
 		{
 			if (String.IsNullOrEmpty(id))
@@ -396,9 +403,9 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		/// Comment ID를 가지고 DB Update합니다.
+		/// 댓글 정보를 수정합니다.
 		/// </summary>
-		/// <param name="comment"></param>
+		/// <param name="comment">수정한 댓글 정보</param>
 		public static void UpdateCommentData(Comment comment)
 		{
 			//아이디 조회
@@ -433,11 +440,15 @@ namespace WebBoardApplication.DataBase
 		}
 
 		/// <summary>
-		///DB 데이터 갯수 반환합니다.
+		///  게시글 ID를 가진 댓글 데이터의 총 갯수를 반환합니다.
 		/// </summary>
-		/// <returns></returns>
+		/// <param name="articleId">게시글 ID</param>
+		/// <returns>게시글 ID를 가진 댓글 데이터의 총 갯수</returns>
 		public static int GetCommentDataCount(string articleId)
 		{
+			if (String.IsNullOrEmpty(articleId))
+				return 0;
+
 			using (var connection = GetConnection())
 			using (var cmd = new SqlCommand("SP_SelectCountComments", connection))
 			{
