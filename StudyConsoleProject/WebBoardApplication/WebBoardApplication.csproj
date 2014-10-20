@@ -67,7 +67,7 @@
   <ItemGroup>
     <Compile Include="DataBase\Article.cs" />
     <Compile Include="DataBase\Comment.cs" />
-    <Compile Include="DataBase\MsSqlDataBase.cs" />
+    <Compile Include="DataBase\MsSqlDataBaseManager.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
