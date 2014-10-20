@@ -52,7 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
-    <Content Include="articleConnect.aspx" />
     <Content Include="read.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -72,13 +71,6 @@
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="articleConnect.aspx.cs">
-      <DependentUpon>articleConnect.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="articleConnect.aspx.designer.cs">
-      <DependentUpon>articleConnect.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="read.aspx.cs">

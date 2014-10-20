@@ -6,7 +6,7 @@
 	<title>게시판</title>
 </head>
 <body>
-	<form id="form1" runat="server">
+	<form id="form1">
 	<div>
 		<h1>
 			List</h1>

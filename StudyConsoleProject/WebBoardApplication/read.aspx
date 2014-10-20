@@ -6,7 +6,7 @@
 	<title></title>
 </head>
 <body>
-	<form id="article_form" runat="server" method="get" runat="server" action="Default.aspx">
+	<form id="article_form" runat="server" method="get" action="Default.aspx">
 	<table>
 		<tr>
 			<td>

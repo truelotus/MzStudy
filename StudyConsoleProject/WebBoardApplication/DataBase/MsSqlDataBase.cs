@@ -20,11 +20,14 @@ namespace WebBoardApplication.DataBase
 		/// </summary>
 		public static string DATA_TABLE_ARTICLE_COMMENT = "ARTICLE_COMMENT";
 
+		/// <summary>
+		/// web.config의 ConnectionString을 가져와 데이터베이스 서버와 연결 합니다.
+		/// </summary>
+		/// <returns></returns>
 		public static SqlConnection GetConnection()
 		{
 			return new SqlConnection(ConfigurationManager.ConnectionStrings["aticle_write"].ToString());
 		}
-
 
 		/// <summary>
 		/// DB에 저장되어 있는 Article 데이터를 전부 반환합니다.
