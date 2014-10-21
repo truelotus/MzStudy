@@ -6,12 +6,14 @@
 	<title></title>
 	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<script>
-	
-		$(document).ready(function () {
-			$(".addCommentCommand").click(function () {
-				$("#commentTable").append
-		("<tr><td><b>Writer </b>작성자</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>음화화<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>"); });});
+	<script type="text/javascript" >
+
+
+	var addCommentCommand = $(".addCommentCommand").click(function () {
+		$("#commentTable").append
+			("<tr><td><b>Writer </b>"$("#comment_writer_textbox").text();"</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"$("#comment_contents_textbox").text();"<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>"); });
+
+	$(document).ready(function () { addCommentCommand();});
 	</script>
 	
 </head>
@@ -58,9 +60,9 @@
 		Content
 		<textarea type="text" name="contents" id="comment_contents_textbox"><%=mComment.Contents%></textarea>
 		<input type="submit" value="댓글 작성" />
+		</form>
+		<button class="addCommentCommand">jquery로 작성하기</button>
 	</div>
-	</form>
-	<button class="addCommentCommand">jquery로 작성하기</button>
 	<br />
 	<table id="commentTable">
 		<% var list = GetComments(mArticle.Id);
