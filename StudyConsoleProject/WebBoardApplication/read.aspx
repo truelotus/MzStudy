@@ -30,22 +30,31 @@
 		$("#commentTable").append("<tr><td><b>Writer </b>" +
 		$("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>" +
 		$("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
+
+		$.ajax({
+		 	url: "<%=GetAjaxPageUrl(mArticle.Id)%>",
+		 	data: {
+		 		writer : $("#comment_writer_textbox").val(),
+				contents : $("#comment_contents_textbox").val()
+		 	},
+		 	success: function (data) {
+				//data에는 응답이 와야한다.(db 저장을 위한 작성자,내용)
+				//코드에서 받아 실제 데이터베이스에 저장 할 수 있도록.
+		 		//addComment();
+		 	},
+			error : function()
+			{
+				alert("error!");
+			}
+		 });
+
 		}
 
 		$(document).ready(ready);
 
 
 //		 //4.응답 데이터를 가지고 데이터베이스에 입력하기.
-//		 $.ajax({
-//		 	id: "read.aspx",
-//		 	data: {
-//		 		id : <%=mArticle.Id%>
-//		 	},
-//		 	success: function (data) {
-//				//data에는 응답이 와야한다.
-//		 		$("#weather-temp").html("<strong>" + data + "</strong> degrees");
-//		 	}
-//		 });
+		 
 
 
 	</script>

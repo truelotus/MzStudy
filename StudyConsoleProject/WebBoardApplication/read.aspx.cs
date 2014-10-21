@@ -84,6 +84,13 @@ public partial class Board_Read : System.Web.UI.Page
 		return String.Format("http://{0}/read.aspx?read={1}", portUrl, id);
 	}
 
+
+	public string GetAjaxPageUrl(string id)
+	{
+		return String.Format("read.aspx?read={1}", id);
+	}
+
+
 	/// <summary>
 	/// 댓글 삭제 요청(read.aspx) 한다.
 	/// </summary>
