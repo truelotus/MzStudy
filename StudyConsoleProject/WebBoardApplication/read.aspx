@@ -8,7 +8,6 @@
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script type="text/javascript" >
 		
-		//
 		//var addCommentCommand = $("#addCommentCommand").click(function () {
 
 		function addCommentCommand() {
