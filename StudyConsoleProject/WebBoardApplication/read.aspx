@@ -31,30 +31,33 @@
 		$("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>" +
 		$("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
 
+		//4.응답 데이터를 가지고 데이터베이스에 입력하기. 
 		$.ajax({
-		 	url: "<%=GetAjaxPageUrl(mArticle.Id)%>",
-		 	data: {
-		 		writer : $("#comment_writer_textbox").val(),
-				contents : $("#comment_contents_textbox").val()
-		 	},
-		 	success: function (data) {
+			//서버에 요청할 url
+			url: "<%=GetAjaxPageUrl(mArticle.Id)%>",
+			data: {
+			//요청 할 정보
+				writer: $("#comment_writer_textbox").val(),
+				contents: $("#comment_contents_textbox").val()
+			},
+			success: function (data) {
+				//응답
+				alert("응답왔다!");
 				//data에는 응답이 와야한다.(db 저장을 위한 작성자,내용)
-				//코드에서 받아 실제 데이터베이스에 저장 할 수 있도록.
-		 		//addComment();
-		 	},
-			error : function()
-			{
+				//코드에서 받아 실제 데이터베이스에 저장
+				//수정 삭제 URL
+				//addComment();
+			},
+			error: function () {
 				alert("error!");
 			}
-		 });
+		});
 
 		}
 
 		$(document).ready(ready);
 
 
-//		 //4.응답 데이터를 가지고 데이터베이스에 입력하기.
-		 
 
 
 	</script>

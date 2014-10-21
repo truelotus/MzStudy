@@ -14,6 +14,12 @@ public partial class Board_Read : System.Web.UI.Page
 
 	protected void Page_Load(object sender, EventArgs e)
 	{
+
+		if (!String.IsNullOrEmpty(Request.QueryString["addComment"]))
+		{
+			//받은 정보를 가지고 API로 data 추출
+		}
+
 		var queryStr = Request.QueryString["read"];
 
 		if (!String.IsNullOrEmpty(queryStr))
@@ -87,7 +93,7 @@ public partial class Board_Read : System.Web.UI.Page
 
 	public string GetAjaxPageUrl(string id)
 	{
-		return String.Format("read.aspx?read={1}", id);
+		return String.Format("read.aspx?addComment={0}", id);
 	}
 
 
