@@ -7,22 +7,34 @@
 	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script type="text/javascript" >
-		
-		//var addCommentCommand = $("#addCommentCommand").click(function () {
 
-		function addCommentCommand() {
+		
+
+		//	1.해당 버튼 onclick 이벤트에 연결 했을 때 스트립트
+		//	function addCommentCommand() {
+		//	$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
+		//	+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
+		//	}
+
+		//	2. 한번에 나열
+		//	$(document).ready(function () {
+		//		$("#addCommentCommand").click(function () {
+		//			$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
+		//			+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
+		//		});
+		//	});
+
+
+		//3.
+		var addCommentCommand = $("#addCommentCommand").click(function () {
 			$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
-		+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
-		}
+					+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
+		});
+
 
 		//$(document).ready(function () { addCommentCommand(); });
 
-//	$(document).ready(function () {
-//		$("#addCommentCommand").click(function () {
-//			$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
-//			+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
-//		});
-//	});
+
 	</script>
 	
 </head>
@@ -71,7 +83,7 @@
 		<input type="submit" value="댓글 작성" />
 	</div>
 	</form>
-		<button class="addCommentCommand" id="addCommentCommand" onclick="addCommentCommand();">jquery로 작성하기</button>
+		<button class="addCommentCommand" id="addCommentCommand" >jquery로 작성하기</button>
 	<br />
 	<table id="commentTable">
 		<% var list = GetComments(mArticle.Id);
@@ -102,6 +114,7 @@
 		<% } %>
 	<%} %>
 	</table>
-	
+
 </body>
+
 </html>
