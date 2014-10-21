@@ -8,15 +8,13 @@
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script type="text/javascript" >
 
-		
-
 		//	1.해당 버튼 onclick 이벤트에 연결 했을 때 스트립트
 		//	function addCommentCommand() {
 		//	$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
 		//	+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
 		//	}
 
-		//	2. 한번에 나열
+		//	2. 한번에 나열한 스크립트
 		//	$(document).ready(function () {
 		//		$("#addCommentCommand").click(function () {
 		//			$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
@@ -25,14 +23,29 @@
 		//	});
 
 
-		//3.
-		var addCommentCommand = $("#addCommentCommand").click(function () {
-			$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
-					+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
-		});
+		//3.메서드 호출 방식
+		function ready() { $("#addCommentCommand").click(addComment); }
+
+		function addComment() {
+		$("#commentTable").append("<tr><td><b>Writer </b>" +
+		$("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>" +
+		$("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
+		}
+
+		$(document).ready(ready);
 
 
-		//$(document).ready(function () { addCommentCommand(); });
+//		 //4.응답 데이터를 가지고 데이터베이스에 입력하기.
+//		 $.ajax({
+//		 	id: "read.aspx",
+//		 	data: {
+//		 		id : <%=mArticle.Id%>
+//		 	},
+//		 	success: function (data) {
+//				//data에는 응답이 와야한다.
+//		 		$("#weather-temp").html("<strong>" + data + "</strong> degrees");
+//		 	}
+//		 });
 
 
 	</script>
