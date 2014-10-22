@@ -28,8 +28,8 @@
 		function addCommentClick(id) {
 			$.ajax({
 				type: "POST",
-				url: "./read.aspx/ReturnBoard",
-				data: "{write: '" + $("#comment_writer_textbox").val() + "', content: '" 
+				url: "./read.aspx/ReturnCommentInfo",
+				data: "{articleId: '" + "<%=mArticle.Id%>" +"' , write: '" + $("#comment_writer_textbox").val() + "', content: '" 
 				+ $("#comment_contents_textbox").val() + "', id: '" + "<%=System.Guid.NewGuid().ToString()%>" + "'}",
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
@@ -46,14 +46,15 @@
 
 		//테이블에 댓글 추가 동작
 		function addCommentElement(id) {
-		var str = id.split(';');
+
+		var CommentInfoArr = id.split(';');
 		$("#commentTable").prepend("<tr><td><b>Writer </b>" +
-		str[0]
-		+ "</td><td><b>Date :</b><%=GetTodayDateString()%></td></tr><tr><td><b>Contents </b>"
-		+ str[1]
-		+ "<p><a href='<%=GetUpdateCommentPageUrl()%>" + str[2] + "'>댓글 수정</a><a href='<%=GetDeleteCommentPageUrl()%>" + str[2] + "'>댓글 삭제</a></p></td></tr>");
-		//<%SetComment(str[2],str[0],str[1]); %>
-		
+		CommentInfoArr[2]
+		+ "</td><td><b>Date : </b><%=GetTodayDateString()%></td></tr><tr><td><b>Contents </b>"
+		+ CommentInfoArr[3]
+		+ "<p><a href='<%=GetUpdateCommentPageUrl()%>" + CommentInfoArr[1] + "'>댓글 수정</a><a href='<%=GetDeleteCommentPageUrl()%>" 
+		+ CommentInfoArr[1] + "'> 댓글 삭제</a></p></td></tr>");
+
 		}
 		
 		//function ready() { $("#addCommentCommand").click(addComment("")); }

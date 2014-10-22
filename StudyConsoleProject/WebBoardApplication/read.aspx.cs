@@ -15,12 +15,12 @@ using System.Web.Services;
 public partial class Board_Read : System.Web.UI.Page
 {
 	public Article mArticle = new Article();
-	public Comment mComment = new Comment();
-	
+	public static Comment mComment = new Comment();
+
 
 	protected void Page_Load(object sender, EventArgs e)
 	{
-	
+
 		var queryStr = Request.QueryString["read"];
 
 		if (!String.IsNullOrEmpty(queryStr))
@@ -47,10 +47,9 @@ public partial class Board_Read : System.Web.UI.Page
 			//댓글 삭제 요청.
 			queryStr = Request.QueryString["reqCommentDelete"].ToString();
 			var commentData = GetCommentInfo(queryStr);
-			//mArticle = GetArticleInfo(queryStr);
+			mArticle = GetArticleInfo(mComment.Article_Id);
 			MsSqlDataBaseManager.DeleteArticleCommentData(queryStr);
-
-			RedirectReadPage(commentData.Article_Id);
+			//RedirectReadPage(commentData.Article_Id);
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["getComment"]))
 		{
@@ -85,7 +84,7 @@ public partial class Board_Read : System.Web.UI.Page
 				};
 				var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
 				if (isSave)
-				RedirectReadPage(mComment.Article_Id);
+					RedirectReadPage(mComment.Article_Id);
 			}
 		}
 	}
@@ -143,7 +142,7 @@ public partial class Board_Read : System.Web.UI.Page
 		}
 	}
 
-	public void SetComment(string id,string wirter,string contents) 
+	public void SetComment(string id, string wirter, string contents)
 	{
 		mComment = new Comment()
 		{
@@ -160,9 +159,9 @@ public partial class Board_Read : System.Web.UI.Page
 			RedirectReadPage(mComment.Article_Id);
 	}
 
-	public string GetTodayDateString() 
+	public string GetTodayDateString()
 	{
-		return  DateTime.Now.ToString();
+		return DateTime.Now.ToString();
 	}
 
 	public string GetReadPageUrl(string id)
@@ -177,10 +176,12 @@ public partial class Board_Read : System.Web.UI.Page
 		return String.Format("read.aspx?Id={0}", id);
 	}
 
+
 	[WebMethod]
-	public static string ReturnBoard(string id,string write, string content)
+	public static string ReturnCommentInfo(string articleId, string id, string write, string content)
 	{
-		return write + ";" + content + ";" + id;
+		SetCommentDB( new string[4] { articleId, id, write, content });
+		return articleId + ";" + id + ";" + write + ";" + content;
 	}
 
 	/// <summary>
@@ -190,7 +191,7 @@ public partial class Board_Read : System.Web.UI.Page
 	public string GetDeleteCommentUrl(string id)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/read.aspx?reqCommentDelete={1}", portUrl,id);
+		return String.Format("http://{0}/read.aspx?reqCommentDelete={1}", portUrl, id);
 	}
 
 	/// <summary>
@@ -201,7 +202,7 @@ public partial class Board_Read : System.Web.UI.Page
 	{
 
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/read.aspx?reqCommentUpdate={1}", portUrl,id);
+		return String.Format("http://{0}/read.aspx?reqCommentUpdate={1}", portUrl, id);
 	}
 
 
@@ -395,4 +396,25 @@ public partial class Board_Read : System.Web.UI.Page
 		return list;
 	}
 
+	public static void SetCommentDB(string[] CommentInfoArr)
+	{
+		string articleId = CommentInfoArr[0];
+		string commentId = CommentInfoArr[1];
+		string writer = CommentInfoArr[2];
+		string contents = CommentInfoArr[3];
+
+		mComment = new Comment()
+				{
+					Article_Id = articleId,
+					Id = commentId,
+					Writer = writer,
+					Contents = contents,
+					Date = DateTime.Now.ToString(),
+					No = (MsSqlDataBaseManager.GetCommentDataCount(articleId) + 1).ToString(),
+					Password = ""
+				};
+
+		var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
+
+	}
 }
