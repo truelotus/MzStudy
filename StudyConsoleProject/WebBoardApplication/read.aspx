@@ -8,6 +8,8 @@
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script type="text/javascript" >
 
+		
+
 		//	1.해당 버튼 onclick 이벤트에 연결 했을 때 스트립트
 		//	function addCommentCommand() {
 		//	$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
@@ -23,43 +25,39 @@
 		//	});
 
 
-		//3.메서드 호출 방식
-		function ready() { $("#addCommentCommand").click(addComment); }
-
-		function addComment() {
-		$("#commentTable").append("<tr><td><b>Writer </b>" +
-		$("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>" +
-		$("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
-
-		//4.응답 데이터를 가지고 데이터베이스에 입력하기. 
-		$.ajax({
-			//서버에 요청할 url
-			url: "<%=GetAjaxPageUrl(mArticle.Id)%>",
-			data: {
-			//요청 할 정보
-				writer: $("#comment_writer_textbox").val(),
-				contents: $("#comment_contents_textbox").val()
-			},
-			success: function (data) {
-				//응답
-				alert("응답왔다!");
-				//data에는 응답이 와야한다.(db 저장을 위한 작성자,내용)
-				//코드에서 받아 실제 데이터베이스에 저장
-				//수정 삭제 URL
-				//addComment();
-			},
-			error: function () {
-				alert("error!");
-			}
-		});
-
+		function addCommentClick(id) {
+			$.ajax({
+				type: "POST",
+				url: "./read.aspx/ReturnBoard",
+				data: "{write: '" + $("#comment_writer_textbox").val() + "', content: '" 
+				+ $("#comment_contents_textbox").val() + "', id: '" + "<%=System.Guid.NewGuid().ToString()%>" + "'}",
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				async: true,
+				success: function (data) {
+					addCommentElement(data.d);
+				},
+				error: function (err) {
+					alert(err);
+				}
+			});
 		}
 
-		$(document).ready(ready);
 
-
-
-
+		//테이블에 댓글 추가 동작
+		function addCommentElement(id) {
+		var str = id.split(';');
+		$("#commentTable").prepend("<tr><td><b>Writer </b>" +
+		str[0]
+		+ "</td><td><b>Date :</b><%=GetTodayDateString()%></td></tr><tr><td><b>Contents </b>"
+		+ str[1]
+		+ "<p><a href='<%=GetUpdateCommentPageUrl()%>" + str[2] + "'>댓글 수정</a><a href='<%=GetDeleteCommentPageUrl()%>" + str[2] + "'>댓글 삭제</a></p></td></tr>");
+		//<%SetComment(str[2],str[0],str[1]); %>
+		
+		}
+		
+		//function ready() { $("#addCommentCommand").click(addComment("")); }
+		//$(document).ready(ready);
 	</script>
 	
 </head>
@@ -108,7 +106,7 @@
 		<input type="submit" value="댓글 작성" />
 	</div>
 	</form>
-		<button class="addCommentCommand" id="addCommentCommand" >jquery로 작성하기</button>
+		<button class="addCommentCommand" id="addCommentCommand" onclick="addCommentClick()" >jquery로 작성하기</button>
 	<br />
 	<table id="commentTable">
 		<% var list = GetComments(mArticle.Id);
@@ -131,8 +129,8 @@
 					<b>Contents </b>
 					<%=item.Contents%>
 					<p>
-						<a href="<%=GetUpdateCommentPageUrl(item.Id)%>">댓글 수정 </a>
-						<a href="<%=GetDeleteCommentPageUrl(item.Id)%>">댓글 삭제</a>
+						<a href="<%=GetUpdateCommentUrl(item.Id)%>">댓글 수정 </a>
+						<a href="<%=GetDeleteCommentUrl(item.Id)%>">댓글 삭제</a>
 					</p>
 				</td>
 			</tr>

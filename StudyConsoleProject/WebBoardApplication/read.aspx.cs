@@ -6,20 +6,21 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using WebBoardApplication.DataBase;
 using System.Data;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Net;
+using System.Web.Services;
 
 public partial class Board_Read : System.Web.UI.Page
 {
 	public Article mArticle = new Article();
 	public Comment mComment = new Comment();
+	
 
 	protected void Page_Load(object sender, EventArgs e)
 	{
-
-		if (!String.IsNullOrEmpty(Request.QueryString["addComment"]))
-		{
-			//받은 정보를 가지고 API로 data 추출
-		}
-
+	
 		var queryStr = Request.QueryString["read"];
 
 		if (!String.IsNullOrEmpty(queryStr))
@@ -46,7 +47,7 @@ public partial class Board_Read : System.Web.UI.Page
 			//댓글 삭제 요청.
 			queryStr = Request.QueryString["reqCommentDelete"].ToString();
 			var commentData = GetCommentInfo(queryStr);
-			mArticle = GetArticleInfo(commentData.Article_Id);
+			//mArticle = GetArticleInfo(queryStr);
 			MsSqlDataBaseManager.DeleteArticleCommentData(queryStr);
 
 			RedirectReadPage(commentData.Article_Id);
@@ -66,10 +67,16 @@ public partial class Board_Read : System.Web.UI.Page
 			else
 			{
 				//댓글 새로 작성 요청 왔다!
+				string id = String.Empty;
+				if (String.IsNullOrEmpty(Request.QueryString["co_id"]))
+					id = System.Guid.NewGuid().ToString();
+				else
+					id = Request.QueryString["co_id"];
+
 				mComment = new Comment()
 				{
 					Article_Id = Request.Params["id"].ToString(),
-					Id = System.Guid.NewGuid().ToString(),
+					Id = id,
 					Writer = Request.Params["writer"],
 					Contents = Request.Params["contents"],
 					Date = DateTime.Now.ToString(),
@@ -78,11 +85,85 @@ public partial class Board_Read : System.Web.UI.Page
 				};
 				var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
 				if (isSave)
-					RedirectReadPage(mComment.Article_Id);
+				RedirectReadPage(mComment.Article_Id);
 			}
 		}
 	}
 
+	private void SetResponseMessage()
+	{
+		if (!String.IsNullOrEmpty(Request.QueryString["co_id"]))
+		{
+			try
+			{
+				var co_id = Request.QueryString["co_id"];
+				var writer = Request.QueryString["writer"];
+				var contents = Request.QueryString["contents"];
+
+				MemoryStream ms = new MemoryStream();
+				byte[] buffer = new Byte[10000];
+				UnicodeEncoding uniEncoding = new UnicodeEncoding();
+				var sw = new StreamWriter(ms, uniEncoding);
+				try
+				{
+					sw.Write(co_id);
+					sw.Write(writer);
+					sw.Write(contents);
+					sw.Flush();
+					ms.Seek(0, SeekOrigin.Begin);
+
+					var response = HttpContext.Current.Response;
+					response.ClearContent();
+
+					int length;
+					do
+					{
+						if (response.IsClientConnected)
+						{
+							length = ms.Read(buffer, 0, 10000);
+							response.OutputStream.Write(buffer, 0, length);
+							response.Flush();
+						}
+						else
+						{
+							length = -1;
+						}
+					} while (length > 0);
+
+				}
+				finally
+				{
+					sw.Dispose();
+				}
+			}
+			catch (Exception)
+			{
+
+			}
+		}
+	}
+
+	public void SetComment(string id,string wirter,string contents) 
+	{
+		mComment = new Comment()
+		{
+			Article_Id = mArticle.Id,
+			Id = id,
+			Writer = wirter,
+			Contents = contents,
+			Date = DateTime.Now.ToString(),
+			No = (MsSqlDataBaseManager.GetCommentDataCount(Request.Params["id"].ToString()) + 1).ToString(),
+			Password = ""
+		};
+		var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
+		if (isSave)
+			RedirectReadPage(mComment.Article_Id);
+	}
+
+	public string GetTodayDateString() 
+	{
+		return  DateTime.Now.ToString();
+	}
 
 	public string GetReadPageUrl(string id)
 	{
@@ -93,28 +174,56 @@ public partial class Board_Read : System.Web.UI.Page
 
 	public string GetAjaxPageUrl(string id)
 	{
-		return String.Format("read.aspx?addComment={0}", id);
+		return String.Format("read.aspx?Id={0}", id);
 	}
 
+	[WebMethod]
+	public static string ReturnBoard(string id,string write, string content)
+	{
+		return write + ";" + content + ";" + id;
+	}
 
 	/// <summary>
 	/// 댓글 삭제 요청(read.aspx) 한다.
 	/// </summary>
 	/// <param name="id"></param>
-	public string GetDeleteCommentPageUrl(string id)
+	public string GetDeleteCommentUrl(string id)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/read.aspx?reqCommentDelete={1}", portUrl, id);
+		return String.Format("http://{0}/read.aspx?reqCommentDelete={1}", portUrl,id);
 	}
 
 	/// <summary>
 	/// 댓글 수정 요청(read.aspx) 한다.
 	/// </summary>
 	/// <param name="id"></param>
-	public string GetUpdateCommentPageUrl(string id)
+	public string GetUpdateCommentUrl(string id)
+	{
+
+		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
+		return String.Format("http://{0}/read.aspx?reqCommentUpdate={1}", portUrl,id);
+	}
+
+
+	/// <summary>
+	/// [client code]댓글 삭제 요청(read.aspx) 한다.
+	/// </summary>
+	/// <param name="id"></param>
+	public string GetDeleteCommentPageUrl()
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
-		return String.Format("http://{0}/read.aspx?reqCommentUpdate={1}", portUrl, id);
+		return String.Format("http://{0}/read.aspx?reqCommentDelete=", portUrl);
+	}
+
+	/// <summary>
+	/// [client code]댓글 수정 요청(read.aspx) 한다.
+	/// </summary>
+	/// <param name="id"></param>
+	public string GetUpdateCommentPageUrl()
+	{
+		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
+		var str = String.Format("http://{0}/read.aspx?reqCommentUpdate=", portUrl);
+		return str;
 	}
 
 	/// <summary>
@@ -134,8 +243,16 @@ public partial class Board_Read : System.Web.UI.Page
 	/// <returns></returns>
 	public string GetDeleteArticleUrl(string id)
 	{
+		if (String.IsNullOrEmpty(id))
+			return String.Empty;
+
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
 		return String.Format("http://{0}/Default.aspx?delete={1}", portUrl, id);
+	}
+
+	public void DeleteArticle(string id)
+	{
+		MsSqlDataBaseManager.DeleteArticleData(id);
 	}
 
 	/// <summary>
@@ -193,6 +310,9 @@ public partial class Board_Read : System.Web.UI.Page
 	/// <returns></returns>
 	public Article GetArticleInfo(string id)
 	{
+		if (String.IsNullOrEmpty(id))
+			return null;
+
 		var article = new Article();
 		var dataSet = MsSqlDataBaseManager.GetSelectedArticleData(id);
 		var dataTbl = dataSet.Tables[MsSqlDataBaseManager.DATA_TABLE_ARTICLE_INFORMATION];
