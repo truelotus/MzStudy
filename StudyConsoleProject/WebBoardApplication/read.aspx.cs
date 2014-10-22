@@ -41,6 +41,7 @@ public partial class Board_Read : System.Web.UI.Page
 			//댓글 수정 요청 시 사용자가 수정을 할 수 있도록 댓글 작성 란에 정보를 보여준다.
 			mComment = GetCommentInfo(queryStr);
 			mArticle = GetArticleInfo(mComment.Article_Id);
+
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["reqCommentDelete"]))
 		{
@@ -155,8 +156,6 @@ public partial class Board_Read : System.Web.UI.Page
 			Password = ""
 		};
 		var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
-		if (isSave)
-			RedirectReadPage(mComment.Article_Id);
 	}
 
 	public string GetTodayDateString()
