@@ -15,6 +15,7 @@ using System.Web.Services;
 public partial class Board_Read : System.Web.UI.Page
 {
 	public Article mArticle = new Article();
+
 	public static Comment mComment = new Comment();
 
 
@@ -25,46 +26,33 @@ public partial class Board_Read : System.Web.UI.Page
 
 		if (!String.IsNullOrEmpty(queryStr))
 		{
+			//새 게시물 작성
 			mArticle = GetArticleInfo(queryStr);
 			GetUpdateArticleUrl(mArticle);
 			MsSqlDataBaseManager.UpdateHits(queryStr);
 			return;
 		}
-
+		//게시글 업데이트 시
 		if (!String.IsNullOrEmpty(Request.QueryString["update"]))
-		{
 			mArticle = GetArticleInfo(queryStr);
-		}
 
 		if (!String.IsNullOrEmpty(Request.QueryString["reqCommentUpdate"]))
 		{
 			queryStr = Request.QueryString["reqCommentUpdate"].ToString();
-			//댓글 수정 요청 시 사용자가 수정을 할 수 있도록 댓글 작성 란에 정보를 보여준다.
+			//댓글 수정 요청 시
 			mComment = GetCommentInfo(queryStr);
 			mArticle = GetArticleInfo(mComment.Article_Id);
 			MsSqlDataBaseManager.UpdateCommentData(mComment);
-			//
-			//if (mComment != null)
-			//{
-			//  var list = GetComments(mComment.Article_Id);
-			//  var editList = new List<Comment>();
-			//  foreach (var item in list)
-			//  {
-			//    if (!item.Id.Equals(mComment.Id))
-			//    {
-			//      editList.Add(item);
-			//    }
-			//  }
-			//}
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["reqCommentDelete"]))
 		{
-			//댓글 삭제 요청.
+			//댓글 삭제 요청 시.
 			queryStr = Request.QueryString["reqCommentDelete"].ToString();
 			var commentData = GetCommentInfo(queryStr);
 			if (commentData.Id==null)
 			{
 				RedirectReadPage(mArticle.Id);
+				return;
 			}
 			mArticle = GetArticleInfo(commentData.Article_Id);
 			MsSqlDataBaseManager.DeleteArticleCommentData(queryStr);
@@ -106,6 +94,12 @@ public partial class Board_Read : System.Web.UI.Page
 		}
 	}
 
+	/// <summary>
+	/// 댓글 정보를 DB에 저장 한다.
+	/// </summary>
+	/// <param name="id">comment id</param>
+	/// <param name="wirter">wirter</param>
+	/// <param name="contents">contents</param>
 	public void SetComment(string id, string wirter, string contents)
 	{
 		mComment = new Comment()
@@ -132,9 +126,9 @@ public partial class Board_Read : System.Web.UI.Page
 		return String.Format("http://{0}/read.aspx?read={1}", portUrl, id);
 	}
 
-	//댓글 정보를 받아 처리하는 웹서비스다.
+	//댓글 등록 시 새로운 댓글 정보를 받아 처리하는 웹서비스다.
 	[WebMethod]
-	public static string ReturnCommentInfo(string articleId,string write, string content)
+	public static string ReturnCommentInfo(string articleId, string write, string content)
 	{
 		string id = System.Guid.NewGuid().ToString();
 		SetCommentDataBase(new string[4] { articleId, id, write, content });
@@ -262,7 +256,7 @@ public partial class Board_Read : System.Web.UI.Page
 	}
 
 	/// <summary>
-	/// 게시글 데이터를 수정 한다.
+	/// 게시글 데이터를 반환합니다.
 	/// </summary>
 	/// <param name="id">게시글 id</param>
 	/// <returns></returns>
@@ -373,59 +367,4 @@ public partial class Board_Read : System.Web.UI.Page
 
 		MsSqlDataBaseManager.SetArticleComment(mComment);
 	}
-
-
-	//private void SetResponseMessage()
-	//{
-	//  if (!String.IsNullOrEmpty(Request.QueryString["co_id"]))
-	//  {
-	//    try
-	//    {
-	//      var co_id = Request.QueryString["co_id"];
-	//      var writer = Request.QueryString["writer"];
-	//      var contents = Request.QueryString["contents"];
-
-	//      MemoryStream ms = new MemoryStream();
-	//      byte[] buffer = new Byte[10000];
-	//      UnicodeEncoding uniEncoding = new UnicodeEncoding();
-	//      var sw = new StreamWriter(ms, uniEncoding);
-	//      try
-	//      {
-	//        sw.Write(co_id);
-	//        sw.Write(writer);
-	//        sw.Write(contents);
-	//        sw.Flush();
-	//        ms.Seek(0, SeekOrigin.Begin);
-
-	//        var response = HttpContext.Current.Response;
-	//        response.ClearContent();
-
-	//        int length;
-	//        do
-	//        {
-	//          if (response.IsClientConnected)
-	//          {
-	//            length = ms.Read(buffer, 0, 10000);
-	//            response.OutputStream.Write(buffer, 0, length);
-	//            response.Flush();
-	//          }
-	//          else
-	//          {
-	//            length = -1;
-	//          }
-	//        } while (length > 0);
-
-	//      }
-	//      finally
-	//      {
-	//        sw.Dispose();
-	//      }
-	//    }
-	//    catch (Exception)
-	//    {
-
-	//    }
-	//  }
-	//}
-
 }

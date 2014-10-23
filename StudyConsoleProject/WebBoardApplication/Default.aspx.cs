@@ -19,11 +19,7 @@ public partial class Board_Main : System.Web.UI.Page
 		//한 페이지 블럭 당 게시글 갯수 10개 기준이다.
 		int pageCountValue = 10;
 
-		if (!String.IsNullOrEmpty(Request.QueryString["delete"]))
-		{
-			DeleteArticle(Request.QueryString["delete"]);
-		}
-		else if (!String.IsNullOrEmpty(Request.QueryString["page"]))
+		if (!String.IsNullOrEmpty(Request.QueryString["page"]))
 		{
 			var pageParam = Convert.ToInt32(Request.QueryString["page"]);
 			//보여질 페이지 블럭 총 갯수
@@ -34,23 +30,28 @@ public partial class Board_Main : System.Web.UI.Page
 			int start = end - (pageCountValue - 1);
 			mList = MsSqlDataBaseManager.GetArticleBetweenDataList(start, end);
 		}
+		else if (!String.IsNullOrEmpty(Request.QueryString["delete"]))
+		{
+			DeleteArticle(Request.QueryString["delete"]);
+		}
 		else
 		{
 			//1.목록 첫 진입 시 게시판 메인 접근 시 DB에서 게시글 데이터 조회
 			int articleTotalCount = MsSqlDataBaseManager.GetArticleDataCount();
 
-			if (articleTotalCount > 0)
+			if (articleTotalCount > 10)
 			{
-				if (articleTotalCount > 10)
-				{
-					//초과 시 만들어질 전체 페이지 블럭 총 갯수
-					mList = MsSqlDataBaseManager.GetArticleBetweenDataList(1, pageCountValue);
-					mPageBlockCount = this.GetTotalPageCount(1, pageCountValue);
-				}
+				//초과 시 만들어질 전체 페이지 블럭 총 갯수
+				mList = MsSqlDataBaseManager.GetArticleBetweenDataList(1, pageCountValue);
+				mPageBlockCount = this.GetTotalPageCount(1, pageCountValue);
 			}
 		}
 	}
-
+	/// <summary>
+	/// 현재 게시글 페이지 블럭의 url을 반환한다.
+	/// </summary>
+	/// <param name="pageNum">페이지번호</param>
+	/// <returns>현재 게시글 페이지 블럭의 url</returns>
 	public string GetPageUrl(int pageNum)
 	{
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
@@ -79,8 +80,11 @@ public partial class Board_Main : System.Web.UI.Page
 		return String.Format("http://{0}/read.aspx?read={1}", portUrl, article.Id);
 	}
 
-
-	public IEnumerable<Article> GetList()
+	/// <summary>
+	/// DB에서 게시글 리스트를 가져온다.
+	/// </summary>
+	/// <returns>게시글 리스트</returns>
+	public IEnumerable<Article> GetArticles()
 	{
 		if (mList != null)
 			return mList;

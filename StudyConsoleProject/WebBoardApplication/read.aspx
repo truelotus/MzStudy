@@ -8,8 +8,6 @@
 	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script type="text/javascript" >
 
-		
-
 		//	1.해당 버튼 onclick 이벤트에 연결 했을 때 스트립트
 		//	function addCommentCommand() {
 		//	$("#commentTable").append("<tr><td><b>Writer </b>" + $("#comment_writer_textbox").val() + "</td><td><b>Date :</b>날짜</td></tr><tr><td><b>Contents </b>"
@@ -23,7 +21,6 @@
 		//			+ $("#comment_contents_textbox").val() + "<p><a>댓글 수정 </a><a>댓글 삭제</a></p></td></tr>");
 		//		});
 		//	});
-
 
 		function addCommentClick(id) {
 			$.ajax({
@@ -47,7 +44,6 @@
 
 		//테이블에 <TR> 댓글 추가 동작
 		function addCommentElement(id) {
-
 		var CommentInfoArr = id.split(';');
 		$("#commentTable").prepend("<tr><td><b>Writer </b>" +
 		CommentInfoArr[2]
@@ -139,7 +135,5 @@
 		<% } %>
 	<%} %>
 	</table>
-
 </body>
-
 </html>

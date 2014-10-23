@@ -32,7 +32,7 @@
 			</tr>
 			<tr>
 				<!--게시판 테이블 데이터 태그-->
-				<% var list = GetList();
+				<% var list = GetArticles();
 	   foreach (WebBoardApplication.DataBase.Article item in list)
 	 {
 	   if (item != null)
