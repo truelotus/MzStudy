@@ -42,13 +42,26 @@ public partial class Board_Read : System.Web.UI.Page
 			mComment = GetCommentInfo(queryStr);
 			mArticle = GetArticleInfo(mComment.Article_Id);
 
+			//
+			//if (mComment != null)
+			//{
+			//  var list = GetComments(mComment.Article_Id);
+			//  var editList = new List<Comment>();
+			//  foreach (var item in list)
+			//  {
+			//    if (!item.Id.Equals(mComment.Id))
+			//    {
+			//      editList.Add(item);
+			//    }
+			//  }
+			//}
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["reqCommentDelete"]))
 		{
 			//댓글 삭제 요청.
 			queryStr = Request.QueryString["reqCommentDelete"].ToString();
 			var commentData = GetCommentInfo(queryStr);
-			mArticle = GetArticleInfo(mComment.Article_Id);
+			mArticle = GetArticleInfo(commentData.Article_Id);
 			MsSqlDataBaseManager.DeleteArticleCommentData(queryStr);
 			//RedirectReadPage(commentData.Article_Id);
 		}
