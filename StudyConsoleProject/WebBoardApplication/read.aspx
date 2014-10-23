@@ -29,12 +29,13 @@
 			$.ajax({
 				type: "POST",
 				url: "./read.aspx/ReturnCommentInfo",
-				data: "{articleId: '" + "<%=mArticle.Id%>" +"' , write: '" + $("#comment_writer_textbox").val() + "', content: '" 
-				+ $("#comment_contents_textbox").val() + "', id: '" + "<%=System.Guid.NewGuid().ToString()%>" + "'}",
+				data: "{articleId: '" + "<%=mArticle.Id%>" + "' , write: '" + $("#comment_writer_textbox").val() + "', content: '"
+				+ $("#comment_contents_textbox").val() + "'}",
 				contentType: "application/json; charset=utf-8",
 				dataType: "json",
 				async: true,
 				success: function (data) {
+					console.log(data);
 					addCommentElement(data.d);
 				},
 				error: function (err) {
@@ -44,7 +45,7 @@
 		}
 
 
-		//테이블에 댓글 추가 동작
+		//테이블에 <TR> 댓글 추가 동작
 		function addCommentElement(id) {
 
 		var CommentInfoArr = id.split(';');
@@ -94,7 +95,7 @@
 	</form>
 
 	<!--댓글 테이블 (댓글 작성자&작성날짜&내용 테이블, 댓글 등록,수정,삭제 버튼)-->
-	<form id="comment_form" method="get" action="read.aspx">
+	<form id="comment_form" method="post" action="read.aspx">
 	<input type="text" name="id" id="articleId" value="<%=mArticle.Id%>" style="visibility: hidden" />
 	<input type="text" name="commentNo" id="commentNo" value="<%=mComment.No%>" style="visibility: hidden" />
 	<input type="text" name="commentId" id="commentId" value="<%=mComment.Article_Id%>"

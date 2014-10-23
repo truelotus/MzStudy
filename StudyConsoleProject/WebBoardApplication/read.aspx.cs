@@ -42,7 +42,7 @@ public partial class Board_Read : System.Web.UI.Page
 			//댓글 수정 요청 시 사용자가 수정을 할 수 있도록 댓글 작성 란에 정보를 보여준다.
 			mComment = GetCommentInfo(queryStr);
 			mArticle = GetArticleInfo(mComment.Article_Id);
-
+			MsSqlDataBaseManager.UpdateCommentData(mComment);
 			//
 			//if (mComment != null)
 			//{
@@ -62,9 +62,13 @@ public partial class Board_Read : System.Web.UI.Page
 			//댓글 삭제 요청.
 			queryStr = Request.QueryString["reqCommentDelete"].ToString();
 			var commentData = GetCommentInfo(queryStr);
+			if (commentData.Id==null)
+			{
+				RedirectReadPage(mArticle.Id);
+			}
 			mArticle = GetArticleInfo(commentData.Article_Id);
 			MsSqlDataBaseManager.DeleteArticleCommentData(queryStr);
-			//RedirectReadPage(commentData.Article_Id);
+			RedirectReadPage(commentData.Article_Id);
 		}
 		else if (!String.IsNullOrEmpty(Request.QueryString["getComment"]))
 		{
@@ -75,9 +79,7 @@ public partial class Board_Read : System.Web.UI.Page
 		else
 		{
 			if (String.IsNullOrEmpty(Request.Params["id"]))
-			{
 				mComment = new Comment();
-			}
 			else
 			{
 				//댓글 새로 작성 요청 왔다!
@@ -130,17 +132,12 @@ public partial class Board_Read : System.Web.UI.Page
 		return String.Format("http://{0}/read.aspx?read={1}", portUrl, id);
 	}
 
-
-	public string GetAjaxPageUrl(string id)
-	{
-		return String.Format("read.aspx?Id={0}", id);
-	}
-
-
+	//댓글 정보를 받아 처리하는 웹서비스다.
 	[WebMethod]
-	public static string ReturnCommentInfo(string articleId, string id, string write, string content)
+	public static string ReturnCommentInfo(string articleId,string write, string content)
 	{
-		SetCommentDB( new string[4] { articleId, id, write, content });
+		string id = System.Guid.NewGuid().ToString();
+		SetCommentDataBase(new string[4] { articleId, id, write, content });
 		return articleId + ";" + id + ";" + write + ";" + content;
 	}
 
@@ -160,14 +157,14 @@ public partial class Board_Read : System.Web.UI.Page
 	/// <param name="id"></param>
 	public string GetUpdateCommentUrl(string id)
 	{
-
 		var portUrl = Request.Url.Host + ":" + Request.Url.Port;
 		return String.Format("http://{0}/read.aspx?reqCommentUpdate={1}", portUrl, id);
 	}
 
 
 	/// <summary>
-	/// [client code]댓글 삭제 요청(read.aspx) 한다.
+	/// 댓글 삭제 요청(read.aspx) 한다.
+	/// (script단에서 호출)
 	/// </summary>
 	/// <param name="id"></param>
 	public string GetDeleteCommentPageUrl()
@@ -176,8 +173,8 @@ public partial class Board_Read : System.Web.UI.Page
 		return String.Format("http://{0}/read.aspx?reqCommentDelete=", portUrl);
 	}
 
-	/// <summary>
-	/// [client code]댓글 수정 요청(read.aspx) 한다.
+	/// 댓글 수정 요청(read.aspx) 한다.
+	/// (script단에서 호출)
 	/// </summary>
 	/// <param name="id"></param>
 	public string GetUpdateCommentPageUrl()
@@ -356,7 +353,7 @@ public partial class Board_Read : System.Web.UI.Page
 		return list;
 	}
 
-	public static void SetCommentDB(string[] CommentInfoArr)
+	public static void SetCommentDataBase(string[] CommentInfoArr)
 	{
 		string articleId = CommentInfoArr[0];
 		string commentId = CommentInfoArr[1];
@@ -378,57 +375,57 @@ public partial class Board_Read : System.Web.UI.Page
 	}
 
 
-	private void SetResponseMessage()
-	{
-		if (!String.IsNullOrEmpty(Request.QueryString["co_id"]))
-		{
-			try
-			{
-				var co_id = Request.QueryString["co_id"];
-				var writer = Request.QueryString["writer"];
-				var contents = Request.QueryString["contents"];
+	//private void SetResponseMessage()
+	//{
+	//  if (!String.IsNullOrEmpty(Request.QueryString["co_id"]))
+	//  {
+	//    try
+	//    {
+	//      var co_id = Request.QueryString["co_id"];
+	//      var writer = Request.QueryString["writer"];
+	//      var contents = Request.QueryString["contents"];
 
-				MemoryStream ms = new MemoryStream();
-				byte[] buffer = new Byte[10000];
-				UnicodeEncoding uniEncoding = new UnicodeEncoding();
-				var sw = new StreamWriter(ms, uniEncoding);
-				try
-				{
-					sw.Write(co_id);
-					sw.Write(writer);
-					sw.Write(contents);
-					sw.Flush();
-					ms.Seek(0, SeekOrigin.Begin);
+	//      MemoryStream ms = new MemoryStream();
+	//      byte[] buffer = new Byte[10000];
+	//      UnicodeEncoding uniEncoding = new UnicodeEncoding();
+	//      var sw = new StreamWriter(ms, uniEncoding);
+	//      try
+	//      {
+	//        sw.Write(co_id);
+	//        sw.Write(writer);
+	//        sw.Write(contents);
+	//        sw.Flush();
+	//        ms.Seek(0, SeekOrigin.Begin);
 
-					var response = HttpContext.Current.Response;
-					response.ClearContent();
+	//        var response = HttpContext.Current.Response;
+	//        response.ClearContent();
 
-					int length;
-					do
-					{
-						if (response.IsClientConnected)
-						{
-							length = ms.Read(buffer, 0, 10000);
-							response.OutputStream.Write(buffer, 0, length);
-							response.Flush();
-						}
-						else
-						{
-							length = -1;
-						}
-					} while (length > 0);
+	//        int length;
+	//        do
+	//        {
+	//          if (response.IsClientConnected)
+	//          {
+	//            length = ms.Read(buffer, 0, 10000);
+	//            response.OutputStream.Write(buffer, 0, length);
+	//            response.Flush();
+	//          }
+	//          else
+	//          {
+	//            length = -1;
+	//          }
+	//        } while (length > 0);
 
-				}
-				finally
-				{
-					sw.Dispose();
-				}
-			}
-			catch (Exception)
-			{
+	//      }
+	//      finally
+	//      {
+	//        sw.Dispose();
+	//      }
+	//    }
+	//    catch (Exception)
+	//    {
 
-			}
-		}
-	}
+	//    }
+	//  }
+	//}
 
 }

@@ -6,7 +6,7 @@
 	<title></title>
 </head>
 <body>
-	<form id="form1" style="text-align:left" method="get" action="write.aspx">
+	<form id="form1" style="text-align:left" method="post" action="write.aspx">
 	<div>
 	<!--일기 정보를 폼에 담아 웹서버로 보내기 위함 -->
 		<input type="text" style="visibility: hidden" name="id" id="Id" value="<%=mArticle.Id%>" />
