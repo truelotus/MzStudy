@@ -26,7 +26,7 @@ namespace WebBoardApplication.DataBase
 		/// <returns></returns>
 		public static SqlConnection GetConnection()
 		{
-			return new SqlConnection(ConfigurationManager.ConnectionStrings["aticle_write"].ToString());
+			return new SqlConnection(ConfigurationManager.ConnectionStrings["aticle"].ToString());
 		}
 
 		/// <summary>
