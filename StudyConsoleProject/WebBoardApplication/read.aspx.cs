@@ -27,6 +27,7 @@ public partial class Board_Read : System.Web.UI.Page
 		{
 			mArticle = GetArticleInfo(queryStr);
 			GetUpdateArticleUrl(mArticle);
+			MsSqlDataBaseManager.UpdateHits(queryStr);
 			return;
 		}
 
@@ -99,59 +100,6 @@ public partial class Board_Read : System.Web.UI.Page
 				var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
 				if (isSave)
 					RedirectReadPage(mComment.Article_Id);
-			}
-		}
-	}
-
-	private void SetResponseMessage()
-	{
-		if (!String.IsNullOrEmpty(Request.QueryString["co_id"]))
-		{
-			try
-			{
-				var co_id = Request.QueryString["co_id"];
-				var writer = Request.QueryString["writer"];
-				var contents = Request.QueryString["contents"];
-
-				MemoryStream ms = new MemoryStream();
-				byte[] buffer = new Byte[10000];
-				UnicodeEncoding uniEncoding = new UnicodeEncoding();
-				var sw = new StreamWriter(ms, uniEncoding);
-				try
-				{
-					sw.Write(co_id);
-					sw.Write(writer);
-					sw.Write(contents);
-					sw.Flush();
-					ms.Seek(0, SeekOrigin.Begin);
-
-					var response = HttpContext.Current.Response;
-					response.ClearContent();
-
-					int length;
-					do
-					{
-						if (response.IsClientConnected)
-						{
-							length = ms.Read(buffer, 0, 10000);
-							response.OutputStream.Write(buffer, 0, length);
-							response.Flush();
-						}
-						else
-						{
-							length = -1;
-						}
-					} while (length > 0);
-
-				}
-				finally
-				{
-					sw.Dispose();
-				}
-			}
-			catch (Exception)
-			{
-
 			}
 		}
 	}
@@ -426,7 +374,61 @@ public partial class Board_Read : System.Web.UI.Page
 					Password = ""
 				};
 
-		var isSave = MsSqlDataBaseManager.SetArticleComment(mComment);
-
+		MsSqlDataBaseManager.SetArticleComment(mComment);
 	}
+
+
+	private void SetResponseMessage()
+	{
+		if (!String.IsNullOrEmpty(Request.QueryString["co_id"]))
+		{
+			try
+			{
+				var co_id = Request.QueryString["co_id"];
+				var writer = Request.QueryString["writer"];
+				var contents = Request.QueryString["contents"];
+
+				MemoryStream ms = new MemoryStream();
+				byte[] buffer = new Byte[10000];
+				UnicodeEncoding uniEncoding = new UnicodeEncoding();
+				var sw = new StreamWriter(ms, uniEncoding);
+				try
+				{
+					sw.Write(co_id);
+					sw.Write(writer);
+					sw.Write(contents);
+					sw.Flush();
+					ms.Seek(0, SeekOrigin.Begin);
+
+					var response = HttpContext.Current.Response;
+					response.ClearContent();
+
+					int length;
+					do
+					{
+						if (response.IsClientConnected)
+						{
+							length = ms.Read(buffer, 0, 10000);
+							response.OutputStream.Write(buffer, 0, length);
+							response.Flush();
+						}
+						else
+						{
+							length = -1;
+						}
+					} while (length > 0);
+
+				}
+				finally
+				{
+					sw.Dispose();
+				}
+			}
+			catch (Exception)
+			{
+
+			}
+		}
+	}
+
 }
