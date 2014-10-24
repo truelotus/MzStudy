@@ -43,14 +43,13 @@ public partial class Board_write : System.Web.UI.Page
 		string contents = request.Params["contents"];
 		string writer = request.Params["writer"];
 		string hits = request.Params["hits"];
-		string date = DateTime.Now.ToString();
+		var date = DateTime.Now;
 
 		Article article = null;
 		if (String.IsNullOrEmpty(id))
 		{
 			//Article 생성
 			id = System.Guid.NewGuid().ToString();
-			date = DateTime.Now.ToString();
 			no = (MsSqlDataBaseManager.GetArticleDataCount() + 1).ToString();
 			article = new Article() { Id = id, No = no, Title = title, Contents = contents, Writer = writer, Date = date, Password = null, Hits = "0" };
 

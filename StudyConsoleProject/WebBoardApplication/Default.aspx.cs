@@ -102,7 +102,7 @@ public partial class Board_Main : System.Web.UI.Page
 				item.Title = row["TITLE"].ToString();
 				item.Contents = row["CONTENTS"].ToString();
 				item.Writer = row["WRITER"].ToString();
-				item.Date = row["DATE"].ToString();
+				item.Date = (DateTime)row.Field<DateTime?>("DATE");
 				item.Password = row["PASSWORD"].ToString();
 				item.Hits = row["HITS"].ToString();
 

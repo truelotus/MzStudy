@@ -1,0 +1,12 @@
+--댓글 테이블 스키마
+CREATE TABLE ARTICLE_COMMENTS
+(
+	ARTICLE_ID varchar(50) NOT NULL,
+	ID varchar(50) NOT NULL,
+	NO INT IDENTITY(1,1),
+	CONTENTS varchar(MAX),
+	WRITER varchar(50) NOT NULL,
+	DATE datetime NOT NULL,
+	PASSWORD varchar(20),
+	PRIMARY KEY (ID)
+)

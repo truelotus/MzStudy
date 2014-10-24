@@ -12,7 +12,7 @@ namespace WebBoardApplication.DataBase
 		public string No { get; set; }
 		public string Contents { get; set; }
 		public string Writer { get; set; }
-		public string Date { get; set; }
+		public DateTime Date { get; set; }
 		public string Password { get; set; }
 	}
 }

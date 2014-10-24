@@ -13,12 +13,12 @@ namespace WebBoardApplication.DataBase
 		/// <summary>
 		/// 게시글 테이블
 		/// </summary>
-		public static string DATA_TABLE_ARTICLE_INFORMATION = "ARTICLE_INFORMATION";
+		public static string DATA_TABLE_ARTICLE_INFORMATION = "ARTICLE";
 
 		/// <summary>
 		/// 댓글 테이블
 		/// </summary>
-		public static string DATA_TABLE_ARTICLE_COMMENT = "ARTICLE_COMMENT";
+		public static string DATA_TABLE_ARTICLE_COMMENT = "ARTICLE_COMMENTS";
 
 		/// <summary>
 		/// web.config의 ConnectionString을 가져와 데이터베이스 서버와 연결 합니다.
@@ -100,7 +100,7 @@ namespace WebBoardApplication.DataBase
 
 					cmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = article.Id;
 
-					cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
+					//cmd.Parameters.Add("@No", SqlDbType.Int).Value = Convert.ToInt32(article.No);
 
 					if (article.Title == null)
 						cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = DBNull.Value;
@@ -117,14 +117,14 @@ namespace WebBoardApplication.DataBase
 					else
 						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = article.Writer;
 
-					cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = article.Date;
+					//cmd.Parameters.Add("@Date", SqlDbType.DateTime).Value = article.Date;
 
 					if (article.Password == null)
 						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;
 					else
 						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = article.Password;
 
-					cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
+					//cmd.Parameters.Add("@Hits", SqlDbType.Int).Value = Convert.ToInt32(article.Hits);
 
 					cmd.ExecuteNonQuery();
 
@@ -292,7 +292,7 @@ namespace WebBoardApplication.DataBase
 						article.Title = dRow["TITLE"].ToString();
 						article.Contents = dRow["CONTENTS"].ToString();
 						article.Writer = dRow["WRITER"].ToString();
-						article.Date = dRow["DATE"].ToString();
+						article.Date = (DateTime)dRow.Field<DateTime?>("DATE");
 						article.Password = dRow["PASSWORD"].ToString();
 						article.Hits = dRow["HITS"].ToString();
 						articleList.Add(article);
@@ -356,7 +356,7 @@ namespace WebBoardApplication.DataBase
 					else
 						cmd.Parameters.Add("@Writer", SqlDbType.VarChar).Value = articleComment.Writer;
 
-					cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = articleComment.Date;
+					//cmd.Parameters.Add("@Date", SqlDbType.DateTime).Value = articleComment.Date;
 
 					if (articleComment.Password == null)
 						cmd.Parameters.Add("@Password", SqlDbType.VarChar).Value = DBNull.Value;

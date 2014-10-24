@@ -83,7 +83,7 @@ public partial class Board_Read : System.Web.UI.Page
 					Id = id,
 					Writer = Request.Params["writer"],
 					Contents = Request.Params["contents"],
-					Date = DateTime.Now.ToString(),
+					Date = DateTime.Now,
 					No = (MsSqlDataBaseManager.GetCommentDataCount(Request.Params["id"].ToString()) + 1).ToString(),
 					Password = ""
 				};
@@ -108,7 +108,7 @@ public partial class Board_Read : System.Web.UI.Page
 			Id = id,
 			Writer = wirter,
 			Contents = contents,
-			Date = DateTime.Now.ToString(),
+			Date = DateTime.Now,
 			No = (MsSqlDataBaseManager.GetCommentDataCount(Request.Params["id"].ToString()) + 1).ToString(),
 			Password = ""
 		};
@@ -232,14 +232,13 @@ public partial class Board_Read : System.Web.UI.Page
 		string no = commentData.No;
 		string contents = commentData.Contents;
 		string writer = commentData.Writer;
-		string date = DateTime.Now.ToString();
+		var date = DateTime.Now;
 
 		Comment comment = null;
 		if (String.IsNullOrEmpty(id))
 		{
 			//Article 생성
 			id = System.Guid.NewGuid().ToString();
-			date = DateTime.Now.ToString();
 			no = (MsSqlDataBaseManager.GetCommentDataCount(articleId) + 1).ToString();
 			comment = new Comment() { Article_Id = articleId, Id = id, No = no, Contents = contents, Writer = writer, Date = date, Password = null };
 
@@ -279,7 +278,8 @@ public partial class Board_Read : System.Web.UI.Page
 				article.Title = dRow["TITLE"].ToString();
 				article.Contents = dRow["CONTENTS"].ToString();
 				article.Writer = dRow["WRITER"].ToString();
-				article.Date = dRow["DATE"].ToString();
+
+				article.Date = (DateTime)dRow.Field<DateTime?>("DATE");
 				article.Password = dRow["PASSWORD"].ToString();
 				article.Hits = dRow["HITS"].ToString();
 			}
@@ -307,7 +307,7 @@ public partial class Board_Read : System.Web.UI.Page
 				comment.No = dRow["NO"].ToString();
 				comment.Contents = dRow["CONTENTS"].ToString();
 				comment.Writer = dRow["WRITER"].ToString();
-				comment.Date = dRow["DATE"].ToString();
+				comment.Date = (DateTime)dRow.Field<DateTime?>("DATE");
 				comment.Password = dRow["PASSWORD"].ToString();
 			}
 		}
@@ -338,7 +338,7 @@ public partial class Board_Read : System.Web.UI.Page
 				item.No = row["NO"].ToString();
 				item.Contents = row["CONTENTS"].ToString();
 				item.Writer = row["WRITER"].ToString();
-				item.Date = row["DATE"].ToString();
+				item.Date = (DateTime)row.Field<DateTime?>("DATE");
 				item.Password = row["PASSWORD"].ToString();
 
 				list.Add(item);
@@ -360,7 +360,7 @@ public partial class Board_Read : System.Web.UI.Page
 					Id = commentId,
 					Writer = writer,
 					Contents = contents,
-					Date = DateTime.Now.ToString(),
+					Date = DateTime.Now,
 					No = (MsSqlDataBaseManager.GetCommentDataCount(articleId) + 1).ToString(),
 					Password = ""
 				};
