@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileExplorerWebApplication"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebBoardApplication", "WebBoardApplication\WebBoardApplication.csproj", "{A3B18CE8-5705-4A1A-B16A-6266886D257F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YounHomePageProject", "YounHomePageProject\YounHomePageProject.csproj", "{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,16 @@ Global
 		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A3B18CE8-5705-4A1A-B16A-6266886D257F}.Release|x86.ActiveCfg = Release|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4120C3C0-EB8D-4927-8CFF-DEEA2A491F60}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
